@@ -56,7 +56,6 @@ const LineChart = () => {
     useEffect(() => {
         axios.get('http://localhost:8000/')
             .then(res => {
-                console.log(res.data[0]['created_at'])
                 setFetched({...fetched, labels:res.data.map(row => row['created_at'].slice(11,16)) , 'datasets': [{...fetched.datasets[0],'data': res.data.map(row => row['power'])}] })
             })
     }, [])
