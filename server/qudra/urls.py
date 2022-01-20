@@ -4,5 +4,5 @@ from . import views
 app_name = 'qudra'
 
 urlpatterns = [
-    path('', views.my_custom_sql)
+    path('', views.DirectQuery.as_view())
 ]
