@@ -32,7 +32,6 @@ class DirectQuery(APIView):
         # results = DirectQuerySerializer(returned, many=True).data
         return Response(returned)
 
-
     def post(self, request, format=None):
         query = request.data['query']
         returned = my_custom_sql(query)

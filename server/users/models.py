@@ -74,7 +74,7 @@ class Team(models.Model):
 
     name = models.CharField(max_length=50, unique=True)
     users = models.ManyToManyField(User, through='TeamMembership', related_name='teams')
-    organization = models.ForeignKey(Organization, related_name='teams')
+    organization = models.ForeignKey(Organization, related_name='teams', on_delete=models.CASCADE)
 
 class Site(models.Model):
     # teams:m2m, organizations:many2one, projects:one2many
@@ -84,7 +84,7 @@ class Site(models.Model):
 
     teams = models.ManyToManyField(Team, related_name='sites')
     name = models.CharField(max_length=50, unique=True)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='sites')
 
 class Project(models.Model):
     # teams:m2m, site:many2one
