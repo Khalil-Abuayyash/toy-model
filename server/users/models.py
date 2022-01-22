@@ -109,6 +109,7 @@ class OrganizationMembership(models.Model):
     #  a pivot table (org,user)
     class Meta:
         db_table = "organization_membership"
+        # unique_together = (("user", "organization"),)
     
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)

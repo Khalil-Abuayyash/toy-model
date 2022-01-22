@@ -187,17 +187,18 @@ class OraganizationMembershipSerializer(serializers.ModelSerializer):
         model = OrganizationMembership
         fields = ['id','is_org_admin', 'organization', 'user', 'user_id', 'organization_id']
 
-    # def create(self, validated_data):
+    # this overwriting is needed for creation but ofr uniqeness 
+    def create(self, validated_data):
 
-    #     org_id = validated_data['org_id']
-    #     user_id = validated_data['user_id']
-    #     org = Organization.objects.get(id=org_id)
-    #     user = User.objects.get(id=user_id)
+        organization_id = validated_data['organization_id']
+        user_id = validated_data['user_id']
+        org = Organization.objects.get(id=organization_id)
+        user = User.objects.get(id=user_id)
         
-    #     try:
-    #         old = OrganizationMembership.objects.get(user=user, organization=org)
-    #         # may be updated here : fields: is_org_admin or return an error
-    #         return old
-    #     except:
-    #         new = OrganizationMembership.objects.create(user=user, organization=org, is_org_admin=validated_data['is_org_admin'])
-    #         return new
+        try:
+            old = OrganizationMembership.objects.get(user=user, organization=org)
+            # may be updated here : fields: is_org_admin or raise an error
+            return old
+        except:
+            new = OrganizationMembership.objects.create(user=user, organization=org, is_org_admin=validated_data['is_org_admin'])
+            return new
