@@ -1,4 +1,3 @@
-from xml.parsers.expat import model
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -33,6 +32,13 @@ class CustomAccountManager(BaseUserManager):
         user.save()
         return user
 
+class Role(models.Model):
+
+    class Meta:
+        db_table = "role"
+    
+    name = models.CharField(max_length=50, unique=True)
+
 class User(AbstractBaseUser, PermissionsMixin):
     # teams:m2m, organizations:m2m
 
@@ -43,19 +49,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     user_name = models.CharField(max_length=150, unique=True)
     first_name = models.CharField(max_length=150, blank=True)
     last_name = models.CharField(max_length=150, blank=True)
-    telephone = models.CharField(max_length=15, blank=True)
+    telephone = models.CharField(max_length=15, blank=True, unique=True)
     created_at = models.DateTimeField(default=timezone.now)
-    is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
+    role = models.ForeignKey(Role, related_name="users", on_delete=models.DO_NOTHING)
+    is_staff = models.BooleanField(default=False)
+    # is_admin = models.BooleanField(default=False)
 
     objects = CustomAccountManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['user_name', 'first_name']
-
-    def __str__(self):
-        return self.user_name
 
 class Organization(models.Model):
     # sites:one2many, teams:one2many, users:m2m
@@ -92,7 +96,7 @@ class Project(models.Model):
     class Meta:
         db_table = "project"
     
-    teams = models.ManyToManyField(Team, related_name='projects')
+    # teams = models.ManyToManyField(Team, related_name='projects')
     name = models.CharField(max_length=50, unique=True)
     site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="projects")
 
@@ -103,7 +107,7 @@ class TeamMembership(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    is_team_leader = models.BooleanField()
+    # is_team_leader = models.BooleanField()
     
 class OrganizationMembership(models.Model):
     #  a pivot table (org,user)
@@ -122,18 +126,42 @@ class TeamSite(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
 
-class TeamProject(models.Model):
-    #  a pivot table (team,project)
+# class TeamProject(models.Model):
+#     #  a pivot table (team,project)
+#     class Meta:
+#         db_table = "team_project"
+#     team = models.ForeignKey(Team, on_delete=models.CASCADE)
+#     project = models.ForeignKey(Project, on_delete=models.CASCADE)
+
+class Device(models.Model):
+
     class Meta:
-        db_table = "team_project"
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+        db_table = "device"
+    
+    name = models.CharField(max_length=50, blank=True, null=True)
+    site = models.OneToOneField(Site, on_delete=models.CASCADE, related_name="device")
 
 class Thing(models.Model):
-    pass
+    
+    class Meta:
+        db_table = "thing"
+    
+    type = models.CharField(max_length=50)
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
-class InverterTypeOne(models.Model):
-    pass
+class Chart(models.Model):
 
-class SensorTypeOne(models.Model):
-    pass
+    class Meta:
+        db_table = "chart"
+
+    name = models.CharField(max_length=50, blank=True, null=True)
+    type = models.CharField(max_length=50, blank=True, null=True)
+    x_label = models.CharField(max_length=50, blank=True, null=True)
+    y_label = models.CharField(max_length=50, blank=True, null=True)
+    x_scale = models.DecimalField(max_digits=2, decimal_places=2)
+    y_scale = models.DecimalField(max_digits=2, decimal_places=2)
+    x_coordinate = models.DecimalField(max_digits=2, decimal_places=2)
+    y_coordinate = models.DecimalField(max_digits=2, decimal_places=2)
+    query = models.TextField()
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)

@@ -1,46 +1,25 @@
-import re
 from rest_framework import serializers
-from .models import  User, Team, Organization, Site, Project, OrganizationMembership, TeamMembership, TeamSite, TeamProject
+from .models import  Chart, Device, Role, Thing, User, Team, Organization, Site, Project, OrganizationMembership, TeamMembership, TeamSite
 
-# Regarding User Serializer
-# m2m Team ### Done
-# m2m Organization ### Done
+class RoleSeriailzer(serializers.ModelSerializer):
 
-# regarding Site Serializer
-# Site has many projects ### Done 
-# Organization has many sites ### Done
-# Site m2m Team ### Done
-
-# Regarding Team Serializer
-# m2m Users ### Done
-# m2m Sites ### Done
-# m2m Projects ### Done
-# many to 1 Organization ###Done
-
-# Regarding Organiztion Serializer
-# one2many Team ###Done
-# 1 to many Site ### Done
-# m2m Users  ### Done
-
-# Regarding Project Serializer
-# many to one  ###Done
-# many to many Team ### Done
-
-#Regarding Pivot Tables
-# team site ### Done
-# team project ### Done
-# team membership ### Done
-# org membership ### Done
+    class Meta:
+        model = Role
+        fields = ['id', 'name']
 
 class UserSerializer(serializers.ModelSerializer):
 
+    role = RoleSeriailzer(required=False)
     email = serializers.EmailField(required=True)
     user_name = serializers.CharField(required=True)
     password = serializers.CharField(min_length=8, write_only=True)
+    role_id = serializers.IntegerField(required=False)
+    organizations = serializers.PrimaryKeyRelatedField(queryset=Organization.objects.all(), many=True, required=False)
+    teams = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all(), many=True, required=False)
 
     class Meta:
         model = User
-        fields=('email', 'user_name', 'password')
+        fields=('id', 'email', 'user_name', 'password', 'role', 'role_id', 'teams', 'organizations')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -64,7 +43,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 class TeamSerializer(serializers.ModelSerializer):
 
-    projects = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), many=True, required=False)
+    # projects = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), many=True, required=False)
     sites = serializers.PrimaryKeyRelatedField(queryset=Site.objects.all(), many=True, required=False)
     users = UserSerializer(required=False, many=True)
     organization = OrganizationSerializer(required=False)
@@ -72,7 +51,7 @@ class TeamSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Team
-        fields = ['name', 'id', 'users', 'sites', 'projects', 'organization', 'organization_id']
+        fields = ['name', 'id', 'users', 'sites', 'organization', 'organization_id']
 
 class SiteSerializer(serializers.ModelSerializer):
 
@@ -84,12 +63,6 @@ class SiteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Site
         fields= ['id','name', 'teams', 'organization', 'organization_id', 'projects']
-
-    # def create(self, validated_data):
-    #     org_id = validated_data['org_id']
-    #     org = Organization.objects.get(id=org_id)
-    #     new_site = Site.objects.create(name=validated_data['name'], organization=org)
-    #     return new_site
 
 class TeamSiteSerializer(serializers.ModelSerializer):
 
@@ -125,16 +98,16 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = ['id', 'name', 'site', 'site_id', 'teams']
 
-class TeamProjectSerializer(serializers.ModelSerializer):
+# class TeamProjectSerializer(serializers.ModelSerializer):
 
-    team = TeamSerializer(required=False)
-    project = ProjectSerializer(required=False)
-    team_id = serializers.IntegerField(required=False)
-    project_id = serializers.IntegerField(required=False)
+#     team = TeamSerializer(required=False)
+#     project = ProjectSerializer(required=False)
+#     team_id = serializers.IntegerField(required=False)
+#     project_id = serializers.IntegerField(required=False)
 
-    class Meta:
-        model = TeamProject
-        fields = ['id', 'team', 'project', 'team_id', 'project_id']
+#     class Meta:
+#         model = TeamProject
+#         fields = ['id', 'team', 'project', 'team_id', 'project_id']
 
     # def create(self, validated_data):
     #     team_id = validated_data['team_id']
@@ -187,7 +160,7 @@ class OraganizationMembershipSerializer(serializers.ModelSerializer):
         model = OrganizationMembership
         fields = ['id','is_org_admin', 'organization', 'user', 'user_id', 'organization_id']
 
-    # this overwriting is needed for creation but ofr uniqeness 
+    # this overwriting is not needed for creation but for uniqeness 
     def create(self, validated_data):
 
         organization_id = validated_data['organization_id']
@@ -202,3 +175,30 @@ class OraganizationMembershipSerializer(serializers.ModelSerializer):
         except:
             new = OrganizationMembership.objects.create(user=user, organization=org, is_org_admin=validated_data['is_org_admin'])
             return new
+
+class DeviceSerializer(serializers.ModelSerializer):
+
+    site = SiteSerializer(required=False)
+    site_id = serializers.IntegerField(required=False)
+
+    class Meta:
+        model = Device
+        fields = ['id', 'name', 'site', 'site_id']
+
+class ThingSerializer(serializers.ModelSerializer):
+
+    project = ProjectSerializer(required=False)
+    project_id = serializers.IntegerField(required=False)   
+
+    class Meta:
+        model = Thing
+        fields = ['id', 'type', 'device', 'device_id', 'project', 'project_id']
+
+class ChartSerializer(serializers.ModelSerializer):
+
+    project = ProjectSerializer(required=False)
+    project_id = serializers.IntegerField(required=False)  
+
+    class Meta:
+        model = Chart
+        fields = ['id', 'name', 'type', 'x_label', 'y_label', 'x_scale', 'y_scale', 'query', 'x_coordinate', 'y_coordinate' ,'project', 'project_id', ]

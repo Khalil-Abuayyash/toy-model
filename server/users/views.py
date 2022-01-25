@@ -7,23 +7,23 @@ from rest_framework.permissions import AllowAny
 # from django.http import Http404
 
 # models 
-from .models import Organization, OrganizationMembership, Project, Site, TeamMembership, TeamProject, TeamSite, Team
+from .models import User, Organization, OrganizationMembership, Project, Site, TeamMembership, TeamSite, Team
 
 # serializers
 from .serializers import OraganizationMembershipSerializer, OrganizationSerializer, SiteSerializer, TeamMembershipSerializer \
-     , TeamProjectSerializer, TeamSerializer, UserSerializer, ProjectSerializer, TeamSiteSerializer
+    , TeamSerializer, UserSerializer, ProjectSerializer, TeamSiteSerializer
 
-class UserCreate(APIView):
-    permission_classes = [AllowAny]
+# class UserCreate(APIView):
+#     permission_classes = [AllowAny]
 
-    def post(self, request, format='json'):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            if user:
-                json = serializer.data
-                return Response(json, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     def post(self, request, format='json'):
+#         serializer = UserSerializer(data=request.data)
+#         if serializer.is_valid():
+#             user = serializer.save()
+#             if user:
+#                 json = serializer.data
+#                 return Response(json, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class BlacklistTokenUpdateView(APIView):
     permission_classes = [AllowAny]
@@ -37,6 +37,10 @@ class BlacklistTokenUpdateView(APIView):
             return Response({"success","true"}, status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class UserViewSet(ModelViewSet):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
 
 class ProjectViewSet(ModelViewSet):
     serializer_class = ProjectSerializer
@@ -58,9 +62,9 @@ class TeamSiteViewSet(ModelViewSet):
     serializer_class = TeamSiteSerializer
     queryset = TeamSite.objects.all()
 
-class TeamProjectViewSet(ModelViewSet):
-    serializer_class = TeamProjectSerializer
-    queryset = TeamProject.objects.all()
+# class TeamProjectViewSet(ModelViewSet):
+#     serializer_class = TeamProjectSerializer
+#     queryset = TeamProject.objects.all()
 
 class TeamMembershipViewSet(ModelViewSet):
     serializer_class = TeamMembershipSerializer
