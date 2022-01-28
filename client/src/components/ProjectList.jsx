@@ -8,29 +8,34 @@ const ProjectList = () => {
 
     useEffect(() => {
       const access_token = localStorage.getItem('access_token')
-      const decoded_token = jwt(access_token)
-      setUserId(decoded_token.user_id)
-      axiosInstance.get('user/projects')
-      .then(res => setProjects(res.data) )
-      .catch(err => console.log(err))
+      if (access_token){
+        const decoded_token = jwt(access_token)
+        setUserId(decoded_token.user_id)
+        axiosInstance.get('user/projects')
+        .then(res => setProjects(res.data) )
+        .catch(err => console.log(err))
+      }
 
     }, []);
 
   return (
-    projects.length > 0 ?
+    <div>
+    {projects.length > 0 ?
     (<div>
       <h1>Projects</h1>
       {projects.map(project => {
           return (
           <div key={project.id} >
               <h5 >{project.name} {project.users}</h5>
-              <span>{project['users'].includes(2) ? <button>View</button> : null}</span>
+              {/* <span>{project['users'].includes(1) ? <button>View</button> : null}</span> */}
           </div>
         ) 
       } )}
     </div>)
     :
-    null)
+    <h1>No projects yet</h1>}
+    </div>
+  )
 };
 
 export default ProjectList;

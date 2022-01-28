@@ -7,6 +7,8 @@ import Login from "./components/Login";
 import Logout from "./components/Logout";
 import Register from "./components/Register";
 import ProjectList from "./components/ProjectList";
+import Google from "./components/Google";
+
 
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
@@ -36,6 +38,7 @@ function App() {
       <nav>
         <Link to="/">Home</Link> |{" "}
         <Link to="/register">Register</Link> |{" "}
+        <Link to="/google">Google</Link> |{" "}
         <Link to="/login">Login</Link> |{" "}
         <Link to="/projects">Project</Link> |{" "}
         <Link to="/logout">Logout</Link> |{" "}
@@ -44,6 +47,7 @@ function App() {
       <Router >
         <Home path="/" />
         <Register path="/register" />
+        <Google path="/google" />
         <Login path="/login" />
         <ProjectList path="/projects" />
         <Logout path="/logout" />
