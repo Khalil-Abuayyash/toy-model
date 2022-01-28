@@ -148,7 +148,7 @@ CORS_ALLOWED_ORIGINS = [
 #      'http://localhost:3000'
 # ]
 
-# CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
 
@@ -168,3 +168,11 @@ SIMPLE_JWT = {
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
 }
+
+GOOGLE_OAUTH2_CLIENT_ID = "1029661522841-ci605mlkbp0fa4fjljbj2ptgraqgi3nk.apps.googleusercontent.com"
+GOOGLE_OAUTH2_CLIENT_SECRET = "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"
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+]

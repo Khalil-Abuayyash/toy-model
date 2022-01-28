@@ -3,6 +3,13 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
+class Role(models.Model):
+
+    class Meta:
+        db_table = "role"
+    
+    name = models.CharField(max_length=50, unique=True)
+
 class CustomAccountManager(BaseUserManager):
 
     def create_superuser(self, email, user_name, first_name, password, **other_fields):
@@ -21,23 +28,16 @@ class CustomAccountManager(BaseUserManager):
         return self.create_user(email, user_name, first_name, password, **other_fields)
 
     def create_user(self, email, user_name, first_name, password, **other_fields):
-
+        role = Role.objects.get(id=1)
         if not email:
             raise ValueError(_('You must provide an email address'))
 
         email = self.normalize_email(email)
         user = self.model(email=email, user_name=user_name,
-                          first_name=first_name, **other_fields)
+                          first_name=first_name, role=role, **other_fields)
         user.set_password(password)
         user.save()
         return user
-
-class Role(models.Model):
-
-    class Meta:
-        db_table = "role"
-    
-    name = models.CharField(max_length=50, unique=True)
 
 class User(AbstractBaseUser, PermissionsMixin):
     # teams:m2m, organizations:m2m
@@ -49,7 +49,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     user_name = models.CharField(max_length=150, unique=True)
     first_name = models.CharField(max_length=150, blank=True)
     last_name = models.CharField(max_length=150, blank=True)
-    telephone = models.CharField(max_length=15, blank=True, unique=True)
+    telephone = models.CharField(max_length=15, blank=True, unique=False)
     created_at = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(default=True)
     role = models.ForeignKey(Role, related_name="users", on_delete=models.DO_NOTHING)

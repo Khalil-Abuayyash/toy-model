@@ -4,7 +4,6 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
-# from django.http import Http404
 
 # models 
 from .models import User, Organization, OrganizationMembership, Project, Site, TeamMembership, TeamSite, Team
@@ -12,18 +11,6 @@ from .models import User, Organization, OrganizationMembership, Project, Site, T
 # serializers
 from .serializers import OraganizationMembershipSerializer, OrganizationSerializer, SiteSerializer, TeamMembershipSerializer \
     , TeamSerializer, UserSerializer, ProjectSerializer, TeamSiteSerializer
-
-# class UserCreate(APIView):
-#     permission_classes = [AllowAny]
-
-#     def post(self, request, format='json'):
-#         serializer = UserSerializer(data=request.data)
-#         if serializer.is_valid():
-#             user = serializer.save()
-#             if user:
-#                 json = serializer.data
-#                 return Response(json, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class BlacklistTokenUpdateView(APIView):
     permission_classes = [AllowAny]
@@ -73,3 +60,4 @@ class TeamMembershipViewSet(ModelViewSet):
 class OrganizationMembershipViewSet(ModelViewSet):
     serializer_class = OraganizationMembershipSerializer
     queryset = OrganizationMembership.objects.all()
+
