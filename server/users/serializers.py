@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import  Chart, Device, Role, Thing, User, Team, Organization, Site, Project, OrganizationMembership, TeamMembership, TeamSite
+from .models import  Chart, Device, Role, Thing, Ticket, User, Team, Organization, Site, Project, OrganizationMembership, TeamMembership, TeamSite
 
 class RoleSeriailzer(serializers.ModelSerializer):
 
@@ -14,13 +14,14 @@ class UserSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(required=True)
     password = serializers.CharField(min_length=8, write_only=True)
     role_id = serializers.IntegerField(required=False)
-    organizations = serializers.PrimaryKeyRelatedField(queryset=Organization.objects.all(), many=True, required=False)
-    teams = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all(), many=True, required=False)
+    # organizations = serializers.PrimaryKeyRelatedField(queryset=Organization.objects.all(), many=True, required=False)
+    # teams = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all(), many=True, required=False)
 
     class Meta:
         model = User
-        fields=('id', 'email', 'user_name', 'password', 'role', 'role_id', 'teams', 'organizations')
+        fields=('id', 'email', 'user_name', 'password', 'role', 'role_id', 'teams', 'organizations', 'telephone')
         extra_kwargs = {'password': {'write_only': True}}
+        depth = 1
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
@@ -34,12 +35,14 @@ class UserSerializer(serializers.ModelSerializer):
 class OrganizationSerializer(serializers.ModelSerializer):
 
     users = UserSerializer(required=False, many=True)
-    teams = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all(), many=True, required=False)
-    sites = serializers.PrimaryKeyRelatedField(queryset=Site.objects.all(), many=True, required=False)
+    # teams = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all(), many=True, required=False)
+    # sites = serializers.PrimaryKeyRelatedField(queryset=Site.objects.all(), many=True, required=False)
+
 
     class Meta:
         model = Organization
         fields = ['name', 'id', 'teams', 'sites', 'users']
+        depth = 1
 
 class TeamSerializer(serializers.ModelSerializer):
 
@@ -202,3 +205,10 @@ class ChartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chart
         fields = ['id', 'name', 'type', 'x_label', 'y_label', 'x_scale', 'y_scale', 'query', 'x_coordinate', 'y_coordinate' ,'project', 'project_id', ]
+
+class TicketSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Ticket
+        fields = ["id", "title", "project", "project_id", "user", "user_id"]
+        depth = 3

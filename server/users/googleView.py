@@ -37,11 +37,6 @@ def jwt_login(*, response: HttpResponse, user: User) -> Tuple:
     tokens = get_tokens_for_user(user)
 
     # SET Cookie
-
-    # if api_settings.JWT_AUTH_COOKIE:
-    #     # Reference: https://github.com/Styria-Digital/django-rest-framework-jwt/blob/master/src/rest_framework_jwt/compat.py#L43
-    #     set_cookie_with_token(response, api_settings.JWT_AUTH_COOKIE, token)
-
     response.set_cookie("tokens",tokens)
 
     user_record_login(user=user)
@@ -132,27 +127,12 @@ class GoogleView(PublicApiMixin, ApiErrorsMixin, APIView):
         last_name = serializers.CharField(required=False, default='')
 
     def post(self, request, *args, **kwargs):
-        print(request)
         id_token = request.headers.get('Authorization')
-        print("----")
-        print(id_token)
-        google_validate_id_token(id_token=id_token)
-        print("---------------")
-        print(google_validate_id_token(id_token=id_token))
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        print("------------")
-        print(serializer.validated_data)
         user, _ = user_get_or_create(**serializer.validated_data)
-        print("------------")
-        print(user)
         response = Response(data=user_get_me(user=user))
-        print("respons1")
-        print(response)
         response, tokens = jwt_login(response=response, user=user)
-        print("response2")
-        print(response)
-        print(response.cookies)
         response.data['access'] = tokens['access']
         response.data['refresh'] = tokens['refresh']
         return response

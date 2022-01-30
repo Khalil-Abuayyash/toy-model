@@ -165,3 +165,12 @@ class Chart(models.Model):
     y_coordinate = models.DecimalField(max_digits=2, decimal_places=2)
     query = models.TextField()
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
+
+class Ticket(models.Model):
+    class Meta:
+        db_table = "ticket"
+    
+    title = models.CharField(max_length=50, blank=True, null=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    

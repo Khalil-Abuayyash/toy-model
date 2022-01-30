@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -5,12 +6,16 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
 
+
 # models 
-from .models import User, Organization, OrganizationMembership, Project, Site, TeamMembership, TeamSite, Team
+from .models import Ticket, User, Organization, OrganizationMembership, Project, Site, TeamMembership, TeamSite, Team
 
 # serializers
 from .serializers import OraganizationMembershipSerializer, OrganizationSerializer, SiteSerializer, TeamMembershipSerializer \
-    , TeamSerializer, UserSerializer, ProjectSerializer, TeamSiteSerializer
+    , TeamSerializer, TicketSerializer, UserSerializer, ProjectSerializer, TeamSiteSerializer
+
+# services
+from .services import send_verification_code
 
 class BlacklistTokenUpdateView(APIView):
     permission_classes = [AllowAny]
@@ -61,3 +66,13 @@ class OrganizationMembershipViewSet(ModelViewSet):
     serializer_class = OraganizationMembershipSerializer
     queryset = OrganizationMembership.objects.all()
 
+class CookieView(APIView):
+    def get(self, request):
+        # send_verification_code()
+        res = Response("testing cookies")
+        res.set_cookie("testing","postman? browser?")
+        return res
+
+class TicketViewSet(ModelViewSet):
+    serializer_class = TicketSerializer
+    queryset = Ticket.objects.all()
