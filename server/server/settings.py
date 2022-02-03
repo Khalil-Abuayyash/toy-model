@@ -83,9 +83,9 @@ WSGI_APPLICATION = 'server.wsgi.application'
 DATABASES = {
     'default':{
         'NAME': 'qudra',
-        'ENGINE': 'django.db.backends.mysql',
-        'USER': 'root',
-        'PASSWORD': 'qudra123QUDRA'
+        'ENGINE': 'django.db.backends.postgresql',
+        'USER': 'postgres',
+        'PASSWORD': 'qwe'
     },
 }
 
@@ -161,7 +161,7 @@ CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
 AUTH_USER_MODEL = 'users.User'
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=10),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,

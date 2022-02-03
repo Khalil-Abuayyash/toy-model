@@ -64,7 +64,7 @@ def google_validate_id_token(*, id_token: str) -> bool:
 def user_get_me(*, user: User):
     return {
         'id': user.id,
-        'user_name': user.user_name,
+        'nickname': user.nickname,
         'email': user.email
     }
 
@@ -93,7 +93,8 @@ def user_get_or_create(*, email: str, **extra_data) -> Tuple[User, bool]:
     user = User.objects.filter(email=email).first()
     if user:
         return user, False
-    return User.objects.create(email=email, role_id=1 , **extra_data), True
+    nickname = extra_data['first_name']
+    return User.objects.create(email=email, role_id=1 ,nickname=nickname), True
 
 class PublicApiMixin:
     authentication_classes = ()

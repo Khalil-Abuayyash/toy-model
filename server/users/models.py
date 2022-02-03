@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from timescale.db.models.models import TimescaleModel
 
 class Role(models.Model):
 
@@ -12,7 +13,7 @@ class Role(models.Model):
 
 class CustomAccountManager(BaseUserManager):
 
-    def create_superuser(self, email, user_name, first_name, password, **other_fields):
+    def create_superuser(self, email, nickname, password, **other_fields):
 
         other_fields.setdefault('is_staff', True)
         other_fields.setdefault('is_superuser', True)
@@ -25,16 +26,16 @@ class CustomAccountManager(BaseUserManager):
             raise ValueError(
                 'Superuser must be assigned to is_superuser=True.')
 
-        return self.create_user(email, user_name, first_name, password, **other_fields)
+        return self.create_user(email, nickname, password, role_id=3 **other_fields)
 
-    def create_user(self, email, user_name, first_name, password, **other_fields):
-        role = Role.objects.get(id=1)
+    def create_user(self, email, nickname, password, role_id, **other_fields):
+        role = Role.objects.get(id=role_id)
         if not email:
             raise ValueError(_('You must provide an email address'))
 
         email = self.normalize_email(email)
-        user = self.model(email=email, user_name=user_name,
-                          first_name=first_name, role=role, **other_fields)
+        user = self.model(email=email, nickname=nickname,
+                            role=role, **other_fields)
         user.set_password(password)
         user.save()
         return user
@@ -46,9 +47,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         db_table = "user"
 
     email = models.EmailField(_('email address'), unique=True)
-    user_name = models.CharField(max_length=150, unique=True)
-    first_name = models.CharField(max_length=150, blank=True)
-    last_name = models.CharField(max_length=150, blank=True)
+    nickname = models.CharField(max_length=150, unique=True)
+    # first_name = models.CharField(max_length=150, blank=True)
+    # last_name = models.CharField(max_length=150, blank=True)
     telephone = models.CharField(max_length=15, blank=True, unique=False)
     created_at = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(default=True)
@@ -59,7 +60,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = CustomAccountManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['user_name', 'first_name']
+    REQUIRED_FIELDS = ['nickname']
 
 class Organization(models.Model):
     # sites:one2many, teams:one2many, users:m2m
@@ -68,6 +69,9 @@ class Organization(models.Model):
         db_table = "orgaznization"
 
     name = models.CharField(max_length=50, unique=True)
+    timezone = models.CharField(max_length=50)
+    theme = models.CharField(max_length=50)
+    note = models.TextField()
     users = models.ManyToManyField(User, through='OrganizationMembership', related_name='organizations')
 
 class Team(models.Model):
@@ -89,6 +93,8 @@ class Site(models.Model):
     teams = models.ManyToManyField(Team, related_name='sites')
     name = models.CharField(max_length=50, unique=True)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='sites')
+    note = models.TextField()
+    capacity = models.IntegerField()
 
 class Project(models.Model):
     # teams:m2m, site:many2one
@@ -99,6 +105,11 @@ class Project(models.Model):
     # teams = models.ManyToManyField(Team, related_name='projects')
     name = models.CharField(max_length=50, unique=True)
     site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="projects")
+    voltage_level = models.CharField(max_length=50) # enum
+    type = models.CharField(max_length=50) # enum
+    capacity = models.IntegerField()
+    brand = models.CharField(max_length=50)
+    note = models.CharField(max_length=50)
 
 class TeamMembership(models.Model):
     #  a pivot table (team,user)
@@ -170,7 +181,33 @@ class Ticket(models.Model):
     class Meta:
         db_table = "ticket"
     
-    title = models.CharField(max_length=50, blank=True, null=True)
+    title = models.CharField(max_length=50)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    description = models.TextField()
+
+class Log(models.Model):
+    class Meta:
+        db_table = "log"
     
+    title = models.CharField(max_length=50)
+    time = models.DateTimeField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+class Metric(TimescaleModel):
+   temperature = models.FloatField()
+
+   class Meta:
+       db_table = "metric"
+
+class Alert(models.Model):
+    class Meta:
+        db_table = "alert"
+
+class Variable(models.Model):
+    class Meta:
+        db_table = "variable"
+
+class Query(models.Model):
+    class Meta:
+        db_table = "query"

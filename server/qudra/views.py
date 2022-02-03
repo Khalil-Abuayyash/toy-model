@@ -25,7 +25,7 @@ def my_custom_sql(query):
 
 
 class DirectQuery(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
         returned = my_custom_sql("select * from user")
@@ -35,5 +35,5 @@ class DirectQuery(APIView):
     def post(self, request, format=None):
         query = request.data['query']
         returned = my_custom_sql(query)
-        results = DirectQuerySerializer(returned, many=True).data
-        return Response(results)
+        # results = DirectQuerySerializer(returned, many=True).data
+        return Response(returned)

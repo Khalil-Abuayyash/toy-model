@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import  Chart, Device, Role, Thing, Ticket, User, Team, Organization, Site, Project, OrganizationMembership, TeamMembership, TeamSite
+from .models import  Chart, Device, Role, Thing, Ticket, User, Team, Organization, Site, Project, OrganizationMembership, TeamMembership, TeamSite, Log
 
 class RoleSeriailzer(serializers.ModelSerializer):
 
@@ -11,7 +11,6 @@ class UserSerializer(serializers.ModelSerializer):
 
     role = RoleSeriailzer(required=False)
     email = serializers.EmailField(required=True)
-    user_name = serializers.CharField(required=True)
     password = serializers.CharField(min_length=8, write_only=True)
     role_id = serializers.IntegerField(required=False)
     # organizations = serializers.PrimaryKeyRelatedField(queryset=Organization.objects.all(), many=True, required=False)
@@ -19,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields=('id', 'email', 'user_name', 'password', 'role', 'role_id', 'teams', 'organizations', 'telephone')
+        fields=('id', 'email', 'nickname', 'password', 'role', 'role_id', 'teams', 'organizations', 'telephone')
         extra_kwargs = {'password': {'write_only': True}}
         depth = 1
 
@@ -65,7 +64,7 @@ class SiteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Site
-        fields= ['id','name', 'teams', 'organization', 'organization_id', 'projects']
+        fields= ['id','name', 'teams', 'note', 'organization', 'organization_id', 'projects']
 
 class TeamSiteSerializer(serializers.ModelSerializer):
 
@@ -73,6 +72,9 @@ class TeamSiteSerializer(serializers.ModelSerializer):
     site = SiteSerializer(required=False)
     team_id = serializers.IntegerField(required=False)
     site_id = serializers.IntegerField(required=False)
+    # sites_ids with a team_id or site_id with teams_ids to add many sites to one team at once or add many teams to one site at once respectively.
+    # team_id is teams_ids if the length of the latter is 1 , the same goes for site.
+    # 
     
     class Meta:
         model = TeamSite
@@ -207,8 +209,18 @@ class ChartSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'type', 'x_label', 'y_label', 'x_scale', 'y_scale', 'query', 'x_coordinate', 'y_coordinate' ,'project', 'project_id', ]
 
 class TicketSerializer(serializers.ModelSerializer):
-
+    project_id = serializers.IntegerField(required=False)
+    user_id = serializers.IntegerField(required=False)
     class Meta:
         model = Ticket
-        fields = ["id", "title", "project", "project_id", "user", "user_id"]
+        fields = ["id", "title", "project", "project_id", "user", "user_id", 'description']
         depth = 3
+
+class LogSerializer(serializers.ModelSerializer):
+    user = UserSerializer(required=False)
+    user_id = serializers.IntegerField(required=False)
+    class Meta:
+        model = Log
+        fields = ["id", "title", "user", "user_id","time"]
+
+# query , alert, var
