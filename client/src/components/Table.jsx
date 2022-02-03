@@ -8,14 +8,10 @@ import Button from "./subComponents/Button";
 const getProperty = (obj, property) => {
   let parts = property.split(".");
   if (Array.isArray(parts)) {
-    try {
-      while (parts.length > 0) {
-        obj = obj[parts.shift()];
-      }
-      return obj;
-    } catch (error) {
-      return "";
+    while (parts.length > 0 && obj !== undefined) {
+      obj = obj[parts.shift()];
     }
+    return obj;
   } else {
     throw "parts is not valid array";
   }

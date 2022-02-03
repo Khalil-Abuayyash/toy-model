@@ -12,7 +12,8 @@ const VerticalNavigationBar = () => {
         <Link to="/dashboard">Dashboard</Link> |<Link to="users">Users</Link> |{" "}
         <Link to="organizations">Organizations</Link> |{" "}
         <Link to="sites">Sites</Link> | <Link to="projects">Projects</Link> |{" "}
-        <Link to="teams">teams</Link> | <Link to="tickets">Tickets</Link>
+        <Link to="teams">teams</Link> | <Link to="tickets">Tickets</Link> |{" "}
+        <Link to="logs">Logs</Link>
       </nav>
     </div>
   );

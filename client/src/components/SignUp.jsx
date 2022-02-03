@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axiosInstance from "../axios";
 import { navigate } from "@reach/router";
 
-const Register = () => {
+const SignUp = () => {
   const initialFormData = Object.freeze({
     email: "",
     username: "",
@@ -69,4 +69,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default SignUp;

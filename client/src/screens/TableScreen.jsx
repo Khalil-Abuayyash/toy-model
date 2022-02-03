@@ -1,5 +1,7 @@
+import { navigate } from "@reach/router";
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../axios";
+import Button from "../components/subComponents/Button";
 import Table from "../components/Table";
 
 const TableScreen = (props) => {
@@ -84,7 +86,7 @@ const TableScreen = (props) => {
       axiosInstance
         .get("/user/projects")
         .then((res) => {
-          console.log(res.data[0].site.organization.name);
+          console.log(res.data[0]);
           setData(
             res.data.map((project) => ({
               ...project,
@@ -136,7 +138,7 @@ const TableScreen = (props) => {
             "organizationsNames",
             "telephone",
             "email",
-            "user_name",
+            "nickname",
             "id",
           ]);
           setIsLoaded(true);
@@ -146,7 +148,7 @@ const TableScreen = (props) => {
       axiosInstance
         .get("/user/tickets")
         .then((res) => {
-          console.log(res.data[0].project.site.name);
+          console.log(res.data[0]);
           setData(res.data);
           setTableHeaders([
             "Actions",
@@ -168,6 +170,17 @@ const TableScreen = (props) => {
           setIsLoaded(true);
         })
         .catch((err) => console.log(err));
+    } else if (props.listOf === "logs") {
+      axiosInstance
+        .get("/user/logs")
+        .then((res) => {
+          console.log(res.data[0]);
+          setData(res.data);
+          setTableHeaders(["Actions", "Time", "Title", "Username"]);
+          setTableBodies(["time", "title", "user.user_name"]);
+          setIsLoaded(true);
+        })
+        .catch((err) => console.log(err));
     }
   }, [props.listOf]);
 
@@ -175,6 +188,13 @@ const TableScreen = (props) => {
     isLoaded && (
       <>
         <h1>{props.listOf}</h1>
+        <Button
+          onClick={() =>
+            // navigate(`/${props.listOf.slice(0, props.listOf.length - 1)}`)
+            navigate(`/${props.listOf}/create`)
+          }
+          title={`add ${props.listOf}`}
+        />
         <Table
           data={data}
           tableHeaders={tableHeaders}
