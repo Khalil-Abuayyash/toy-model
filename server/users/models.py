@@ -26,7 +26,7 @@ class CustomAccountManager(BaseUserManager):
             raise ValueError(
                 'Superuser must be assigned to is_superuser=True.')
 
-        return self.create_user(email, nickname, password, role_id=3 **other_fields)
+        return self.create_user(email, nickname, password, role_id=3, **other_fields)
 
     def create_user(self, email, nickname, password, role_id, **other_fields):
         role = Role.objects.get(id=role_id)

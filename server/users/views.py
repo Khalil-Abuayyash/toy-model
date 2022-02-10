@@ -1,10 +1,11 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
+from django.db import IntegrityError
 
 
 # models 
@@ -36,8 +37,11 @@ class UserViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data = request.data
-        new_user = User.objects.create(nickname=data["nickname"], email=data["email"], password=data["password"], telephone=data["telephone"], role_id=data["role_id"])
-        new_user.save()
+        try :
+            new_user = User.objects.create(nickname=data["nickname"], email=data["email"], password=data["password"], telephone=data["telephone"], role_id=data["role_id"])
+            new_user.save()
+        except IntegrityError as e:
+            return HttpResponseBadRequest(e.__cause__)
 
         for organization in data["organizations"]:
             organization_object = Organization.objects.get(name=organization["name"])
