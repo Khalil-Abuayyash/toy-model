@@ -1,0 +1,27 @@
+.container {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  margin-right: 5px;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+}
+
+.delete {
+  background-color: #d83636;
+}
+
+.edit {
+  background-color: #f6f6f6;
+}
+
+.view {
+  background-color: #f6f6f6;
+}

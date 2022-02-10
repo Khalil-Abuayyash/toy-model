@@ -1,7 +1,8 @@
 import React from "react";
+import styles from "../../styles/table.module.css";
 
 const TableRow = (props) => {
-  return <tr>{props.children}</tr>;
+  return <div className={styles.row}>{props.children}</div>;
 };
 
 export default TableRow;

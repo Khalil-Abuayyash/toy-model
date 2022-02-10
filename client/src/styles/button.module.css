@@ -1,0 +1,40 @@
+.large {
+  width: 464pxpx;
+}
+
+.small {
+  width: 218px;
+}
+
+.default {
+  background-color: #ea3c88;
+  border-radius: 8px;
+  border: none;
+  color: #ffffff;
+  text-transform: capitalize;
+  text-align: center;
+  letter-spacing: 1.46px;
+  font-size: 18px;
+  height: 64px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.disabled {
+  color: #575655;
+  font-size: 20px;
+  border: 2px solid #575655;
+  background: #ffffff;
+}
+
+@media only screen and (max-width: 768px) {
+  .large {
+    width: 321px;
+  }
+}
+
+@media only screen and (max-width: 414px) {
+  .large {
+    width: 268px;
+  }
+}

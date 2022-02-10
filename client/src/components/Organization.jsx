@@ -1,24 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import axiosInstance from "../axios";
 import { navigate } from "@reach/router";
 import Form from "./Form";
 
 const Organization = () => {
   const handleSubmit = (formData) => {
-    console.log(formData);
-
     axiosInstance
       .post(`/user/organizations/`, {
-        name: formData.name.value,
-        timezone: formData.timezone.value,
-        owner: formData.owner.value,
-        note: formData.note.value,
+        name: "napco",
       })
       .then((res) => {
         navigate("/organizations");
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err.response.data);
       });
   };
 

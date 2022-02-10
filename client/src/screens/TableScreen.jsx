@@ -1,8 +1,10 @@
 import { navigate } from "@reach/router";
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../axios";
+import SideBar from "../components/SideBar";
 import Button from "../components/subComponents/Button";
 import Table from "../components/Table";
+import Search from "../components/Search";
 
 const TableScreen = (props) => {
   const [data, setData] = useState([]);
@@ -24,13 +26,13 @@ const TableScreen = (props) => {
             }))
           );
           setTableHeaders([
-            "Actions",
-            "Teams",
-            "Sites",
+            "Org ID",
             "Organization",
-            "Org Id",
+            "Sites",
+            "Teams",
+            "Actions",
           ]);
-          setTableBodies(["teamsNames", "sitesNum", "name", "id"]);
+          setTableBodies(["id", "name", "sitesNum", "teamsNames"]);
           setIsLoaded(true);
         })
         .catch((err) => console.log(err));
@@ -45,8 +47,14 @@ const TableScreen = (props) => {
               sitesNum: team.sites.length,
             }))
           );
-          setTableHeaders(["Actions", "Organization", "Sites", "name", "Id"]);
-          setTableBodies(["organization.name", "sitesNum", "name", "id"]);
+          setTableHeaders([
+            "Team ID",
+            "Team Name",
+            "Organization",
+            "Sites",
+            "Actions",
+          ]);
+          setTableBodies(["id", "name", "organization.name", "sitesNum"]);
           setIsLoaded(true);
         })
         .catch((err) => console.log(err));
@@ -65,19 +73,19 @@ const TableScreen = (props) => {
             }))
           );
           setTableHeaders([
-            "Actions",
-            "Teams",
-            "Projects",
+            "Site ID",
+            "Site Name",
             "Organization",
-            "Site",
-            "ID",
+            "Projects",
+            "Teams",
+            "Actions",
           ]);
           setTableBodies([
-            "teamsNames",
-            "projectsNames",
-            "organization.name",
-            "name",
             "id",
+            "name",
+            "organization.name",
+            "projectsNames",
+            "teamsNames",
           ]);
           setIsLoaded(true);
         })
@@ -93,19 +101,19 @@ const TableScreen = (props) => {
             }))
           );
           setTableHeaders([
-            "Actions",
-            "Organization",
-            "Site Name",
-            "Project Type",
+            "Project ID",
             "Project Name",
-            "ID",
+            "Site",
+            "Project Type",
+            "Organization",
+            "Actions",
           ]);
           setTableBodies([
-            "site.organization.name",
+            "id",
+            "name",
             "site.name",
             "type",
-            "name",
-            "id",
+            "site.organization.name",
           ]);
           setIsLoaded(true);
         })
@@ -125,21 +133,21 @@ const TableScreen = (props) => {
             }))
           );
           setTableHeaders([
-            "Actions",
-            "Teams",
-            "Organization",
-            "Phone Number",
-            "Email",
-            "Name",
             "ID",
+            "Name",
+            "Email",
+            "Phone",
+            "Org",
+            "Teams",
+            "Actions",
           ]);
           setTableBodies([
-            "teamsNames",
-            "organizationsNames",
-            "telephone",
-            "email",
-            "nickname",
             "id",
+            "nickname",
+            "email",
+            "telephone",
+            "organizationsNames",
+            "teamsNames",
           ]);
           setIsLoaded(true);
         })
@@ -151,13 +159,13 @@ const TableScreen = (props) => {
           console.log(res.data[0]);
           setData(res.data);
           setTableHeaders([
-            "Actions",
             "Project",
             "Site",
             "Organization",
             "Ticket Title",
             "User Name",
             "ID",
+            "Actions",
           ]);
           setTableBodies([
             "project.name",
@@ -186,21 +194,46 @@ const TableScreen = (props) => {
 
   return (
     isLoaded && (
-      <>
-        <h1>{props.listOf}</h1>
-        <Button
-          onClick={() =>
-            // navigate(`/${props.listOf.slice(0, props.listOf.length - 1)}`)
-            navigate(`/${props.listOf}/create`)
-          }
-          title={`add ${props.listOf}`}
-        />
-        <Table
-          data={data}
-          tableHeaders={tableHeaders}
-          tableBodies={tableBodies}
-        />
-      </>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "start",
+        }}
+      >
+        <SideBar />
+
+        <div style={{ marginLeft: "30px", marginTop: "50px" }}>
+          {" "}
+          {/* containing serach and table */}
+          <div
+            style={{
+              display: "flex",
+              marginBottom: "20px",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            {/* containing search , add button*/}
+            {/* <h1>{props.listOf}</h1> */}
+            <Search />
+            <Button
+              style={{ width: "500px" }}
+              onClick={() =>
+                // navigate(`/${props.listOf.slice(0, props.listOf.length - 1)}`)
+                navigate(`/${props.listOf}/create`)
+              }
+              title={`add ${props.listOf}`}
+            />
+          </div>
+          <Table
+            data={data}
+            tableHeaders={tableHeaders}
+            tableBodies={tableBodies}
+          />
+        </div>
+      </div>
     )
   );
 };

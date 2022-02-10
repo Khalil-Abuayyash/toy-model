@@ -1,0 +1,83 @@
+.large {
+  width: 444px;
+}
+
+.small {
+  width: 342px;
+}
+
+.default {
+  height: 44px;
+  opacity: 1;
+  caret-color: #ea3c88;
+  border-radius: 8px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+  padding-left: 20px;
+  margin-right: 20px;
+  color: blue;
+}
+
+.default:focus {
+  background-color: #ffffff;
+  border: 2px solid #ea3c88;
+  outline-color: #ea3c88;
+  color: #464545;
+  font-size: 21px;
+}
+
+.default::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #b9b9b9;
+  opacity: 1; /* Firefox */
+  font-size: 16px;
+}
+
+.default:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #b9b9b9;
+  font-size: 16px;
+}
+
+.default::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: #b9b9b9;
+  font-size: 16px;
+}
+
+.input {
+  background-color: #ffffff;
+  border: none;
+  font-size: 16px;
+}
+
+.error {
+  border: 2px solid #dc3e4d;
+  outline-color: #dc3e4d;
+  background-color: #ffffff;
+  font-size: 21px;
+  color: #dc3e4d;
+}
+
+.success {
+  border: 2px solid #31b47b;
+  outline-color: #31b47b;
+  background-color: #ffffff;
+  font-size: 21px;
+  color: #31b47b;
+}
+
+@media only screen and (max-width: 768px) {
+  .default {
+    width: 300px;
+    margin-right: 1%;
+  }
+}
+
+@media only screen and (max-width: 414px) {
+  .default {
+    width: 250px;
+    margin-right: 1%;
+  }
+}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "./subComponents/Button";
-import FormTextInput from "./subComponents/FormTextInput";
-import Multiselect from "multiselect-react-dropdown";
+import FormTextInput from "./subComponents/Input";
+import { MultiSelect } from "react-multi-select-component";
 
 const FormRows = (props) => {
   const style = {
@@ -117,7 +117,7 @@ const Form = (props) => {
             ) : formData[key].type === "multiSelect" ? (
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <label htmlFor={key}>{formData[key].label}</label>
-                <Multiselect
+                <MultiSelect
                   id={key}
                   key={key}
                   displayValue={formData[key].displayValue}

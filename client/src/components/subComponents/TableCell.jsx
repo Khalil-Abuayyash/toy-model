@@ -1,11 +1,12 @@
 import React from "react";
+import styles from "../../styles/table.module.css";
 
 const TableCell = (props) => {
-  const { text } = props;
+  const { text, isHead } = props;
   return (
-    <td>
-      {text} {props.children}
-    </td>
+    <div className={`${styles.cell} ${isHead ? styles.head : styles.data}`}>
+      {text !== undefined ? text : props.children}
+    </div>
   );
 };
 

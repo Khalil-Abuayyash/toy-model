@@ -1,0 +1,26 @@
+.large {
+  width: 444px;
+}
+
+.small {
+  width: 352px;
+}
+
+.multi {
+  height: 64px;
+  opacity: 1;
+  /* caret-color: #ea3c88; */
+  border-radius: 8px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+  margin-right: 20px;
+}
+
+.multi:focus {
+  background-color: #ffffff;
+  border: 2px solid #ea3c88;
+  outline-color: #ea3c88;
+  color: #464545;
+  font-size: 21px;
+}

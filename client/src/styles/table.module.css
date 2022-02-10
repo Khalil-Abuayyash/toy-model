@@ -1,0 +1,44 @@
+.table {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  box-shadow: 0px 6px 12px #00000010;
+  border-radius: 13px;
+  padding: 20px;
+  padding-bottom: 50px;
+  box-sizing: border-box;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  min-height: "64px";
+  text-align: center;
+  width: "100%";
+  border-bottom: 2px solid #f6f6f6;
+}
+
+.cell {
+  min-width: 180px;
+  width: fit-content;
+  min-height: 64px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.data {
+  font-size: 14px;
+  color: #000000;
+}
+
+.head {
+  color: #ea3c88;
+  font-size: 18px;
+  font-weight: 600;
+}

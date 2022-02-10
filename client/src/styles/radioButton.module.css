@@ -1,0 +1,18 @@
+.radio {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  font: inherit;
+  width: 1.15em;
+  height: 1.15em;
+  background-color: #ffffff;
+  border: 1px solid #e84088;
+  border-radius: 12px;
+  transform: translate(-10px, 3px);
+}
+
+.radio:checked {
+  background-color: #e84088;
+  border: 1px solid #ffffff;
+  outline: 1px solid #e84088;
+}

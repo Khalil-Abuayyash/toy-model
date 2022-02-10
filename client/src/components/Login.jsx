@@ -1,16 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import axiosInstance from "../axios";
 import { navigate, Link } from "@reach/router";
-import Form from "./Form";
+import H2 from "./headers/H2";
+import H3 from "./headers/H3";
+import H4 from "./headers/H4";
+import Input from "./subComponents/Input";
+import Button from "./subComponents/Button";
 
 const Login = () => {
-  const handleSubmit = (formData) => {
-    console.log(formData);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailError] = useState([false, ""]);
+  const [passwordError, setPasswordError] = useState([false, ""]);
 
+  const handleEmail = (e) => {
+    console.log(e.target.value);
+    setEmail(e.target.value.trim());
+  };
+  const handlePass = (e) => {
+    setPassword(e.target.value.trim());
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
     axiosInstance
       .post(`token/`, {
-        email: formData.email.value,
-        password: formData.password.value,
+        email: email,
+        password: password,
       })
       .then((res) => {
         localStorage.setItem("access_token", res.data.access);
@@ -24,35 +40,69 @@ const Login = () => {
   };
 
   return (
-    <div>
-      {/* <h1>Sign in</h1>
-      <form>
-        <input
-          value={formData.email}
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        margin: "5% auto",
+        width: "fit-content",
+      }}
+    >
+      <H3
+        style={{ color: "#464545", marginBottom: "0px", fontWeight: "normal" }}
+      >
+        Welcome Back!
+      </H3>
+      <H2 style={{ marginTop: "0px", fontWeight: "normal" }}>
+        Sign in to{" "}
+        <span style={{ color: "#E84088", fontWeight: "bold" }}>QMETER</span>
+      </H2>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: "flex", flexDirection: "column", margin: "0 auto" }}
+      >
+        <Input
+          className={
+            emailError[0] ? "error" : email.length === 0 ? "input" : "success"
+          }
           id="email"
-          name="email"
-          onChange={handleChange}
+          value={email}
+          onChange={handleEmail}
+          isLarge={true}
         />
-        <input
+        <Input
+          className={
+            emailError[0] ? "error" : email.length === 0 ? "input" : "success"
+          }
           id="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
+          value={password}
+          onChange={handlePass}
+          isLarge={true}
         />
-        <button type="submit" onClick={handleSubmit}>
-          Sign In
-        </button>
+        <Button title="Login" isLarge={true} />
       </form>
-      <Link to="/verification_code">Forgot Password</Link> */}
-      <h1>Login</h1>
-      <Form
-        inputs={{
-          email: { validation: "length", validationValue: "3" },
-          password: { value: "", type: "password" },
+      <div
+        style={{
+          margin: "0 auto",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "space-around",
         }}
-        handleSubmit={handleSubmit}
-      />
-      <Link to="/verification_code">Forgot Password</Link>
+      >
+        <H4 style={{ fontWeight: "normal", marginBottom: "0px" }}>
+          Don't have Account?{" "}
+          <span style={{ color: "#E84088", fontWeight: "bold" }}>Sign Up</span>
+        </H4>
+        <H4>
+          <Link
+            style={{ color: "#464545", marginTop: "0px" }}
+            to="/verification_code"
+          >
+            Forgot Password?
+          </Link>
+        </H4>
+      </div>
     </div>
   );
 };

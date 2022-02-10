@@ -12,7 +12,6 @@ import TableScreen from "../screens/TableScreen";
 import User from "./User";
 import Organization from "./Organization";
 import Site from "./Site";
-import Testing from "./Testing";
 
 const Home = () => <h1>HOME</h1>;
 
@@ -32,7 +31,6 @@ const Routes = () => {
       <User path="/users/create" />
       <Organization path="/organizations/create" />
       <Site path="/sites/create" />
-      <Testing path="/test" />
     </Router>
   );
 };

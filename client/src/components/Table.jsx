@@ -3,7 +3,10 @@ import TableHead from "./subComponents/TableHead";
 import TableBody from "./subComponents/TableBody";
 import TableRow from "./subComponents/TableRow";
 import TableCell from "./subComponents/TableCell";
-import Button from "./subComponents/Button";
+import DeleteButton from "./Buttons/DeleteButton";
+import styles from "../styles/table.module.css";
+import ViewButton from "./Buttons/ViewButton";
+import EditButton from "./Buttons/EditButton";
 
 const getProperty = (obj, property) => {
   let parts = property.split(".");
@@ -13,47 +16,57 @@ const getProperty = (obj, property) => {
     }
     return obj;
   } else {
-    throw "parts is not valid array";
+    throw "parts is not a valid array";
   }
 };
 
 const Actions = (props) => {
   return (
     <TableCell>
-      <Button title="Delete" />
-      <Button title="Edit" />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <ViewButton />
+        <EditButton />
+        <DeleteButton />
+      </div>
     </TableCell>
   );
 };
 
 const Table = ({ data, tableHeaders, tableBodies }) => {
-  useEffect(() => {}, [data, tableHeaders, tableBodies]);
+  // useEffect(() => {}, [data, tableHeaders, tableBodies]);
 
   return (
-    <table>
+    <div className={styles.table}>
       {/* Table Headers */}
-      <TableHead>
-        <TableRow>
-          {tableHeaders.map((header, idx) => (
-            <TableCell key={idx} text={header} />
-          ))}
-        </TableRow>
-      </TableHead>
+      {/* <TableHead> */}
+      <TableRow>
+        {tableHeaders.map((header, idx) => (
+          <TableCell key={idx} text={header} isHead={true} />
+        ))}
+      </TableRow>
+      {/* </TableHead> */}
 
       {/* Table Body */}
-      <TableBody>
-        {data.map((item, idx) => (
-          <TableRow key={idx}>
-            <Actions />
-            {tableBodies.map((cell, idx) =>
-              typeof cell === "string" ? (
-                <TableCell key={cell} text={getProperty(item, cell)} />
-              ) : null
-            )}
-          </TableRow>
-        ))}
-      </TableBody>
-    </table>
+      {/* <TableBody> */}
+      {data.map((item, idx) => (
+        <TableRow key={idx}>
+          {tableBodies.map((cell, idx) =>
+            typeof cell === "string" ? (
+              <TableCell key={cell} text={getProperty(item, cell)} />
+            ) : null
+          )}
+          <Actions />
+        </TableRow>
+      ))}
+      {/* </TableBody> */}
+    </div>
   );
 };
 
