@@ -1,6 +1,4 @@
 import React, { useEffect } from "react";
-import TableHead from "./subComponents/TableHead";
-import TableBody from "./subComponents/TableBody";
 import TableRow from "./subComponents/TableRow";
 import TableCell from "./subComponents/TableCell";
 import DeleteButton from "./Buttons/DeleteButton";
@@ -33,13 +31,13 @@ const Actions = (props) => {
       >
         <ViewButton />
         <EditButton />
-        <DeleteButton />
+        <DeleteButton onClick={props.onDelete} />
       </div>
     </TableCell>
   );
 };
 
-const Table = ({ data, tableHeaders, tableBodies }) => {
+const Table = ({ data, tableHeaders, tableBodies, onDelete, category }) => {
   // useEffect(() => {}, [data, tableHeaders, tableBodies]);
 
   return (
@@ -62,7 +60,7 @@ const Table = ({ data, tableHeaders, tableBodies }) => {
               <TableCell key={cell} text={getProperty(item, cell)} />
             ) : null
           )}
-          <Actions />
+          <Actions onDelete={() => onDelete(item.id, category)} />
         </TableRow>
       ))}
       {/* </TableBody> */}

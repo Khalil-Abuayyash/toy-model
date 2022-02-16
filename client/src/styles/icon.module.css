@@ -25,3 +25,25 @@
 .view {
   background-color: #f6f6f6;
 }
+
+@media only screen and (max-width: 768px) {
+  .container {
+    width: 16px;
+    height: 16px;
+  }
+  .icon {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+@media only screen and (max-width: 414px) {
+  .container {
+    width: 16px;
+    height: 16px;
+  }
+  .icon {
+    width: 8px;
+    height: 8px;
+  }
+}

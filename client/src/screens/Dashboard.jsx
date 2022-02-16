@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import GoogleMap from "../components/GoogleMap";
 import Button from "../components/subComponents/Button";
 import Charts from "../components/Charts";
 
@@ -35,17 +36,7 @@ const Dashboard = () => {
     multiselectContainer: { width: "10%" },
   };
 
-  return (
-    <div>
-      <h1>Dashboard</h1>
-      <Button title="Add Var" />
-      <Button title="Add Alerts" />
-
-      <Button title="Add Statistic" />
-      <Charts />
-      {/* <FormTextInput id="name" name="name" type="radio" /> */}
-    </div>
-  );
+  return <GoogleMap />;
 };
 
 export default Dashboard;

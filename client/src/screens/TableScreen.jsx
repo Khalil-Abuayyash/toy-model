@@ -12,6 +12,10 @@ const TableScreen = (props) => {
   const [tableHeaders, setTableHeaders] = useState([]);
   const [tableBodies, setTableBodies] = useState([]);
 
+  const onDelete = (id, category) => {
+    axiosInstance.delete(`/user/${category}/${id}`);
+  };
+
   useEffect(() => {
     if (props.listOf === "organizations") {
       axiosInstance
@@ -40,7 +44,7 @@ const TableScreen = (props) => {
       axiosInstance
         .get("/user/teams")
         .then((res) => {
-          console.log(res.data[0]);
+          console.log(res.data);
           setData(
             res.data.map((team) => ({
               ...team,
@@ -203,7 +207,14 @@ const TableScreen = (props) => {
       >
         <SideBar />
 
-        <div style={{ marginLeft: "30px", marginTop: "50px" }}>
+        <div
+          style={{
+            marginLeft: "30px",
+            marginTop: "50px",
+            width: "80vw",
+            overflowX: "scroll",
+          }}
+        >
           {" "}
           {/* containing serach and table */}
           <div
@@ -228,6 +239,8 @@ const TableScreen = (props) => {
             />
           </div>
           <Table
+            category={props.listOf}
+            onDelete={onDelete}
             data={data}
             tableHeaders={tableHeaders}
             tableBodies={tableBodies}

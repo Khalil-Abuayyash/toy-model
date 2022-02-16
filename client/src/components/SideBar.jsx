@@ -27,7 +27,9 @@ const SideBarButton = (props) => {
       >
         <IconButton isClicked={isClicked} Icon={props.Icon} />
         <span
-          className={`${isClicked ? styles.clicked : styles.unclicked}`}
+          className={`${isClicked ? styles.clicked : styles.unclicked} ${
+            styles.media
+          }`}
           style={{ marginLeft: "8px" }}
         >
           {props.label}
@@ -40,7 +42,7 @@ const SideBarButton = (props) => {
 const SideBar = () => {
   return (
     <div className={styles.sidebar}>
-      <SideBarButton to="/dashboard" label="Dashboard" Icon={GrProjects} />
+      {/* <SideBarButton to="/dashboard" label="Dashboard" Icon={GrProjects} /> */}
       <SideBarButton to="/users" label="Users" Icon={AiOutlineUser} />
       <SideBarButton
         to="/organizations"

@@ -10,24 +10,18 @@ const Input = (props) => {
     placeholder,
     className,
     isLarge,
+    isWide,
     style,
     type = "text",
+    idx,
   } = props;
-
-  // const style = {
-  //   display: "flex",
-  //   flexDirection: "column",
-  //   // justifyContent: "center",
-  //   alignItems: "start",
-  //   padding: "2px",
-  //   // width: "40%",
-  // };
 
   return (
     <input
+      idx={idx}
       type={type}
       className={` ${styles.default} ${styles[className]} ${
-        isLarge ? styles["large"] : styles["small"]
+        isWide ? styles["wide"] : isLarge ? styles["large"] : styles["small"]
       } `}
       placeholder={placeholder}
       onChange={onChange}
@@ -36,24 +30,6 @@ const Input = (props) => {
       name={name}
       value={value}
     />
-    // <div style={style}>
-    //   <label htmlFor={id}>{label}</label>
-    //   <input
-    //     id={id}
-    //     name={name}
-    //     value={value}
-    //     onChange={onChange}
-    //     type={type}
-    //   />
-    //   <label
-    //     style={{
-    //       display: visible ? visible : "none",
-    //       fontSize: "10px",
-    //       maxWidth: "90%",
-    //     }}
-    //     htmlFor={id + "Error"}
-    //   >{`${name.toUpperCase()} should be of ${validationValue} CHARACTERS or More.`}</label>
-    // </div>
   );
 };
 

@@ -5,22 +5,18 @@ import H4 from "./headers/H4";
 import Input from "./subComponents/Input";
 import Button from "./subComponents/Button";
 
-const VerificationCode = () => {
+const ForgetPassword = () => {
   const [email, setEmail] = useState("");
   const [emailError] = useState([false, ""]);
-  const [code, setCode] = useState("");
 
   const handleEmail = (e) => {
+    console.log(e.target.value);
     setEmail(e.target.value.trim());
-  };
-
-  const handleCode = (e) => {
-    setCode(e.target.value.trim());
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate("/changing_password");
+    navigate("/verification_code");
   };
 
   return (
@@ -47,16 +43,6 @@ const VerificationCode = () => {
           onChange={handleEmail}
           isLarge={true}
         />
-        <Input
-          placeholder="Cerification Code"
-          className={
-            emailError[0] ? "error" : email.length === 0 ? "input" : "success"
-          }
-          id="code"
-          value={code}
-          onChange={handleCode}
-          isLarge={true}
-        />
         <Button title="NEXT" isLarge={true} />
       </form>
       <div
@@ -70,7 +56,7 @@ const VerificationCode = () => {
       >
         <H4 style={{ fontWeight: "normal", marginBottom: "0px" }}>
           Back to{" "}
-          <Link to="/login" style={{ textDecoration: "none" }}>
+          <Link to="/login">
             <span style={{ color: "#E84088", fontWeight: "bold" }}>
               Sign In
             </span>
@@ -81,4 +67,4 @@ const VerificationCode = () => {
   );
 };
 
-export default VerificationCode;
+export default ForgetPassword;

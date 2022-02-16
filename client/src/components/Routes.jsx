@@ -12,25 +12,40 @@ import TableScreen from "../screens/TableScreen";
 import User from "./User";
 import Organization from "./Organization";
 import Site from "./Site";
+import Team from "./Team";
+import ForgetPassword from "./ForgetPassword";
 
 const Home = () => <h1>HOME</h1>;
 
 const Routes = () => {
   return (
     <Router>
+      {/*  */}
+
+      {/* DashBoards */}
       <Home path="/" />
+      <LineChart path="/chart" />
+      <Dashboard path="dashboard" />
+
+      {/* Authentication */}
       <SignUp path="/register" />
-      <Google path="/google" />
       <Login path="/login" />
       <Logout path="/logout" />
-      <LineChart path="/chart" />
-      <VerificationCode path="/verification_code" />
+      <Google path="/google" />
+      <ForgetPassword path="/forggeting_password" />
       <ChangePassword path="/changing_password" />
-      <Dashboard path="dashboard" />
+      <VerificationCode path="/verification_code" />
+
+      {/* Tables */}
       <TableScreen path="/:listOf" />
+
+      {/* Forms */}
       <User path="/users/create" />
       <Organization path="/organizations/create" />
       <Site path="/sites/create" />
+      <Team path="/teams/create" />
+
+      {/*  */}
     </Router>
   );
 };

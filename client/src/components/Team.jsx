@@ -7,26 +7,19 @@ import FormRow from "./subComponents/FormRow";
 import styles from "../styles/formContainer.module.css";
 import H2 from "./headers/H2";
 import MSelect from "./subComponents/MSelect";
-import GoogleMap from "../components/GoogleMap";
 
-const Site = () => {
+const Team = () => {
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState([false, ""]);
-  const [note, setNote] = useState("");
-  const [noteError, setNoteError] = useState("");
   const [organization, setOrganization] = useState([]);
-  const [disco, setDisco] = useState("");
-  const [lng, setLng] = useState();
-  const [lat, setLat] = useState();
+  const [sites, setSites] = useState([]);
+  const [description, setDescription] = useState("");
+  const [descriptionError, setDescriptionError] = useState([false, ""]);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    console.log(lat);
-    console.log(lng);
-  }, [lat, lng]);
-
-  const [discos] = useState(
-    ["JDECO", "QDECO"].map((name) => ({ value: name, label: name }))
-  );
+    console.log(sites);
+  }, [sites]);
 
   const handleName = (e) => {
     setName(e.target.value);
@@ -39,29 +32,43 @@ const Site = () => {
     }
   };
 
-  const handleNote = (e) => {
-    setNote(e.target.value);
-  };
-
-  const handleDisco = (e) => {
-    setDisco(e.value);
+  const handleDescription = (e) => {
+    setDescription(e.target.value);
+    if (e.target.value.length === 0) {
+      setDescriptionError([true, "Description is Required"]);
+    } else if (e.target.value.length < 3) {
+      setDescriptionError([
+        true,
+        "Description must be of 3 charaters or more.",
+      ]);
+    } else {
+      setDescriptionError([false, ""]);
+    }
   };
 
   const handleOrganization = (selected) => {
     setOrganization(selected);
   };
 
+  const handleSites = (selected) => {
+    setSites(selected);
+  };
+
+  const handleUsers = (selected) => {
+    setUsers(selected);
+  };
+
   const handleSubmit = () => {
     axiosInstance
-      .post(`/user/sites/`, {
+      .post(`/user/teams/`, {
         name: name,
         organization_id: organization.id,
-        note: note,
-        lng: lng.toFixed(2),
-        lat: lat.toFixed(2),
+        description: description,
+        sites: sites.map((item) => ({ id: item.id })),
+        users: users.map((item) => ({ id: item.id })),
       })
       .then((res) => {
-        navigate("/sites");
+        navigate("/teams");
       })
       .catch((err) => {
         console.log(err.response.data);
@@ -70,20 +77,23 @@ const Site = () => {
 
   return (
     <div className={styles.container}>
-      <H2 style={{ fontWeight: "normal" }}>Add New Site</H2>
-
+      <H2 style={{ fontWeight: "normal" }}>Add New Team</H2>
       <FormRow>
         <Input
+          isWide={true}
           id="name"
           name="name"
-          placeholder="Site Name"
+          placeholder="Team Name"
           value={name}
           onChange={handleName}
           className={
             nameError[0] ? "error" : name.length === 0 ? "input" : "success"
           }
         />
+      </FormRow>
+      <FormRow>
         <MSelect
+          isWide={true}
           isMulti={false}
           options={[{ name: "qudra", id: 1 }]}
           placeholder="Organization"
@@ -95,39 +105,44 @@ const Site = () => {
       </FormRow>
       <FormRow>
         <MSelect
-          isMulti={false}
-          options={discos}
-          placeholder="DISCO"
-          getOptionLabel={(option) => option.label}
-          getOptionValue={(option) => option.value}
-          selected={disco}
-          setSelected={handleDisco}
           isWide={true}
+          isMulti={true}
+          options={[{ name: "shufat", id: 1 }]}
+          placeholder="Sites"
+          getOptionLabel={(option) => option.name}
+          getOptionValue={(option) => option.id}
+          selected={sites}
+          setSelected={handleSites}
         />
       </FormRow>
       <FormRow>
         <Input
-          id="note"
-          name="note"
-          placeholder="Note"
-          value={note}
-          onChange={handleNote}
           isWide={true}
+          id="description"
+          name="description"
+          placeholder="Team Description"
+          value={description}
+          onChange={handleDescription}
           className={
-            noteError[0] ? "error" : note.length === 0 ? "input" : "success"
+            descriptionError[0]
+              ? "error"
+              : description.length === 0
+              ? "input"
+              : "success"
           }
         />
       </FormRow>
-      {/* MAP START */}
-      <div style={{ width: "53vw", height: "30vh", borderRadius: "8px" }}>
-        <GoogleMap
-          onClick={(e) => {
-            setLat(e.lat);
-            setLng(e.lng);
-          }}
+      <FormRow>
+        <MSelect
+          isWide={true}
+          isMulti={true}
+          options={[{ name: "khalil abuayyash", id: 1 }]}
+          placeholder="Users List"
+          getOptionLabel={(option) => option.name}
+          selected={users}
+          setSelected={handleUsers}
         />
-      </div>
-      {/* MAP End */}
+      </FormRow>
 
       {/* Buttons START */}
       <FormRow style={{ justifyContent: "space-evenly" }}>
@@ -140,7 +155,7 @@ const Site = () => {
           }}
           title="Cancel"
           isLarge={false}
-          onClick={() => navigate("/sites")}
+          onClick={() => navigate("/teams")}
         />
         <Button
           isRight={true}
@@ -155,4 +170,4 @@ const Site = () => {
   );
 };
 
-export default Site;
+export default Team;

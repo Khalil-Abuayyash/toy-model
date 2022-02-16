@@ -4,7 +4,8 @@
   align-items: start;
   justify-content: start;
   background-color: #ffffff;
-  width: 194px;
+  /* width: 194px; */
+  width: 10vw;
   height: 100vh;
 }
 
@@ -24,4 +25,22 @@
 
 .unclicked {
   color: #464545;
+}
+
+@media only screen and (max-width: 768px) {
+  .media {
+    display: none;
+  }
+  .sidebar {
+    width: 10vw;
+  }
+}
+
+@media only screen and (max-width: 414px) {
+  .media {
+    display: none;
+  }
+  .sidebar {
+    width: 10vw;
+  }
 }

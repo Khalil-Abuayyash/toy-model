@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axiosInstance from "../axios";
 import { navigate } from "@reach/router";
 import styles from "../styles/formContainer.module.css";
+import styling from "../styles/formRow.module.css";
 import H2 from "./headers/H2";
 import H4 from "./headers/H4";
 import Input from "./subComponents/Input";
@@ -46,7 +47,7 @@ const User = () => {
       })
       .then((res) => {
         console.log(res);
-        navigate("/");
+        navigate("/users");
       })
       .catch((err) => {
         if (err.response.data.includes("email")) {
@@ -163,7 +164,6 @@ const User = () => {
               nameError[0] ? "error" : name.length === 0 ? "input" : "success"
             }
           />
-          <label>{nameError[1]}</label>
           <Input
             id="company"
             name="company"
@@ -192,7 +192,6 @@ const User = () => {
               emailError[0] ? "error" : email.length === 0 ? "input" : "success"
             }
           />
-          <label>{emailError[1]}</label>
           <Input
             id="telephone"
             name="telephone"
@@ -287,10 +286,11 @@ const User = () => {
             setSelected={handleOrganizations}
           />
         </FormRow>
-        <FormRow>
+        <FormRow style={{ justifyContent: "space-evenly" }}>
           <Button
+            isLeft={true}
+            className={`${styling.leftButton}`}
             style={{
-              marginLeft: "8%",
               backgroundColor: "#f6f6f6",
               color: "#ea3c88",
               border: " 2px solid #EA3C88",
@@ -300,8 +300,9 @@ const User = () => {
             onClick={() => navigate("/users")}
           />
           <Button
-            style={{ marginRight: "10%" }}
+            className={`${styling.rightButton}`}
             title="Save"
+            isRight={true}
             isLarge={false}
             disabled={
               false &&

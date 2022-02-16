@@ -12,6 +12,7 @@ const styles = {
   padding: "10px",
   paddingLeft: "30px",
   marginRight: "40px",
+  fontFamily: "Cairo",
 };
 
 const Search = () => {

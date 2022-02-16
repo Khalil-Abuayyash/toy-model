@@ -96,8 +96,12 @@ const Login = () => {
         </H4>
         <H4>
           <Link
-            style={{ color: "#464545", marginTop: "0px" }}
-            to="/verification_code"
+            style={{
+              color: "#464545",
+              marginTop: "0px",
+              textDecoration: "none",
+            }}
+            to="/forggeting_password"
           >
             Forgot Password?
           </Link>
