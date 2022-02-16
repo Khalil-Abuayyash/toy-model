@@ -66,9 +66,42 @@ class TeamViewSet(ModelViewSet):
     serializer_class = TeamSerializer
     queryset = Team.objects.all()
 
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        try :
+            new_team = Team.objects.create(name=data["name"], description=data["description"], organization_id=data["organization_id"])
+            new_team.save()
+        except IntegrityError as e:
+            return HttpResponseBadRequest(e.__cause__)
+
+        for user in data["users"]:
+            # user_object = User.objects.get(id=user["id"])
+           TeamMembership.objects.create(team_id=new_team.id, user_id=user["id"])
+        
+        for site in data["sites"]:
+            TeamSite.objects.create(team_id=new_team.id, site_id=site["id"])
+
+        serializer = TeamSerializer(new_team)
+        return Response(serializer.data)
+
 class OrganizationViewSet(ModelViewSet):
     serializer_class = OrganizationSerializer
     queryset = Organization.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        try :
+            new_org = Organization.objects.create(name=data["name"], note=data["note"], timezone=data["timezone"], disco=data["disco"], theme=data["theme"])
+            new_org.save()
+        except IntegrityError as e:
+            return HttpResponseBadRequest(e.__cause__)
+
+        for user in data["admins"]:
+            # user_object = User.objects.get(id=user["id"])
+            OrganizationMembership.objects.create(organization_id=new_org.id, user_id=user["id"], is_org_admin=True)
+
+        serializer = OrganizationSerializer(new_org)
+        return Response(serializer.data)
 
 class TeamSiteViewSet(ModelViewSet):
     serializer_class = TeamSiteSerializer

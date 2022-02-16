@@ -68,9 +68,10 @@ class Organization(models.Model):
     class Meta:
         db_table = "orgaznization"
 
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=50, unique=True, null=False)
     timezone = models.CharField(max_length=50)
     theme = models.CharField(max_length=50)
+    disco = models.CharField(max_length=50)
     note = models.TextField()
     users = models.ManyToManyField(User, through='OrganizationMembership', related_name='organizations')
 
@@ -83,6 +84,7 @@ class Team(models.Model):
     name = models.CharField(max_length=50, unique=True)
     users = models.ManyToManyField(User, through='TeamMembership', related_name='teams')
     organization = models.ForeignKey(Organization, related_name='teams', on_delete=models.CASCADE)
+    description = models.TextField()
 
 class Site(models.Model):
     # teams:m2m, organizations:many2one, projects:one2many
@@ -90,11 +92,13 @@ class Site(models.Model):
     class Meta:
         db_table = "site"
 
-    teams = models.ManyToManyField(Team, related_name='sites')
+    teams = models.ManyToManyField(Team, through='TeamSite' ,related_name='sites')
     name = models.CharField(max_length=50, unique=True)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='sites')
     note = models.TextField()
-    capacity = models.IntegerField()
+    # capacity = models.IntegerField()
+    lng = models.DecimalField(max_digits=4, decimal_places=2)
+    lat = models.DecimalField(max_digits=4, decimal_places=2)
 
 class Project(models.Model):
     # teams:m2m, site:many2one
@@ -203,6 +207,19 @@ class Metric(TimescaleModel):
 class Alert(models.Model):
     class Meta:
         db_table = "alert"
+
+    name = models.CharField(max_length=50)
+    # organization
+    # site
+    # project
+    # time
+    # emails
+    # query
+    # operation
+    # value
+    # for
+    # description
+
 
 class Variable(models.Model):
     class Meta:

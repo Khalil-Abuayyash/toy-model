@@ -53,7 +53,8 @@ class TeamSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Team
-        fields = ['name', 'id', 'users', 'sites', 'organization', 'organization_id']
+        fields = ['name', 'id', 'users', 'sites', 'organization', 'organization_id', 'description']
+        depth=1
 
 class SiteSerializer(serializers.ModelSerializer):
 
@@ -64,7 +65,7 @@ class SiteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Site
-        fields= ['id','name', 'teams', 'note', 'organization', 'organization_id', 'projects']
+        fields= ['id','name', 'teams', 'note', 'organization', 'organization_id', 'projects', 'lat', 'lng']
 
 class TeamSiteSerializer(serializers.ModelSerializer):
 
