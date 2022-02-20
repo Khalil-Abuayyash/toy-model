@@ -13,7 +13,7 @@ from .models import Role, Ticket, User, Organization, OrganizationMembership, Pr
 
 # serializers
 from .serializers import LogSerializer, OraganizationMembershipSerializer, OrganizationSerializer, RoleSeriailzer, SiteSerializer, TeamMembershipSerializer \
-    , TeamSerializer, TicketSerializer, UserSerializer, ProjectSerializer, TeamSiteSerializer
+    , TeamSerializer, TicketSerializer, UserSerializer, ProjectSerializer, TeamSiteSerializer, AuthSerializer
 
 # services
 from .services import send_verification_code
@@ -38,7 +38,10 @@ class UserViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         data = request.data
         try :
-            new_user = User.objects.create(nickname=data["nickname"], email=data["email"], password=data["password"], telephone=data["telephone"], role_id=data["role_id"])
+            # new_user = User.objects.create(nickname=data["nickname"], email=data["email"], password=data["password"], telephone=data["telephone"], role_id=data["role_id"])
+            new_user = User(nickname=data["nickname"], email=data["email"], telephone=data["telephone"], role_id=data["role_id"])
+            if data["password"] is not None:
+                new_user.set_password(data["password"])
             new_user.save()
         except IntegrityError as e:
             return HttpResponseBadRequest(e.__cause__)
@@ -137,3 +140,21 @@ class LogViewSet(ModelViewSet):
 class RoleViewSet(ModelViewSet):
     serializer_class = RoleSeriailzer
     queryset = Role.objects.all()
+
+class AuthenticatedView(APIView):
+    def get(self, request, user_id, *args, **kwargs):
+        # print(request)
+        # print(request.query_params)
+        user = User.objects.filter(id=user_id).first()
+        if user:
+            memOrgs =  OrganizationMembership.objects.filter(user_id=user.id, is_org_admin=False) or []
+            adminOrgs = OrganizationMembership.objects.filter(user_id=user.id, is_org_admin=True) or []
+            auth = {"nickname":user.nickname, "id":user.id, "role_id":user.role_id, "role":user.role , "memOrgs":memOrgs, "adminOrgs":adminOrgs, "teams":user.teams}
+            serializer = AuthSerializer(auth)
+            # serializer.is_valid(raise_exception=False)
+            # print(serializer.errors)
+            response = Response(data=serializer.data)
+            return response
+        response = Response(data={"user":"no such user"})
+        return response
+        

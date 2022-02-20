@@ -96,6 +96,7 @@ class Site(models.Model):
     name = models.CharField(max_length=50, unique=True)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='sites')
     note = models.TextField()
+    disco = models.CharField(max_length=50)
     # capacity = models.IntegerField()
     lng = models.DecimalField(max_digits=4, decimal_places=2)
     lat = models.DecimalField(max_digits=4, decimal_places=2)

@@ -40,7 +40,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Organization
-        fields = ['name', 'id', 'teams', 'sites', 'users']
+        fields = ['name', 'id', 'teams', 'sites', 'users', 'note', 'timezone', 'disco', 'theme']
         depth = 1
 
 class TeamSerializer(serializers.ModelSerializer):
@@ -65,7 +65,7 @@ class SiteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Site
-        fields= ['id','name', 'teams', 'note', 'organization', 'organization_id', 'projects', 'lat', 'lng']
+        fields= ['id','name', 'teams','disco', 'note', 'organization', 'organization_id', 'projects', 'lat', 'lng']
 
 class TeamSiteSerializer(serializers.ModelSerializer):
 
@@ -138,7 +138,7 @@ class TeamMembershipSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TeamMembership
-        fields = ['id', 'is_team_leader', 'team', 'user', 'user_id', 'team_id']
+        fields = ['id','team', 'user', 'user_id', 'team_id']
     
     # def create(self, validated_data):
 
@@ -225,3 +225,15 @@ class LogSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "user", "user_id","time"]
 
 # query , alert, var
+
+class AuthSerializer(serializers.Serializer):
+    nickname = serializers.CharField(required=False)
+    id = serializers.IntegerField(required=False)
+    role_id = serializers.IntegerField(required=False)
+    role = RoleSeriailzer(required=False)
+    memOrgs = OraganizationMembershipSerializer(required=False, many=True)
+    adminOrgs = OraganizationMembershipSerializer(required=False, many=True)
+    teams = TeamSerializer(required=False, many=True)
+
+    # class Meta:
+    #     fields=('id', 'nickname', 'role', 'role_id', 'teams', 'memOrgs', 'adminOrgs')
