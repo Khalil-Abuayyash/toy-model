@@ -43,15 +43,15 @@ const SideBar = () => {
   return (
     <div className={styles.sidebar}>
       {/* <SideBarButton to="/dashboard" label="Dashboard" Icon={GrProjects} /> */}
-      <SideBarButton to="/users" label="Users" Icon={AiOutlineUser} />
+      <SideBarButton to="/tables/users" label="Users" Icon={AiOutlineUser} />
       <SideBarButton
-        to="/organizations"
+        to="/tables/organizations"
         label="Organizations"
         Icon={RiBuildingLine}
       />
-      <SideBarButton to="/sites" label="Sites" Icon={BiMapPin} />
-      <SideBarButton to="/projects" label="Projects" Icon={BsLayers} />
-      <SideBarButton to="/teams" label="Teams" Icon={AiOutlineTeam} />
+      <SideBarButton to="/tables/sites" label="Sites" Icon={BiMapPin} />
+      <SideBarButton to="/tables/projects" label="Projects" Icon={BsLayers} />
+      <SideBarButton to="/tables/teams" label="Teams" Icon={AiOutlineTeam} />
     </div>
   );
 };

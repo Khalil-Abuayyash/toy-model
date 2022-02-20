@@ -14,36 +14,34 @@ import Organization from "./Organization";
 import Site from "./Site";
 import Team from "./Team";
 import ForgetPassword from "./ForgetPassword";
+import EditUser from "../Forms/EditUser";
+import EditOrganization from "../Forms/EditOrganization";
+import EditSite from "../Forms/EditSite";
+import EditTeam from "../Forms/EditTeam";
+import AuthRoutes from "../HOCs/AuthRoutes";
+import FormsRoutes from "../HOCs/FormsRoutes";
+import TablesRoutes from "../HOCs/TablesRoutes";
 
 const Home = () => <h1>HOME</h1>;
 
-const Routes = () => {
+const Routes = ({ isOpen, setIsOpen }) => {
   return (
     <Router>
       {/*  */}
 
       {/* DashBoards */}
-      <Home path="/" />
+      <Home default />
       <LineChart path="/chart" />
       <Dashboard path="dashboard" />
 
       {/* Authentication */}
-      <SignUp path="/register" />
-      <Login path="/login" />
-      <Logout path="/logout" />
-      <Google path="/google" />
-      <ForgetPassword path="/forggeting_password" />
-      <ChangePassword path="/changing_password" />
-      <VerificationCode path="/verification_code" />
+      <AuthRoutes path="auth/*" />
 
       {/* Tables */}
-      <TableScreen path="/:listOf" />
+      <TablesRoutes isOpen={isOpen} setIsOpen={setIsOpen} path="tables/*" />
 
       {/* Forms */}
-      <User path="/users/create" />
-      <Organization path="/organizations/create" />
-      <Site path="/sites/create" />
-      <Team path="/teams/create" />
+      <FormsRoutes path="forms/*" />
 
       {/*  */}
     </Router>

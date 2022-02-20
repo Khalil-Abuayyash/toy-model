@@ -11,7 +11,7 @@ const styles = {
   fontSize: "16px",
   padding: "10px",
   paddingLeft: "30px",
-  marginRight: "40px",
+  // marginRight: "40px",
   fontFamily: "Cairo",
 };
 

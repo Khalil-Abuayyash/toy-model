@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axiosInstance from "../axios";
 import { navigate } from "@reach/router";
 import Input from "./subComponents/Input";
@@ -8,6 +8,8 @@ import styles from "../styles/formContainer.module.css";
 import H2 from "./headers/H2";
 import MSelect from "./subComponents/MSelect";
 import moment from "moment-timezone";
+import { isAdmin } from "../HOCs/AdminComponent";
+import { AuthContext } from "../Context/AuthenticationContext";
 
 const Organization = () => {
   const [name, setName] = useState("");
@@ -29,6 +31,13 @@ const Organization = () => {
   const [discos] = useState(
     ["JDECO", "QDECO"].map((name) => ({ value: name, label: name }))
   );
+  const { user } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (!isAdmin(user.role.name)) {
+      navigate("/users");
+    }
+  }, [user]);
 
   const handleName = (e) => {
     setName(e.target.value);

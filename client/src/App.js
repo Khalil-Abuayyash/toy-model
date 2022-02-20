@@ -8,6 +8,7 @@ axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 function App() {
+  const [isOpen, setIsOpen] = useState(true);
   // useEffect(() => {
   //   axios
   //     .get("http://localhost:8000/api/user/cookie/", { withCredentials: true })
@@ -18,9 +19,13 @@ function App() {
   const handleSubmit = () => {};
   return (
     <div>
-      <Header />
       {/* <VerticalNavigationBar /> */}
-      <Routes style={{ margin: "20% auto" }} />
+      {/* Style here has no effect */}
+      <Routes
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        style={{ margin: "20% auto" }}
+      />
       {/* <h1>What a Footer!</h1> */}
     </div>
   );

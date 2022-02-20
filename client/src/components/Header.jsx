@@ -1,85 +1,130 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 // import styles from "../styles/header.module.css";
 import IconButton from "./Buttons/IconButton";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { MdOutlineEngineering } from "react-icons/md";
+import { GiHamburgerMenu } from "react-icons/gi";
 import H4 from "./headers/H4";
 import ProfileMenu from "./ProfileMenu";
+import { AuthContext } from "../Context/AuthenticationContext";
 
-const outHeader = (
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "start",
-      alignItems: "center",
-      width: "100vw",
-      height: "87px",
-      backgroundImage:
-        "linear-gradient(90deg, #a7ba62 , #56b4da 35% , #e84088 )",
-      backgroundPosition: "0% 0%",
-      backgroundSize: "100%",
-    }}
-  >
-    <img
-      src={require("../images/logo.png")}
-      width="114px"
-      height="49px"
-      alt="Logo"
-      style={{ marginLeft: "15%" }}
-    />
-  </div>
-);
-
-const inHeader = (
-  <div
-    style={{
-      width: "100vw",
-      height: "99px",
-      backgroundImage:
-        "linear-gradient(90deg,#a7ba62 , #56b4da 35% , #e84088 )",
-      backgroundPosition: "0% 100%",
-      backgroundSize: " 100% 12%",
-      backgroundRepeat: "no-repeat",
-    }}
-  >
+export const OutHeader = () => {
+  return (
     <div
       style={{
-        backgroundColor: "white",
         display: "flex",
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "start",
         alignItems: "center",
-        width: "100%",
-        height: "88%",
+        width: "100vw",
+        height: "87px",
+        backgroundImage:
+          "linear-gradient(90deg, #a7ba62 , #56b4da 35% , #e84088 )",
+        backgroundPosition: "0% 0%",
+        backgroundSize: "100%",
       }}
     >
       <img
-        src={require("../images/clogo.png")}
+        src={require("../images/logo.png")}
         width="114px"
         height="49px"
         alt="Logo"
-        style={{ marginLeft: "5%" }}
+        style={{ marginLeft: "15%" }}
       />
+    </div>
+  );
+};
+
+const TableHeader = ({ isOpen, setIsOpen, form }) => {
+  return (
+    <div
+      style={{
+        width: "100vw",
+        height: "99px",
+        backgroundImage:
+          "linear-gradient(90deg,#a7ba62 , #56b4da 35% , #e84088)",
+        backgroundPosition: "100% 100%",
+        backgroundSize: form ? "" : isOpen ? "85.8% 12%" : "",
+        backgroundRepeat: "no-repeat",
+        backgroundColor: "white",
+      }}
+    >
       <div
         style={{
-          marginRight: "10%",
+          boxShadow: "0px 0.22vw 0.44vw #0000001C",
+          backgroundColor: "white",
           display: "flex",
           flexDirection: "row",
+          justifyContent: "space-between",
           alignItems: "center",
-          justifyContent: "center",
+          width: "100%",
+          height: "88%",
         }}
       >
-        <IconButton Icon={IoMdNotificationsOutline} />
-        <IconButton Icon={MdOutlineEngineering} />
-        <ProfileMenu />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+            // width: "100%",
+            // height: "88%",
+            marginLeft: "4%",
+          }}
+        >
+          {form ? null : (
+            <IconButton
+              onClick={() => setIsOpen((open) => !open)}
+              style={{ marginRight: "24px" }}
+              Icon={GiHamburgerMenu}
+            />
+          )}
+
+          <img
+            src={require("../images/clogo.png")}
+            width="114px"
+            height="49px"
+            alt="Logo"
+          />
+        </div>
+
+        <div
+          style={{
+            marginRight: "10%",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <IconButton Icon={IoMdNotificationsOutline} />
+          <IconButton Icon={MdOutlineEngineering} />
+          <ProfileMenu />
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
-const Header = (props) => {
-  return <>{props.isAuthenticated || true ? inHeader : outHeader}</>;
+const FormHeader = () => {
+  return <TableHeader form={true} />;
+};
+
+const Header = ({ isOpen, setIsOpen, category }) => {
+  const { isAuthenticated } = useContext(AuthContext);
+  return (
+    <>
+      {isAuthenticated ? (
+        category === "table" ? (
+          <TableHeader isOpen={isOpen} setIsOpen={setIsOpen} />
+        ) : (
+          <FormHeader isOpen={false} />
+        )
+      ) : (
+        <OutHeader />
+      )}
+    </>
+  );
 };
 
 export default Header;

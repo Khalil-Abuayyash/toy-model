@@ -1,10 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import TableRow from "./subComponents/TableRow";
 import TableCell from "./subComponents/TableCell";
 import DeleteButton from "./Buttons/DeleteButton";
 import styles from "../styles/table.module.css";
 import ViewButton from "./Buttons/ViewButton";
 import EditButton from "./Buttons/EditButton";
+// import AuthorizedComponent from "../HOCs/AuthorizedComponent";
+import AdminComponent from "../HOCs/AdminComponent";
 
 const getProperty = (obj, property) => {
   let parts = property.split(".");
@@ -30,16 +32,21 @@ const Actions = (props) => {
         }}
       >
         <ViewButton />
-        <EditButton />
+        <EditButton onClick={props.onEdit} />
         <DeleteButton onClick={props.onDelete} />
       </div>
     </TableCell>
   );
 };
 
-const Table = ({ data, tableHeaders, tableBodies, onDelete, category }) => {
-  // useEffect(() => {}, [data, tableHeaders, tableBodies]);
-
+const Table = ({
+  data,
+  tableHeaders,
+  tableBodies,
+  onDelete,
+  onEdit,
+  category,
+}) => {
   return (
     <div className={styles.table}>
       {/* Table Headers */}
@@ -51,7 +58,6 @@ const Table = ({ data, tableHeaders, tableBodies, onDelete, category }) => {
       </TableRow>
       {/* </TableHead> */}
 
-      {/* Table Body */}
       {/* <TableBody> */}
       {data.map((item, idx) => (
         <TableRow key={idx}>
@@ -60,7 +66,14 @@ const Table = ({ data, tableHeaders, tableBodies, onDelete, category }) => {
               <TableCell key={cell} text={getProperty(item, cell)} />
             ) : null
           )}
-          <Actions onDelete={() => onDelete(item.id, category)} />
+          <AdminComponent
+            Component={
+              <Actions
+                onDelete={() => onDelete(item.id, category)}
+                onEdit={() => onEdit(item.id)}
+              />
+            }
+          />
         </TableRow>
       ))}
       {/* </TableBody> */}

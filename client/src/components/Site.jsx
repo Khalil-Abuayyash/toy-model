@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axiosInstance from "../axios";
 import { navigate } from "@reach/router";
 import Input from "./subComponents/Input";
@@ -8,6 +8,8 @@ import styles from "../styles/formContainer.module.css";
 import H2 from "./headers/H2";
 import MSelect from "./subComponents/MSelect";
 import GoogleMap from "../components/GoogleMap";
+import { isAdmin } from "../HOCs/AdminComponent";
+import { AuthContext } from "../Context/AuthenticationContext";
 
 const Site = () => {
   const [name, setName] = useState("");
@@ -18,11 +20,13 @@ const Site = () => {
   const [disco, setDisco] = useState("");
   const [lng, setLng] = useState();
   const [lat, setLat] = useState();
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    console.log(lat);
-    console.log(lng);
-  }, [lat, lng]);
+    if (!isAdmin(user.role.name)) {
+      navigate("/users");
+    }
+  }, [user]);
 
   const [discos] = useState(
     ["JDECO", "QDECO"].map((name) => ({ value: name, label: name }))
@@ -59,6 +63,7 @@ const Site = () => {
         note: note,
         lng: lng.toFixed(2),
         lat: lat.toFixed(2),
+        disco: disco,
       })
       .then((res) => {
         navigate("/sites");

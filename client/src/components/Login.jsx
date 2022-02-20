@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axiosInstance from "../axios";
 import { navigate, Link } from "@reach/router";
 import H2 from "./headers/H2";
@@ -6,15 +6,17 @@ import H3 from "./headers/H3";
 import H4 from "./headers/H4";
 import Input from "./subComponents/Input";
 import Button from "./subComponents/Button";
+import jwt_decode from "jwt-decode";
+import { AuthContext } from "../Context/AuthenticationContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError] = useState([false, ""]);
   const [passwordError, setPasswordError] = useState([false, ""]);
+  const { setUser, setIsAuthenticated } = useContext(AuthContext);
 
   const handleEmail = (e) => {
-    console.log(e.target.value);
     setEmail(e.target.value.trim());
   };
   const handlePass = (e) => {
@@ -33,9 +35,17 @@ const Login = () => {
         localStorage.setItem("refresh_token", res.data.refresh);
         axiosInstance.defaults.headers["Authorization"] =
           "JWT " + localStorage.getItem("access_token");
-        navigate("/");
-        //console.log(res);
-        //console.log(res.data);
+        return res.data.access;
+      })
+      .then((access) => {
+        var decoded = jwt_decode(access);
+        axiosInstance
+          .get(`/user/authenticated/${decoded.user_id}`)
+          .then((res) => {
+            setUser(res.data);
+            setIsAuthenticated(true);
+            navigate("/users");
+          });
       });
   };
 

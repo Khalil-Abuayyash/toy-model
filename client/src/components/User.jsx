@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axiosInstance from "../axios";
 import { navigate } from "@reach/router";
 import styles from "../styles/formContainer.module.css";
@@ -10,6 +10,8 @@ import Button from "./subComponents/Button";
 import FormRow from "./subComponents/FormRow";
 import RadioButton from "./subComponents/RadioButton";
 import MSelect from "./subComponents/MSelect";
+import { isAdmin } from "../HOCs/AdminComponent";
+import { AuthContext } from "../Context/AuthenticationContext";
 
 const User = () => {
   const [roleId, setRoleId] = useState("1");
@@ -25,8 +27,15 @@ const User = () => {
   const [confirmPassError, setConfirmPassError] = useState([false, ""]);
   const [telephoneError, setTelephoneError] = useState([false, ""]);
   const [companyError, setCompanyError] = useState([false, ""]);
-  const [organizations, setOrganizations] = useState([{ name: "Qudra" }]);
-  const [teams, setTeams] = useState([{ name: "IT" }]);
+  const [organizations, setOrganizations] = useState([{ name: "qudra" }]);
+  const [teams, setTeams] = useState([{ name: "it" }]);
+  const { user } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (!isAdmin(user.role.name)) {
+      navigate("/users");
+    }
+  }, [user]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
