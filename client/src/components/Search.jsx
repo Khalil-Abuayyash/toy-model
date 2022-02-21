@@ -15,9 +15,11 @@ const styles = {
   fontFamily: "Cairo",
 };
 
-const Search = () => {
+const Search = ({ search, handleSearch }) => {
   return (
     <input
+      value={search}
+      onChange={handleSearch}
       placeholder="Search ( ID, Name, Email, Org )"
       type="text"
       style={styles}

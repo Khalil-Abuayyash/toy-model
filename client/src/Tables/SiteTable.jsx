@@ -5,6 +5,7 @@ import { AuthContext } from "../Context/AuthenticationContext";
 import AdminComponent from "../HOCs/AdminComponent";
 import { isAdmin } from "../HOCs/AdminComponent";
 import { navigate } from "@reach/router";
+import Pagination from "../components/Pagination";
 
 const SiteTable = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -13,6 +14,8 @@ const SiteTable = () => {
   const { isAuthenticated, user } = useContext(AuthContext);
   const [tableHeaders, setTableHeaders] = useState([]);
   const [tableBodies, setTableBodies] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageNumbers, setPageNumbers] = useState([]);
 
   const onDelete = (id) => {
     axiosInstance.delete(`/user/sites/${id}`);
@@ -23,17 +26,35 @@ const SiteTable = () => {
   };
 
   useEffect(() => {
+    axiosInstance.get(`/user/sites?page=${currentPage}`).then((res) => {
+      setSites(
+        res.data.results.map((site) => ({
+          ...site,
+          teamsNames: site.teams.map((team) => team.name).join(","),
+          projectsNames: site.projects.map((project) => project.name).join(","),
+        }))
+      );
+      setPageNumbers(
+        [...Array(Math.ceil(res.data.count / 10)).keys()].map((i) => i + 1)
+      );
+    });
+  }, [currentPage]);
+
+  useEffect(() => {
     axiosInstance
-      .get("/user/sites")
+      .get(`/user/sites?page=${currentPage}`)
       .then((res) => {
         setSites(
-          res.data.map((site) => ({
+          res.data.results.map((site) => ({
             ...site,
             teamsNames: site.teams.map((team) => team.name).join(","),
             projectsNames: site.projects
               .map((project) => project.name)
               .join(","),
           }))
+        );
+        setPageNumbers(
+          [...Array(Math.ceil(res.data.count / 10)).keys()].map((i) => i + 1)
         );
         if (isAdmin(user.role.name)) {
           setTableHeaders([
@@ -66,15 +87,22 @@ const SiteTable = () => {
   }, []);
 
   return (
-    <Table
-      isAdmin={isAdmin(user.role.name)}
-      category="sites"
-      onDelete={onDelete}
-      onEdit={onEdit}
-      data={sites}
-      tableHeaders={tableHeaders}
-      tableBodies={tableBodies}
-    />
+    <>
+      <Table
+        isAdmin={isAdmin(user.role.name)}
+        category="sites"
+        onDelete={onDelete}
+        onEdit={onEdit}
+        data={sites}
+        tableHeaders={tableHeaders}
+        tableBodies={tableBodies}
+      />
+      <Pagination
+        pageNumbers={pageNumbers}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
+    </>
   );
 };
 

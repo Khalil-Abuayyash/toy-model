@@ -23,7 +23,7 @@ const Logout = () => {
       adminOrgs: [],
       memOrgs: [],
     });
-    navigate("/login");
+    navigate("/auth/login");
   };
 
   return (

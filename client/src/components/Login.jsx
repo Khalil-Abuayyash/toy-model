@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import axiosInstance from "../axios";
 import { navigate, Link } from "@reach/router";
 import H2 from "./headers/H2";
@@ -14,7 +14,14 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [emailError] = useState([false, ""]);
   const [passwordError, setPasswordError] = useState([false, ""]);
-  const { setUser, setIsAuthenticated } = useContext(AuthContext);
+  const { setUser, setIsAuthenticated, isAuthenticated } =
+    useContext(AuthContext);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/tables/users");
+    }
+  }, []);
 
   const handleEmail = (e) => {
     setEmail(e.target.value.trim());
@@ -44,7 +51,7 @@ const Login = () => {
           .then((res) => {
             setUser(res.data);
             setIsAuthenticated(true);
-            navigate("/users");
+            navigate("/tables/users");
           });
       });
   };

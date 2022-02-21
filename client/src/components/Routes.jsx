@@ -1,5 +1,5 @@
 import React from "react";
-import { Router } from "@reach/router";
+import { Router, Redirect } from "@reach/router";
 import LineChart from "./LineChart";
 import Login from "./Login";
 import Logout from "./Logout";
@@ -22,12 +22,14 @@ import AuthRoutes from "../HOCs/AuthRoutes";
 import FormsRoutes from "../HOCs/FormsRoutes";
 import TablesRoutes from "../HOCs/TablesRoutes";
 
-const Home = () => <h1>HOME</h1>;
+const Home = () => <h1>Not Found 404</h1>;
 
 const Routes = ({ isOpen, setIsOpen }) => {
   return (
     <Router>
       {/*  */}
+
+      <Redirect from="/" to="/auth/login" />
 
       {/* DashBoards */}
       <Home default />

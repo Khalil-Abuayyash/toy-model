@@ -20,7 +20,7 @@ const TableScreen = (props) => {
 
   return (
     isLoaded && (
-      <div
+      <div // sidebar + table(serach,create,rows,pagination)
         style={{
           width: "100vw",
           display: "flex",
@@ -30,7 +30,7 @@ const TableScreen = (props) => {
       >
         {isOpen ? <SideBar /> : null}
 
-        <div
+        <div // containing search and table and pagination
           style={{
             marginRight: "0px",
             marginLeft: "2.85vw",
@@ -39,33 +39,7 @@ const TableScreen = (props) => {
             // overflowX: "scroll",
           }}
         >
-          {" "}
-          {/* containing search and table */}
-          <div
-            style={{
-              display: "flex",
-              marginBottom: "20px",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "100%",
-            }}
-          >
-            {/* containing search , add button*/}
-            {/* <h1>{props.listOf}</h1> */}
-            <Search />
-            <AuthorizedComponent
-              Component={
-                <Button
-                  style={{ width: "500px" }}
-                  onClick={() =>
-                    // navigate(`/${props.listOf.slice(0, props.listOf.length - 1)}`)
-                    navigate(`/forms/${props.listOf}/create`)
-                  }
-                  title={`add ${props.listOf}`}
-                />
-              }
-            />
-          </div>
+          {/* Table --containing search and table and pagination-- */}
           {props.listOf === "organizations" ? (
             <OrganizationTable />
           ) : props.listOf === "users" ? (
