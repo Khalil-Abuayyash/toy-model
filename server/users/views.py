@@ -5,6 +5,8 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
+from rest_framework.pagination import PageNumberPagination
+from rest_framework import filters
 from django.db import IntegrityError
 
 
@@ -34,6 +36,9 @@ class BlacklistTokenUpdateView(APIView):
 class UserViewSet(ModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
+    pagination_class = PageNumberPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields=['id','nickname','organizations__name','email']
 
     def create(self, request, *args, **kwargs):
         data = request.data
@@ -60,14 +65,23 @@ class UserViewSet(ModelViewSet):
 class ProjectViewSet(ModelViewSet):
     serializer_class = ProjectSerializer
     queryset = Project.objects.all()
+    pagination_class = PageNumberPagination
+    # filter_backends = [filters.SearchFilter]
+    # search_fields=['id','nickname','organizations__name','email']
 
 class SiteViewSet(ModelViewSet):
     serializer_class = SiteSerializer
     queryset = Site.objects.all()
+    pagination_class = PageNumberPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields=['id','name','organization__name']
 
 class TeamViewSet(ModelViewSet):
     serializer_class = TeamSerializer
     queryset = Team.objects.all()
+    pagination_class = PageNumberPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields=['id','name','organizations__name','sites__name']
 
     def create(self, request, *args, **kwargs):
         data = request.data
@@ -90,6 +104,9 @@ class TeamViewSet(ModelViewSet):
 class OrganizationViewSet(ModelViewSet):
     serializer_class = OrganizationSerializer
     queryset = Organization.objects.all()
+    pagination_class = PageNumberPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields=['id','name','teams__name','disco']
 
     def create(self, request, *args, **kwargs):
         data = request.data
