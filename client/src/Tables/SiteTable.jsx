@@ -6,6 +6,9 @@ import AdminComponent from "../HOCs/AdminComponent";
 import { isAdmin } from "../HOCs/AdminComponent";
 import { navigate } from "@reach/router";
 import Pagination from "../components/Pagination";
+import Button from "../components/subComponents/Button";
+import Search from "../components/Search";
+import AuthorizedComponent from "../HOCs/AuthorizedComponent";
 
 const SiteTable = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -16,6 +19,7 @@ const SiteTable = () => {
   const [tableBodies, setTableBodies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageNumbers, setPageNumbers] = useState([]);
+  const [search, setSearch] = useState("");
 
   const onDelete = (id) => {
     axiosInstance.delete(`/user/sites/${id}`);
@@ -25,8 +29,18 @@ const SiteTable = () => {
     navigate(`/forms/sites/edit/${id}`);
   };
 
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  };
+
   useEffect(() => {
-    axiosInstance.get(`/user/sites?page=${currentPage}`).then((res) => {
+    let url;
+    if (search !== "") {
+      url = `/user/sites?search=${search}&page=${currentPage}`;
+    } else {
+      url = `/user/sites?page=${currentPage}`;
+    }
+    axiosInstance.get(url).then((res) => {
       setSites(
         res.data.results.map((site) => ({
           ...site,
@@ -38,11 +52,11 @@ const SiteTable = () => {
         [...Array(Math.ceil(res.data.count / 10)).keys()].map((i) => i + 1)
       );
     });
-  }, [currentPage]);
+  }, [currentPage, search]);
 
   useEffect(() => {
     axiosInstance
-      .get(`/user/sites?page=${currentPage}`)
+      .get(`/user/sites`)
       .then((res) => {
         setSites(
           res.data.results.map((site) => ({
@@ -88,6 +102,34 @@ const SiteTable = () => {
 
   return (
     <>
+      <div
+        // containing search , add button
+        style={{
+          display: "flex",
+          marginBottom: "20px",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <Search
+          search={search}
+          handleSearch={handleSearch}
+          placeholder="Search ( ID, Site Name, Org )"
+        />
+        <AuthorizedComponent
+          Component={
+            <Button
+              style={{ width: "500px" }}
+              onClick={() =>
+                // navigate(`/${props.listOf.slice(0, props.listOf.length - 1)}`)
+                navigate(`/forms/organizations/create`)
+              }
+              title={`Add Organization`}
+            />
+          }
+        />
+      </div>
       <Table
         isAdmin={isAdmin(user.role.name)}
         category="sites"

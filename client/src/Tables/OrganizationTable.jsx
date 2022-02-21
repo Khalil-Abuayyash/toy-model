@@ -108,7 +108,11 @@ const OrganizationTable = () => {
           width: "100%",
         }}
       >
-        <Search search={search} handleSearch={handleSearch} />
+        <Search
+          search={search}
+          handleSearch={handleSearch}
+          placeholder="Search ( ID, Organization Name, DISCO )"
+        />
         <AuthorizedComponent
           Component={
             <Button

@@ -124,7 +124,11 @@ const UserTable = () => {
           width: "100%",
         }}
       >
-        <Search search={search} handleSearch={handleSearch} />
+        <Search
+          search={search}
+          handleSearch={handleSearch}
+          placeholder="Search ( ID, Name, Email, Org )"
+        />
         <AuthorizedComponent
           Component={
             <Button
