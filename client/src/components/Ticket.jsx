@@ -14,12 +14,26 @@ import { AuthContext } from "../Context/AuthenticationContext";
 
 const Ticket = () => {
   const [organization, setOrganization] = useState([]);
+  const [organizationsOptions, setOrganizationsOptions] = useState([]);
   const [site, setSite] = useState([]);
+  const [sitesOptions, setSitesOptions] = useState([]);
   const [title, setTitle] = useState("");
   const [titleError, setTitleError] = useState([false, ""]);
   const [description, setDescription] = useState("");
   const [descriptionError, setDescriptionError] = useState([false, ""]);
   const { user } = useContext(AuthContext);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let fetchedOrganizations = await axiosInstance.get(
+        `/user/organizations/`
+      );
+      let fetchedSites = await axiosInstance.get(`/user/sites/`);
+      setOrganizationsOptions(fetchedOrganizations.data.results);
+      setSitesOptions(fetchedSites.data.results);
+    };
+    fetchData();
+  }, []);
 
   const handleOrganization = (selected) => {
     setOrganization(selected);
@@ -43,7 +57,7 @@ const Ticket = () => {
         title,
         organization_id: organization.id,
         site_id: site.id,
-        project_id: 8,
+        project_id: 1,
         user_id: user.id,
       })
       .then((res) => {
@@ -60,7 +74,7 @@ const Ticket = () => {
       <FormRow>
         <MSelect
           isMulti={false}
-          options={[{ name: "qudra", id: 1 }]}
+          options={organizationsOptions}
           placeholder="Organization"
           getOptionLabel={(option) => option.name}
           getOptionValue={(option) => option.id}
@@ -72,7 +86,7 @@ const Ticket = () => {
       <FormRow>
         <MSelect
           isMulti={false}
-          options={[{ name: "shufat", id: 2 }]}
+          options={sitesOptions}
           placeholder="Site"
           getOptionLabel={(option) => option.name}
           getOptionValue={(option) => option.id}
@@ -118,9 +132,8 @@ const Ticket = () => {
           placeholder="Message"
           style={{ height: "25.4vh", resize: "none" }}
           onChange={handleDescription}
-        >
-          {description}
-        </textarea>
+          value={description}
+        />
       </FormRow>
       <FormRow style={{ justifyContent: "space-evenly" }}>
         <Button

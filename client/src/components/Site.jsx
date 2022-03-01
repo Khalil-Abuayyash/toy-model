@@ -17,10 +17,20 @@ const Site = () => {
   const [note, setNote] = useState("");
   const [noteError, setNoteError] = useState("");
   const [organization, setOrganization] = useState([]);
+  const [organizationsOptions, setOrganizationsOptions] = useState([]);
   const [disco, setDisco] = useState("");
   const [lng, setLng] = useState();
   const [lat, setLat] = useState();
   const { user } = useContext(AuthContext);
+
+  useEffect(() => {
+    axiosInstance
+      .get(`/user/organizations/`)
+      .then((res) => {
+        setOrganizationsOptions(res.data.results);
+      })
+      .catch((err) => {});
+  }, []);
 
   useEffect(() => {
     if (!isAdmin(user.role.name)) {
@@ -90,7 +100,7 @@ const Site = () => {
         />
         <MSelect
           isMulti={false}
-          options={[{ name: "qudra", id: 1 }]}
+          options={organizationsOptions}
           placeholder="Organization"
           getOptionLabel={(option) => option.name}
           getOptionValue={(option) => option.id}

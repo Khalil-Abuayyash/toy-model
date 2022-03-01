@@ -14,11 +14,28 @@ const Team = () => {
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState([false, ""]);
   const [organization, setOrganization] = useState([]);
+  const [organizationsOptions, setOrganizationsOptions] = useState([]);
   const [sites, setSites] = useState([]);
+  const [sitesOptions, setSitesOptions] = useState([]);
   const [description, setDescription] = useState("");
   const [descriptionError, setDescriptionError] = useState([false, ""]);
   const [users, setUsers] = useState([]);
+  const [usersOptions, setUsersOptions] = useState([]);
   const { user } = useContext(AuthContext);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let fetchedOrganizations = await axiosInstance.get(
+        `/user/organizations/`
+      );
+      let fetchedSites = await axiosInstance.get(`/user/sites/`);
+      let fetchedUsers = await axiosInstance.get(`/user/users/`);
+      setOrganizationsOptions(fetchedOrganizations.data.results);
+      setSitesOptions(fetchedSites.data.results);
+      setUsersOptions(fetchedUsers.data.results);
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (!isAdmin(user.role.name)) {
@@ -100,7 +117,7 @@ const Team = () => {
         <MSelect
           isWide={true}
           isMulti={false}
-          options={[{ name: "qudra", id: 1 }]}
+          options={organizationsOptions}
           placeholder="Organization"
           getOptionLabel={(option) => option.name}
           getOptionValue={(option) => option.id}
@@ -112,7 +129,7 @@ const Team = () => {
         <MSelect
           isWide={true}
           isMulti={true}
-          options={[{ name: "shufat", id: 1 }]}
+          options={sitesOptions}
           placeholder="Sites"
           getOptionLabel={(option) => option.name}
           getOptionValue={(option) => option.id}
@@ -141,9 +158,9 @@ const Team = () => {
         <MSelect
           isWide={true}
           isMulti={true}
-          options={[{ name: "khalil abuayyash", id: 1 }]}
+          options={usersOptions}
           placeholder="Users List"
-          getOptionLabel={(option) => option.name}
+          getOptionLabel={(option) => option.nickname}
           selected={users}
           setSelected={handleUsers}
         />

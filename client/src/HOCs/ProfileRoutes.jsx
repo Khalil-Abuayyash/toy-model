@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import AccountSettings from "../components/AccountSettings";
 import Header from "../components/Header";
 import MyAlerts from "../components/MyAlerts";
+import MyReports from "../components/MyReports";
 import ProfileSideBar from "../components/ProfileSideBar";
 import styles from "../styles/profile.module.css";
 
@@ -19,8 +20,9 @@ const ProfileRoutes = () => {
         />
         <div className={styles.container}>
           <Router>
-            <AccountSettings path="settings" />
-            <MyAlerts path="alerts" />
+            <AccountSettings path="settings" setCurrentIcon={setCurrentIcon} />
+            <MyAlerts path="alerts" setCurrentIcon={setCurrentIcon} />
+            <MyReports path="reports" setCurrentIcon={setCurrentIcon} />
           </Router>
         </div>
       </div>

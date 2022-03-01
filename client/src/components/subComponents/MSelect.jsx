@@ -14,6 +14,7 @@ const MSelect = (props) => {
     setSelected,
     marginRight,
     isWide,
+    isThird,
   } = props;
 
   const customStyles = {
@@ -23,10 +24,10 @@ const MSelect = (props) => {
       marginBottom: "10px",
       // marginRight: marginRight ? marginRight : "20px",
       marginRight: "1vw",
-      border: state.isFocused ? "2px solid #ea3c88" : " 2px solid #b9b9b9",
+      border: state.isFocused ? "2px solid #ea3c88" : " 2px solid #ea3c88",
       borderRadius: "8px",
       boxShadow: "none",
-      width: isWide ? "53vw" : "26vw",
+      width: isWide ? "53vw" : isThird ? "17vw" : "26vw",
     }),
     control: (provided, state) => ({
       ...provided,

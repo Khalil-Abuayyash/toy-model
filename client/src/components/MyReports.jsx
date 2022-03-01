@@ -13,9 +13,9 @@ import H4 from "../components/headers/H4";
 import Download from "../components/Download";
 import { BsClock } from "react-icons/bs";
 
-const MyAlerts = ({ path, setCurrentIcon }) => {
+const MyReports = ({ path, setCurrentIcon }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [alerts, setAlerts] = useState([]);
+  const [reports, setReports] = useState([]);
   const [error, setError] = useState(false);
   const { isAuthenticated, user } = useContext(AuthContext);
   const [tableHeaders, setTableHeaders] = useState([]);
@@ -25,15 +25,11 @@ const MyAlerts = ({ path, setCurrentIcon }) => {
   const [search, setSearch] = useState("");
 
   const onDelete = (id) => {
-    axiosInstance.delete(`/user/alerts/${id}`);
+    axiosInstance.delete(`/user/reports/${id}`);
   };
 
   const onEdit = (id) => {
-    navigate(`/forms/alerts/edit/${id}`);
-  };
-
-  const handleSearch = (e) => {
-    setSearch(e.target.value);
+    navigate(`/forms/reports/edit/${id}`);
   };
 
   useEffect(() => {
@@ -43,14 +39,14 @@ const MyAlerts = ({ path, setCurrentIcon }) => {
   useEffect(() => {
     let url;
     if (search !== "") {
-      url = `/user/alerts?search=${search}&page=${currentPage}`;
+      url = `/user/reports?search=${search}&page=${currentPage}`;
     } else {
-      url = `/user/alerts?page=${currentPage}`;
+      url = `/user/reports?page=${currentPage}`;
     }
     axiosInstance.get(url).then((res) => {
       console.log(res.data);
       console.log(url);
-      setAlerts(
+      setReports(
         res.data.results.map((ticket) => ({
           ...ticket,
         }))
@@ -63,9 +59,9 @@ const MyAlerts = ({ path, setCurrentIcon }) => {
 
   useEffect(() => {
     axiosInstance
-      .get(`/user/alerts`)
+      .get(`/user/reports`)
       .then((res) => {
-        setAlerts(
+        setReports(
           res.data.results.map((ticket) => ({
             ...ticket,
           }))
@@ -74,9 +70,9 @@ const MyAlerts = ({ path, setCurrentIcon }) => {
           [...Array(Math.ceil(res.data.count / 10)).keys()].map((i) => i + 1)
         );
         if (isAdmin(user.role.name)) {
-          setTableHeaders(["Name", "Dashboard", "Description", "Actions"]);
+          setTableHeaders(["Site", "Dashboard", "Time", "Actions"]);
         } else {
-          setTableHeaders(["Name", "Dashboard", "Description"]);
+          setTableHeaders(["Site", "Dashboard", "Time"]);
         }
         setTableBodies(["name", "dashboard", "description"]);
         setIsLoaded(true);
@@ -98,16 +94,15 @@ const MyAlerts = ({ path, setCurrentIcon }) => {
           width: "100%",
         }}
       >
-        <Download Icon={BsClock} style={{ marginRight: "2%" }} />
         <AuthorizedComponent
           Component={
             <Button
               style={{ width: "19%" }}
               onClick={() =>
                 // navigate(`/${props.listOf.slice(0, props.listOf.length - 1)}`)
-                navigate(`/forms/alerts/create`)
+                navigate(`/forms/reports/create`)
               }
-              title={`New Alert`}
+              title={`Add Report`}
             />
           }
         />
@@ -116,7 +111,7 @@ const MyAlerts = ({ path, setCurrentIcon }) => {
         isAdmin={isAdmin(user.role.name)}
         onDelete={onDelete}
         onEdit={onEdit}
-        data={alerts}
+        data={reports}
         tableHeaders={tableHeaders}
         tableBodies={tableBodies}
       />
@@ -129,4 +124,4 @@ const MyAlerts = ({ path, setCurrentIcon }) => {
   );
 };
 
-export default MyAlerts;
+export default MyReports;

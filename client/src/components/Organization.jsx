@@ -19,6 +19,7 @@ const Organization = () => {
 
   const [timeZone, setTimeZone] = useState("");
   const [admins, setAdmins] = useState([]);
+  const [adminsOptions, setAdminsOptions] = useState([]);
   const [disco, setDisco] = useState("");
   const [theme, setTheme] = useState("");
 
@@ -32,6 +33,15 @@ const Organization = () => {
     ["JDECO", "QDECO"].map((name) => ({ value: name, label: name }))
   );
   const { user } = useContext(AuthContext);
+
+  useEffect(() => {
+    axiosInstance
+      .get(`/user/users/`)
+      .then((res) => {
+        setAdminsOptions(res.data.results);
+      })
+      .catch((err) => {});
+  }, []);
 
   useEffect(() => {
     if (!isAdmin(user.role.name)) {
@@ -123,9 +133,9 @@ const Organization = () => {
       <FormRow>
         <MSelect
           isMulti={true}
-          options={[{ name: "khalil abuayyash", id: 1 }]}
+          options={adminsOptions}
           placeholder="Admins"
-          getOptionLabel={(option) => option.name}
+          getOptionLabel={(option) => option.nickname}
           selected={admins}
           setSelected={handleAdmins}
           isWide={true}
