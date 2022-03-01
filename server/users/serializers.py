@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import  Chart, Device, Role, Thing, Ticket, User, Team, Organization, Site, Project, OrganizationMembership, TeamMembership, TeamSite, Log
+from .models import  Chart, Device, Report, Role, Thing, Ticket, User, Team, Organization, Site, Project, OrganizationMembership, TeamMembership, TeamSite, Log, Alert
 
 class RoleSeriailzer(serializers.ModelSerializer):
 
@@ -226,7 +226,30 @@ class LogSerializer(serializers.ModelSerializer):
         model = Log
         fields = ["id", "title", "user", "user_id","time"]
 
-# query , alert, var
+class AlertSerializer(serializers.ModelSerializer):
+    site_id = serializers.IntegerField(required=False)
+    site = SiteSerializer(required=False)
+    organization_id = serializers.IntegerField(required=False)
+    organization = OrganizationSerializer(required=False)
+    user_id = serializers.IntegerField(required=False)
+    user = UserSerializer(required=False)
+    class Meta:
+        model = Alert
+        fields = ["id", "name", "user", "user_id", "organization", "organization_id", "site", "site_id", "emails", "description", "query", "dashboard", "operation", "value", "period"]
+
+class ReportSerializer(serializers.ModelSerializer):
+    site_id = serializers.IntegerField(required=False)
+    site = SiteSerializer(required=False)
+    organization_id = serializers.IntegerField(required=False)
+    organization = OrganizationSerializer(required=False)
+    user_id = serializers.IntegerField(required=False)
+    user = UserSerializer(required=False)
+    
+    class Meta:
+        model  = Report
+        fields = ["id", "user", "user_id", "organization", "organization_id", "site", "site_id", "emails", "dashboard", "delivery_time", "period"]
+
+# query , var
 
 class AuthSerializer(serializers.Serializer):
     nickname = serializers.CharField(required=False)
@@ -236,6 +259,3 @@ class AuthSerializer(serializers.Serializer):
     memOrgs = OraganizationMembershipSerializer(required=False, many=True)
     adminOrgs = OraganizationMembershipSerializer(required=False, many=True)
     teams = TeamSerializer(required=False, many=True)
-
-    # class Meta:
-    #     fields=('id', 'nickname', 'role', 'role_id', 'teams', 'memOrgs', 'adminOrgs')

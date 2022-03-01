@@ -12,11 +12,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 
 # models 
-from .models import Role, Ticket, User, Organization, OrganizationMembership, Project, Site, TeamMembership, TeamSite, Team, Log
+from .models import Report, Role, Ticket, User, Organization, OrganizationMembership, Project, Site, TeamMembership, TeamSite, Team, Log, Alert
 
 # serializers
-from .serializers import LogSerializer, OraganizationMembershipSerializer, OrganizationSerializer, RoleSeriailzer, SiteSerializer, TeamMembershipSerializer \
-    , TeamSerializer, TicketSerializer, UserSerializer, ProjectSerializer, TeamSiteSerializer, AuthSerializer
+from .serializers import LogSerializer, OraganizationMembershipSerializer, OrganizationSerializer, ReportSerializer, RoleSeriailzer, SiteSerializer, TeamMembershipSerializer \
+    , TeamSerializer, TicketSerializer, UserSerializer, ProjectSerializer, TeamSiteSerializer, AuthSerializer, AlertSerializer
 
 # services
 from .services import send_verification_code
@@ -243,6 +243,16 @@ class LogViewSet(ModelViewSet):
 class RoleViewSet(ModelViewSet):
     serializer_class = RoleSeriailzer
     queryset = Role.objects.all()
+
+class AlertViewSet(ModelViewSet):
+    serializer_class = AlertSerializer
+    queryset = Alert.objects.all()
+    pagination_class = PageNumberPagination
+
+class ReportViewSet(ModelViewSet):
+    serializer_class = ReportSerializer
+    queryset = Report.objects.all()
+    pagination_class = PageNumberPagination
 
 class AuthenticatedView(APIView):
     def get(self, request, user_id, *args, **kwargs):

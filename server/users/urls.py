@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AuthenticatedView, CookieView, LogViewSet, OrganizationMembershipViewSet, OrganizationViewSet, RoleViewSet, SiteViewSet, TeamMembershipViewSet, TeamViewSet, BlacklistTokenUpdateView \
+from .views import AlertViewSet, AuthenticatedView, CookieView, LogViewSet, OrganizationMembershipViewSet, OrganizationViewSet, ReportViewSet, RoleViewSet, SiteViewSet, TeamMembershipViewSet, TeamViewSet, BlacklistTokenUpdateView \
     , ProjectViewSet, TeamSiteViewSet, TicketViewSet, UserViewSet
 from rest_framework.routers import DefaultRouter
 from users.googleView import GoogleView
@@ -17,6 +17,8 @@ router.register(r'teammemberships', TeamMembershipViewSet, basename='teammembers
 router.register(r'tickets', TicketViewSet, basename='tickets')
 router.register(r'logs', LogViewSet, basename='logs')
 router.register(r'roles', RoleViewSet, basename='roles')
+router.register(r'alerts', AlertViewSet, basename='alerts')
+router.register(r'reports', ReportViewSet, basename='reports')
 
 app_name = 'users'
 

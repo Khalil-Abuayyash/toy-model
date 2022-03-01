@@ -218,12 +218,26 @@ class Alert(models.Model):
     name = models.CharField(max_length=50, blank=True, null=True)
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     emails = models.TextField()
     description = models.TextField()
     query = models.TextField()
-    operation = models.CharField(max_length=3, blank=True, null=True)
+    dashboard = models.TextField()
+    operation = models.CharField(max_length=50, blank=True, null=True)
     value = models.DecimalField(max_digits=4, decimal_places=2)
     period = models.CharField(max_length=3, blank=True, null=True)
+
+class Report(models.Model):
+    class Meta:
+        db_table  = "report"
+
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    emails = models.TextField()
+    dashboard = models.TextField()
+    delivery_time =  models.CharField(max_length=50, blank=True, null=True)
+    period = models.CharField(max_length=10, blank=True, null=True)
 
 
 class Variable(models.Model):
