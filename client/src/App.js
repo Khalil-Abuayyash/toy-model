@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Routes from "./components/Routes";
-import VerticalNavigationBar from "./components/VerticalNavigationBar";
-import Header from "./components/Header";
-
+// import Header from "./components/Header";
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
@@ -19,7 +17,6 @@ function App() {
   const handleSubmit = () => {};
   return (
     <div>
-      {/* <VerticalNavigationBar /> */}
       {/* Style here has no effect */}
       <Routes
         isOpen={isOpen}
