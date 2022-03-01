@@ -7,6 +7,11 @@ import ViewButton from "./Buttons/ViewButton";
 import EditButton from "./Buttons/EditButton";
 // import AuthorizedComponent from "../HOCs/AuthorizedComponent";
 import AdminComponent from "../HOCs/AdminComponent";
+import IconButton from "../components/Buttons/IconButton";
+import { AiOutlineEye } from "react-icons/ai";
+import { IoCheckmarkOutline } from "react-icons/io5";
+import { IoCloseOutline } from "react-icons/io5";
+import { navigate } from "@reach/router";
 
 const getProperty = (obj, property) => {
   let parts = property.split(".");
@@ -20,6 +25,34 @@ const getProperty = (obj, property) => {
   }
 };
 
+const TicketActions = ({ isOld, toggleDone, toggleNotDone, id }) => {
+  return (
+    <TableCell>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <IconButton
+          onClick={() => navigate(`/forms/tickets/${id}`)}
+          Icon={AiOutlineEye}
+        />
+        {isOld ? (
+          <IconButton onClick={() => toggleNotDone(id)} Icon={IoCloseOutline} />
+        ) : (
+          <IconButton
+            onClick={() => toggleDone(id)}
+            Icon={IoCheckmarkOutline}
+          />
+        )}
+      </div>
+    </TableCell>
+  );
+};
+
 const Actions = (props) => {
   return (
     <TableCell>
@@ -31,8 +64,25 @@ const Actions = (props) => {
           justifyContent: "center",
         }}
       >
-        <ViewButton />
+        <ViewButton onClick={props.onView} />
         <EditButton onClick={props.onEdit} />
+        <DeleteButton onClick={props.onDelete} />
+      </div>
+    </TableCell>
+  );
+};
+
+const TeamUsersAction = (props) => {
+  return (
+    <TableCell>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <DeleteButton onClick={props.onDelete} />
       </div>
     </TableCell>
@@ -45,7 +95,12 @@ const Table = ({
   tableBodies,
   onDelete,
   onEdit,
+  onView,
   category,
+  isOld,
+  toggleDone,
+  toggleNotDone,
+  teamId,
 }) => {
   return (
     <div className={styles.table}>
@@ -68,10 +123,22 @@ const Table = ({
           )}
           <AdminComponent
             Component={
-              <Actions
-                onDelete={() => onDelete(item.id, category)}
-                onEdit={() => onEdit(item.id)}
-              />
+              category === "tickets" ? (
+                <TicketActions
+                  isOld={isOld}
+                  toggleDone={toggleDone}
+                  toggleNotDone={toggleNotDone}
+                  id={item.id}
+                />
+              ) : category === "teamUsers" ? (
+                <TeamUsersAction onDelete={() => onDelete(teamId, item.id)} />
+              ) : (
+                <Actions
+                  onDelete={() => onDelete(item.id, category)}
+                  onEdit={() => onEdit(item.id)}
+                  onView={() => onView(item.id)}
+                />
+              )
             }
           />
         </TableRow>

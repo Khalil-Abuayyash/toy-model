@@ -9,6 +9,7 @@ const MSelect = (props) => {
     options,
     placeholder,
     getOptionLabel,
+    getOptionValue,
     selected,
     setSelected,
     marginRight,
@@ -77,7 +78,9 @@ const MSelect = (props) => {
 
   return (
     <Select
+      isClearable={false}
       getOptionLabel={getOptionLabel}
+      getOptionValue={getOptionValue}
       placeholder={placeholder}
       defaultValue={selected}
       onChange={setSelected}

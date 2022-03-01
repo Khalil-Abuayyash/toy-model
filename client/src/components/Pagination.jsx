@@ -13,6 +13,7 @@ const Number = ({ number, currentPage, setCurrentPage }) => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        cursor: "pointer",
       }}
     >
       {number}

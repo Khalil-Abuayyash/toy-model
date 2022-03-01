@@ -9,6 +9,10 @@ import { BiMapPin } from "react-icons/bi";
 import { GrProjects } from "react-icons/gr";
 import { BsLayers } from "react-icons/bs";
 import { AiOutlineTeam } from "react-icons/ai";
+import { CgNotes } from "react-icons/cg";
+import { FaRegStickyNote } from "react-icons/fa";
+import { MdOutlineDashboard } from "react-icons/md";
+import { IoPlaySkipForwardOutline } from "react-icons/io5";
 
 const SideBarButton = (props) => {
   const [isClicked, setisClicked] = useState(false);
@@ -43,6 +47,12 @@ const SideBar = () => {
   return (
     <div className={styles.sidebar}>
       {/* <SideBarButton to="/dashboard" label="Dashboard" Icon={GrProjects} /> */}
+      <SideBarButton to="/tables/home" label="Home" Icon={MdOutlineDashboard} />
+      <SideBarButton
+        to="/tables/playlists"
+        label="Playlist"
+        Icon={IoPlaySkipForwardOutline}
+      />
       <SideBarButton to="/tables/users" label="Users" Icon={AiOutlineUser} />
       <SideBarButton
         to="/tables/organizations"
@@ -50,8 +60,10 @@ const SideBar = () => {
         Icon={RiBuildingLine}
       />
       <SideBarButton to="/tables/sites" label="Sites" Icon={BiMapPin} />
-      <SideBarButton to="/tables/projects" label="Projects" Icon={BsLayers} />
+      {/* <SideBarButton to="/tables/projects" label="Projects" Icon={BsLayers} /> */}
       <SideBarButton to="/tables/teams" label="Teams" Icon={AiOutlineTeam} />
+      <SideBarButton to="/tables/tickets" label="Tickets" Icon={CgNotes} />
+      <SideBarButton to="/tables/logs" label="Logs" Icon={FaRegStickyNote} />
     </div>
   );
 };

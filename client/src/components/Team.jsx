@@ -73,7 +73,7 @@ const Team = () => {
         users: users.map((item) => ({ id: item.id })),
       })
       .then((res) => {
-        navigate("/teams");
+        navigate("/tables/teams");
       })
       .catch((err) => {
         console.log(err.response.data);
@@ -160,7 +160,7 @@ const Team = () => {
           }}
           title="Cancel"
           isLarge={false}
-          onClick={() => navigate("/teams")}
+          onClick={() => navigate("/tables/teams")}
         />
         <Button
           isRight={true}

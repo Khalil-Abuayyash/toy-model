@@ -9,6 +9,7 @@ import Pagination from "../components/Pagination";
 import Button from "../components/subComponents/Button";
 import Search from "../components/Search";
 import AuthorizedComponent from "../HOCs/AuthorizedComponent";
+import Download from "../components/Download";
 
 const UserTable = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -129,15 +130,16 @@ const UserTable = () => {
           handleSearch={handleSearch}
           placeholder="Search ( ID, Name, Email, Org )"
         />
+        <Download />
         <AuthorizedComponent
           Component={
             <Button
-              style={{ width: "500px" }}
+              style={{ width: "20%" }}
               onClick={() =>
                 // navigate(`/${props.listOf.slice(0, props.listOf.length - 1)}`)
-                navigate(`/forms/organizations/create`)
+                navigate(`/forms/users/create`)
               }
-              title={`Add Organization`}
+              title={`New User`}
             />
           }
         />

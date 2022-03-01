@@ -66,7 +66,7 @@ const Site = () => {
         disco: disco,
       })
       .then((res) => {
-        navigate("/sites");
+        navigate("/tables/sites");
       })
       .catch((err) => {
         console.log(err.response.data);
@@ -145,7 +145,7 @@ const Site = () => {
           }}
           title="Cancel"
           isLarge={false}
-          onClick={() => navigate("/sites")}
+          onClick={() => navigate("/tables/sites")}
         />
         <Button
           isRight={true}

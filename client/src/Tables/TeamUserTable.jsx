@@ -1,19 +1,21 @@
-import React, { useEffect, useState, useContext } from "react";
+import { navigate } from "@reach/router";
+import React, { useState, useEffect, useContext } from "react";
 import axiosInstance from "../axios";
 import Table from "../components/Table";
 import { AuthContext } from "../Context/AuthenticationContext";
 import AdminComponent from "../HOCs/AdminComponent";
 import { isAdmin } from "../HOCs/AdminComponent";
-import { navigate } from "@reach/router";
 import Pagination from "../components/Pagination";
 import Button from "../components/subComponents/Button";
 import Search from "../components/Search";
 import AuthorizedComponent from "../HOCs/AuthorizedComponent";
 import Download from "../components/Download";
+import H2 from "../components/headers/H2";
+import ArrowBack from "../components/arrows/ArrowBack";
 
-const SiteTable = () => {
+const TeamUserTable = ({ teamId }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [sites, setSites] = useState([]);
+  const [users, setUsers] = useState([]);
   const [error, setError] = useState(false);
   const { isAuthenticated, user } = useContext(AuthContext);
   const [tableHeaders, setTableHeaders] = useState([]);
@@ -21,13 +23,17 @@ const SiteTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageNumbers, setPageNumbers] = useState([]);
   const [search, setSearch] = useState("");
+  const [team, setTeam] = useState({ name: "" });
 
-  const onDelete = (id) => {
-    axiosInstance.delete(`/user/sites/${id}`);
-  };
-
-  const onEdit = (id) => {
-    navigate(`/forms/sites/edit/${id}`);
+  const onDelete = (teamId, userId) => {
+    axiosInstance
+      .get(`user/teammemberships?team__id=${teamId}&user__id=${userId}`)
+      .then((res) => {
+        axiosInstance.delete(`user/teammemberships/${res.data.results[0].id}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const handleSearch = (e) => {
@@ -35,18 +41,26 @@ const SiteTable = () => {
   };
 
   useEffect(() => {
+    axiosInstance.get(`/user/teams/${teamId}`).then((res) => {
+      setTeam(res.data);
+    });
+  }, [teamId]);
+
+  useEffect(() => {
     let url;
     if (search !== "") {
-      url = `/user/sites?search=${search}&page=${currentPage}`;
+      url = `/user/users?search=${search}&page=${currentPage}&teams__id=${teamId}`;
     } else {
-      url = `/user/sites?page=${currentPage}`;
+      url = `/user/users?page=${currentPage}&teams__id=${teamId}`;
     }
     axiosInstance.get(url).then((res) => {
-      setSites(
-        res.data.results.map((site) => ({
-          ...site,
-          teamsNames: site.teams.map((team) => team.name).join(","),
-          projectsNames: site.projects.map((project) => project.name).join(","),
+      setUsers(
+        res.data.results.map((user) => ({
+          ...user,
+          teamsNames: user.teams.map((team) => team.name).join(","),
+          organizationsNames: user.organizations
+            .map((org) => org.name)
+            .join(","),
         }))
       );
       setPageNumbers(
@@ -57,15 +71,11 @@ const SiteTable = () => {
 
   useEffect(() => {
     axiosInstance
-      .get(`/user/sites`)
+      .get(`/user/users?teams__id=${teamId}`)
       .then((res) => {
-        setSites(
-          res.data.results.map((site) => ({
-            ...site,
-            teamsNames: site.teams.map((team) => team.name).join(","),
-            projectsNames: site.projects
-              .map((project) => project.name)
-              .join(","),
+        setUsers(
+          res.data.results.map((user) => ({
+            ...user,
           }))
         );
         setPageNumbers(
@@ -73,36 +83,53 @@ const SiteTable = () => {
         );
         if (isAdmin(user.role.name)) {
           setTableHeaders([
-            "Site ID",
-            "Site Name",
-            "Organization",
-            "Projects",
-            "Teams",
-            "Actions",
+            // "ID",
+            "Name",
+            "Email",
+            "Phone",
+            // "Org",
+            // "Teams",
+            "Seen",
+            "Action",
           ]);
         } else {
           setTableHeaders([
-            "Site ID",
-            "Site Name",
-            "Organization",
-            "Projects",
-            "Teams",
+            // "ID",
+            "Name",
+            "Email",
+            "Phone",
+            // "Org",
+            // "Teams",
+            "Seen",
           ]);
         }
         setTableBodies([
-          "id",
-          "name",
-          "organization.name",
-          "projectsNames",
-          "teamsNames",
+          //   "id",
+          "nickname",
+          "email",
+          "telephone",
+          //   "organizationsNames",
+          //   "teamsNames",
+          "last_login",
         ]);
         setIsLoaded(true);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   return (
     <>
+      <div
+        style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+      >
+        <ArrowBack onClick={() => navigate("/tables/teams")} />
+        <H2
+          style={{ fontWeight: "600" }}
+        >{`${team.name.toUpperCase()} Users`}</H2>
+      </div>
+
       <div
         // containing search , add button
         style={{
@@ -116,28 +143,25 @@ const SiteTable = () => {
         <Search
           search={search}
           handleSearch={handleSearch}
-          placeholder="Search ( ID, Site Name, Org )"
+          placeholder="Search ( ID, Name, Email )"
         />
         <Download />
         <AuthorizedComponent
           Component={
             <Button
               style={{ width: "20%" }}
-              onClick={() =>
-                // navigate(`/${props.listOf.slice(0, props.listOf.length - 1)}`)
-                navigate(`/forms/sites/create`)
-              }
-              title={`New Site`}
+              onClick={() => navigate(`/forms/user_to_team/${teamId}`)}
+              title={`Add User`}
             />
           }
         />
       </div>
       <Table
         isAdmin={isAdmin(user.role.name)}
-        category="sites"
+        category="teamUsers"
         onDelete={onDelete}
-        onEdit={onEdit}
-        data={sites}
+        teamId={teamId}
+        data={users}
         tableHeaders={tableHeaders}
         tableBodies={tableBodies}
       />
@@ -150,4 +174,4 @@ const SiteTable = () => {
   );
 };
 
-export default SiteTable;
+export default TeamUserTable;

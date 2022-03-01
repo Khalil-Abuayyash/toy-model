@@ -75,7 +75,7 @@ const TableHeader = ({ isOpen, setIsOpen, form }) => {
           {form ? null : (
             <IconButton
               onClick={() => setIsOpen((open) => !open)}
-              style={{ marginRight: "24px" }}
+              style={{ marginRight: "24px", cursor: "pointer" }}
               Icon={GiHamburgerMenu}
             />
           )}

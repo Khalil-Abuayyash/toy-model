@@ -84,7 +84,7 @@ const Organization = () => {
         }),
       })
       .then((res) => {
-        navigate("/organizations");
+        navigate("/tables/organizations");
       })
       .catch((err) => {
         console.log(err.response.data);
@@ -175,7 +175,7 @@ const Organization = () => {
           }}
           title="Cancel"
           isLarge={false}
-          onClick={() => navigate("/organizations")}
+          onClick={() => navigate("/tables/organizations")}
         />
         <Button
           isRight={true}

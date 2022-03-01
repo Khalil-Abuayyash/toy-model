@@ -83,7 +83,7 @@ axiosInstance.interceptors.response.use(
       error.response.status === 401 &&
       error.response.statusText === "Unauthorized"
     ) {
-      window.location.href = "/login/";
+      window.location.href = "/auth/login/";
     }
     // specific error handling done elsewhere
     return Promise.reject(error);

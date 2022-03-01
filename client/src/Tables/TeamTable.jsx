@@ -9,6 +9,7 @@ import Pagination from "../components/Pagination";
 import Button from "../components/subComponents/Button";
 import Search from "../components/Search";
 import AuthorizedComponent from "../HOCs/AuthorizedComponent";
+import Download from "../components/Download";
 
 const TeamTable = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -27,6 +28,10 @@ const TeamTable = () => {
 
   const onEdit = (id) => {
     navigate(`/forms/teams/edit/${id}`);
+  };
+
+  const onView = (id) => {
+    navigate(`/tables/teams/${id}`);
   };
 
   const handleSearch = (e) => {
@@ -102,15 +107,16 @@ const TeamTable = () => {
           handleSearch={handleSearch}
           placeholder="Search ( ID, Team Name, Organization, Sites )"
         />
+        <Download />
         <AuthorizedComponent
           Component={
             <Button
-              style={{ width: "500px" }}
+              style={{ width: "20%" }}
               onClick={() =>
                 // navigate(`/${props.listOf.slice(0, props.listOf.length - 1)}`)
-                navigate(`/forms/organizations/create`)
+                navigate(`/forms/teams/create`)
               }
-              title={`Add Organization`}
+              title={`New Team`}
             />
           }
         />
@@ -120,6 +126,7 @@ const TeamTable = () => {
         category="teams"
         onDelete={onDelete}
         onEdit={onEdit}
+        onView={onView}
         data={teams}
         tableHeaders={tableHeaders}
         tableBodies={tableBodies}

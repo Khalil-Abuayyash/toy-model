@@ -1,10 +1,10 @@
 import React from "react";
+import styling from "../styles/searchInput.module.css";
 
 const styles = {
   backgroundColor: "#ffffff",
   borderRadius: "8px",
   height: "44px",
-  width: "728px",
   border: "none",
   textAlign: "left",
   color: "#b9b9b9",
@@ -18,6 +18,7 @@ const styles = {
 const Search = ({ search, handleSearch, placeholder }) => {
   return (
     <input
+      className={styling.search}
       value={search}
       onChange={handleSearch}
       placeholder={placeholder}

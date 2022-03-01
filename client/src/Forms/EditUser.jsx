@@ -32,26 +32,33 @@ const EditUser = (props) => {
   const [telephoneError, setTelephoneError] = useState([false, ""]);
   const [companyError, setCompanyError] = useState([false, ""]);
   const [organizations, setOrganizations] = useState([]);
+  const [removedOrganizations, setRemovedOrganizations] = useState([]);
   const [selectedOrganizations, setSelectedOrganizations] = useState([]);
   const [teams, setTeams] = useState([]);
+  const [removedTeams, setRemovedTeams] = useState([]);
   const [selectedTeams, setSelectedTeams] = useState([]);
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
+    const fetchData = async () => {
+      let popultedUser = await axiosInstance.get(`/user/users/${id}`);
+      popultedUser = popultedUser.data;
+      let fetchedTeams = await axiosInstance.get(`user/teams`);
+      fetchedTeams = fetchedTeams.data.results;
+      let fetchedOrganizations = await axiosInstance.get(`user/organizations`);
+      fetchedOrganizations = fetchedOrganizations.data.results;
+      setTeams(fetchedTeams);
+      setOrganizations(fetchedOrganizations);
+      setName(popultedUser.nickname);
+      setEmail(popultedUser.email);
+      setTelephone(popultedUser.telephone);
+      setRoleId(`${popultedUser.role_id}`);
+      setSelectedTeams(popultedUser.teams);
+      setSelectedOrganizations(popultedUser.organizations);
+      setIsLoaded(true);
+    };
     if (user.id == id || isAdmin(user.role.name)) {
-      axiosInstance
-        .get(`/user/users/${id}`)
-        .then((res) => {
-          console.log(res.data.organizations[0].name);
-          const popultedUser = res.data;
-          setName(popultedUser.nickname);
-          setEmail(popultedUser.email);
-          setTelephone(popultedUser.telephone);
-          setSelectedTeams(popultedUser.teams);
-          setSelectedOrganizations(popultedUser.organizations);
-          setIsLoaded(true);
-        })
-        .catch((err) => {});
+      fetchData();
     } else {
       navigate("/users");
     }
@@ -112,20 +119,54 @@ const EditUser = (props) => {
     }
   };
 
-  const handleTeams = (selected) => {
-    setTeams(selected);
-  };
-
-  const handleOrganizations = (selected) => {
-    setOrganizations(selected);
-  };
-
   const handleRole = (e) => {
     setRoleId(e.target.value);
   };
 
+  const handleTeams = (selected, event) => {
+    if (event.action === "remove-value") {
+      let prev = removedTeams.filter(
+        (team) => team.id !== event.removedValue.id
+      );
+      setSelectedTeams(selected);
+      setRemovedTeams([...prev, event.removedValue]);
+    } else {
+      setSelectedTeams(selected);
+    }
+  };
+
+  const handleOrganizations = (selected, event) => {
+    if (event.action === "remove-value") {
+      let prev = removedOrganizations.filter(
+        (org) => org.id !== event.removedValue.id
+      );
+      setSelectedOrganizations(selected);
+      setRemovedOrganizations([...prev, event.removedValue]);
+    } else {
+      setSelectedOrganizations(selected);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    axiosInstance
+      .patch(`user/users/${id}/`, {
+        email: email,
+        nickname: name,
+        telephone: telephone,
+        role_id: parseInt(roleId),
+        removedTeams: removedTeams,
+        removedOrganizations: removedOrganizations,
+        newTeams: selectedTeams,
+        newOrganizations: selectedOrganizations,
+      })
+      .then((res) => {
+        console.log(res);
+        navigate(`/tables/users`);
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+      });
   };
 
   return (
@@ -231,6 +272,7 @@ const EditUser = (props) => {
                 options={teams}
                 placeholder="Teams"
                 getOptionLabel={(option) => option.name}
+                getOptionValue={(option) => option.id}
                 selected={selectedTeams}
                 setSelected={handleTeams}
               />
@@ -239,6 +281,7 @@ const EditUser = (props) => {
                 options={organizations}
                 placeholder="organizations"
                 getOptionLabel={(option) => option.name}
+                getOptionValue={(option) => option.id}
                 selected={selectedOrganizations}
                 setSelected={handleOrganizations}
               />

@@ -56,7 +56,7 @@ const User = () => {
       })
       .then((res) => {
         console.log(res);
-        navigate("/users");
+        navigate("/tables/users");
       })
       .catch((err) => {
         if (err.response.data.includes("email")) {
@@ -306,7 +306,7 @@ const User = () => {
             }}
             title="Cancel"
             isLarge={false}
-            onClick={() => navigate("/users")}
+            onClick={() => navigate("/tables/users")}
           />
           <Button
             className={`${styling.rightButton}`}

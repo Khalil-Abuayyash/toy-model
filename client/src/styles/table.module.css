@@ -26,16 +26,21 @@
   /* min-width: 180px; */
   min-width: 12%;
   width: fit-content;
+  max-width: 13%;
   min-height: 64px;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  word-wrap: break-word;
+  white-space: normal;
 }
 
 .data {
   font-size: 14px;
   color: #000000;
+  word-wrap: break-word;
+  white-space: normal;
 }
 
 .head {
@@ -50,6 +55,15 @@
   }
   .data {
     font-size: 10px;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .head {
+    font-size: 12px;
+  }
+  .data {
+    font-size: 8px;
   }
 }
 

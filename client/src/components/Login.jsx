@@ -52,7 +52,11 @@ const Login = () => {
             setUser(res.data);
             setIsAuthenticated(true);
             navigate("/tables/users");
-          });
+          })
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 

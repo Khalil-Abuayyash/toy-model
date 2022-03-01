@@ -38,6 +38,8 @@ const EditSite = (props) => {
             label: popultedSite.disco,
             value: popultedSite.disco,
           });
+          setLat(parseInt(popultedSite.lat));
+          setLng(parseInt(popultedSite.lng));
           setOrganization({
             name: popultedSite.organization.name,
             id: popultedSite.organization.id,
@@ -70,7 +72,7 @@ const EditSite = (props) => {
   };
 
   const handleDisco = (e) => {
-    setDisco(e.value);
+    setDisco(e);
   };
 
   const handleOrganization = (selected) => {
@@ -79,6 +81,22 @@ const EditSite = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    axiosInstance
+      .put(`user/sites/${id}/`, {
+        name: name,
+        organization_id: organization.id,
+        note: note,
+        lng: lng.toFixed(2),
+        lat: lat.toFixed(2),
+        disco: disco.value,
+      })
+      .then((res) => {
+        console.log(res);
+        navigate(`/tables/sites`);
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+      });
   };
 
   return (

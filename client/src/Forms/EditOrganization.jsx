@@ -10,6 +10,7 @@ import MSelect from "../components/subComponents/MSelect";
 import moment from "moment-timezone";
 import { isAdmin } from "../HOCs/AdminComponent";
 import { AuthContext } from "../Context/AuthenticationContext";
+import axios from "axios";
 
 const EditOrganization = (props) => {
   const { id } = props;
@@ -21,6 +22,8 @@ const EditOrganization = (props) => {
 
   const [timeZone, setTimeZone] = useState("");
   const [admins, setAdmins] = useState([]);
+  const [removedAdmins, setRemovedAdmins] = useState([]);
+  const [selectedAdmins, setSelectedAdmins] = useState([]);
   const [disco, setDisco] = useState("");
   const [theme, setTheme] = useState("");
 
@@ -44,7 +47,7 @@ const EditOrganization = (props) => {
       axiosInstance
         .get(`/user/organizations/${id}`)
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           const popultedOrg = res.data;
           setName(popultedOrg.name);
           setNote(popultedOrg.note);
@@ -60,7 +63,20 @@ const EditOrganization = (props) => {
             label: popultedOrg.theme,
             value: popultedOrg.theme,
           });
-          setIsLoaded(true);
+          axiosInstance
+            .get(
+              `user/organizationmemberships?organization_id=${id}&is_org_admin=true`
+            )
+            .then((response) => {
+              setSelectedAdmins(response.data.results.map((item) => item.user));
+              axiosInstance
+                .get(`user/users/?organizations__id=${id}`)
+                .then((resp) => {
+                  // console.log(resp.data.results);
+                  setAdmins(resp.data.results);
+                  setIsLoaded(true);
+                });
+            });
         })
         .catch((err) => {});
     } else {
@@ -95,12 +111,36 @@ const EditOrganization = (props) => {
     setTheme(e.value);
   };
 
-  const handleAdmins = (selected) => {
-    setAdmins(selected);
+  const handleAdmins = (selected, event) => {
+    if (event.action === "remove-value") {
+      let prev = removedAdmins.filter(
+        (admin) => admin.id !== event.removedValue.id
+      );
+      setSelectedAdmins(selected);
+      setRemovedAdmins([...prev, event.removedValue]);
+    } else {
+      setSelectedAdmins(selected);
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    axiosInstance
+      .patch(`user/organizations/${id}/`, {
+        newAdmins: selectedAdmins,
+        removedAdmins: removedAdmins,
+        name: name,
+        timezone: timeZone,
+        note: note,
+        disco: disco,
+        theme: theme,
+      })
+      .then((res) => {
+        navigate(`/tables/organizations`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -137,10 +177,11 @@ const EditOrganization = (props) => {
           <FormRow>
             <MSelect
               isMulti={true}
-              options={[{ name: "khalil abuayyash", id: 1 }]}
+              options={admins}
               placeholder="Admins"
-              getOptionLabel={(option) => option.name}
-              selected={admins}
+              getOptionLabel={(option) => option.nickname}
+              getOptionValue={(option) => option.id}
+              selected={selectedAdmins}
               setSelected={handleAdmins}
               isWide={true}
             />
@@ -189,7 +230,7 @@ const EditOrganization = (props) => {
               }}
               title="Cancel"
               isLarge={false}
-              onClick={() => navigate("/organizations")}
+              onClick={() => navigate("/tables/organizations")}
             />
             <Button
               isRight={true}

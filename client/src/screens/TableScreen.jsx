@@ -9,6 +9,11 @@ import UserTable from "../Tables/UserTable";
 import SiteTable from "../Tables/SiteTable";
 import TeamTable from "../Tables/TeamTable";
 import AuthorizedComponent from "../HOCs/AuthorizedComponent";
+import TicketTable from "../Tables/TicketTable";
+import LogTable from "../Tables/LogTable";
+import Home from "../components/Home";
+import Playlist from "../components/Playlist";
+import TeamUserTable from "../Tables/TeamUserTable";
 
 const TableScreen = (props) => {
   const { isOpen } = props;
@@ -47,7 +52,19 @@ const TableScreen = (props) => {
           ) : props.listOf === "sites" ? (
             <SiteTable />
           ) : props.listOf === "teams" ? (
-            <TeamTable />
+            props.id ? (
+              <TeamUserTable teamId={props.id} />
+            ) : (
+              <TeamTable />
+            )
+          ) : props.listOf === "tickets" ? (
+            <TicketTable />
+          ) : props.listOf === "logs" ? (
+            <LogTable />
+          ) : props.listOf === "home" ? (
+            <Home />
+          ) : props.listOf === "playlists" ? (
+            <Playlist />
           ) : null}
         </div>
       </div>

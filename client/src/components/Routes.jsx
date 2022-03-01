@@ -1,26 +1,13 @@
 import React from "react";
 import { Router, Redirect } from "@reach/router";
+
 import LineChart from "./LineChart";
-import Login from "./Login";
-import Logout from "./Logout";
-import SignUp from "./SignUp";
-import Google from "./Google";
-import VerificationCode from "./VerificationCode";
-import ChangePassword from "./ChangePassword";
 import Dashboard from "../screens/Dashboard";
-import TableScreen from "../screens/TableScreen";
-import User from "./User";
-import Organization from "./Organization";
-import Site from "./Site";
-import Team from "./Team";
-import ForgetPassword from "./ForgetPassword";
-import EditUser from "../Forms/EditUser";
-import EditOrganization from "../Forms/EditOrganization";
-import EditSite from "../Forms/EditSite";
-import EditTeam from "../Forms/EditTeam";
+
 import AuthRoutes from "../HOCs/AuthRoutes";
 import FormsRoutes from "../HOCs/FormsRoutes";
 import TablesRoutes from "../HOCs/TablesRoutes";
+import ProfileRoutes from "../HOCs/ProfileRoutes";
 
 const Home = () => <h1>Not Found 404</h1>;
 
@@ -44,6 +31,9 @@ const Routes = ({ isOpen, setIsOpen }) => {
 
       {/* Forms */}
       <FormsRoutes path="forms/*" />
+
+      {/* Profile */}
+      <ProfileRoutes path="profile/*" />
 
       {/*  */}
     </Router>

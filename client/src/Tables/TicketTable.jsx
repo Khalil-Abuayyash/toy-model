@@ -1,19 +1,20 @@
-import React, { useEffect, useState, useContext } from "react";
+import { navigate } from "@reach/router";
+import React, { useState, useEffect, useContext } from "react";
 import axiosInstance from "../axios";
 import Table from "../components/Table";
 import { AuthContext } from "../Context/AuthenticationContext";
 import AdminComponent from "../HOCs/AdminComponent";
 import { isAdmin } from "../HOCs/AdminComponent";
-import { navigate } from "@reach/router";
 import Pagination from "../components/Pagination";
 import Button from "../components/subComponents/Button";
 import Search from "../components/Search";
 import AuthorizedComponent from "../HOCs/AuthorizedComponent";
+import H4 from "../components/headers/H4";
 import Download from "../components/Download";
 
-const SiteTable = () => {
+const TicketTable = () => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [sites, setSites] = useState([]);
+  const [tickets, setTickets] = useState([]);
   const [error, setError] = useState(false);
   const { isAuthenticated, user } = useContext(AuthContext);
   const [tableHeaders, setTableHeaders] = useState([]);
@@ -21,51 +22,55 @@ const SiteTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageNumbers, setPageNumbers] = useState([]);
   const [search, setSearch] = useState("");
+  const [isOld, setIsOld] = useState(false);
 
   const onDelete = (id) => {
-    axiosInstance.delete(`/user/sites/${id}`);
+    axiosInstance.delete(`/user/tickets/${id}`);
   };
 
   const onEdit = (id) => {
-    navigate(`/forms/sites/edit/${id}`);
+    navigate(`/forms/tickets/edit/${id}`);
   };
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
   };
 
+  const toggleDone = (id) => {
+    axiosInstance.patch(`/user/tickets/${id}/`, { done: true });
+  };
+  const toggleNotDone = (id) => {
+    axiosInstance.patch(`/user/tickets/${id}/`, { done: false });
+  };
+
   useEffect(() => {
     let url;
     if (search !== "") {
-      url = `/user/sites?search=${search}&page=${currentPage}`;
+      url = `/user/tickets?search=${search},${isOld}&page=${currentPage}`;
     } else {
-      url = `/user/sites?page=${currentPage}`;
+      url = `/user/tickets?page=${currentPage}&search=${isOld}`;
     }
     axiosInstance.get(url).then((res) => {
-      setSites(
-        res.data.results.map((site) => ({
-          ...site,
-          teamsNames: site.teams.map((team) => team.name).join(","),
-          projectsNames: site.projects.map((project) => project.name).join(","),
+      console.log(res.data);
+      console.log(url);
+      setTickets(
+        res.data.results.map((ticket) => ({
+          ...ticket,
         }))
       );
       setPageNumbers(
         [...Array(Math.ceil(res.data.count / 10)).keys()].map((i) => i + 1)
       );
     });
-  }, [currentPage, search]);
+  }, [currentPage, search, isOld]);
 
   useEffect(() => {
     axiosInstance
-      .get(`/user/sites`)
+      .get(`/user/tickets?search=${isOld}`)
       .then((res) => {
-        setSites(
-          res.data.results.map((site) => ({
-            ...site,
-            teamsNames: site.teams.map((team) => team.name).join(","),
-            projectsNames: site.projects
-              .map((project) => project.name)
-              .join(","),
+        setTickets(
+          res.data.results.map((ticket) => ({
+            ...ticket,
           }))
         );
         setPageNumbers(
@@ -73,36 +78,79 @@ const SiteTable = () => {
         );
         if (isAdmin(user.role.name)) {
           setTableHeaders([
-            "Site ID",
-            "Site Name",
+            "Ticket ID",
+            "Ticket Title",
+            "User",
             "Organization",
-            "Projects",
-            "Teams",
+            "Site",
+            "Project",
             "Actions",
           ]);
         } else {
           setTableHeaders([
-            "Site ID",
-            "Site Name",
+            "Ticket ID",
+            "Ticket Title",
+            "User",
             "Organization",
-            "Projects",
-            "Teams",
+            "Site",
+            "Project",
           ]);
         }
         setTableBodies([
           "id",
-          "name",
+          "title",
+          "user.nickname",
           "organization.name",
-          "projectsNames",
-          "teamsNames",
+          "site.name",
+          "project.name",
         ]);
         setIsLoaded(true);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   return (
     <>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "start",
+          marginBottom: "10px",
+        }}
+      >
+        <H4
+          style={{
+            marginBottom: "0px",
+            marginRight: "10px",
+          }}
+        >
+          <span
+            onClick={() => setIsOld(false)}
+            style={{
+              color: isOld ? "#464545" : "#E84088",
+              fontWeight: isOld ? "normal" : "bold",
+              cursor: "pointer",
+            }}
+          >
+            New Tickets
+          </span>
+        </H4>
+        <H4 style={{ marginBottom: "0px" }}>
+          <span
+            onClick={() => setIsOld(true)}
+            style={{
+              cursor: "pointer",
+              color: isOld ? "#E84088" : "#464545",
+              fontWeight: isOld ? "bold" : "normal",
+            }}
+          >
+            Old Tickets
+          </span>
+        </H4>
+      </div>
       <div
         // containing search , add button
         style={{
@@ -116,28 +164,31 @@ const SiteTable = () => {
         <Search
           search={search}
           handleSearch={handleSearch}
-          placeholder="Search ( ID, Site Name, Org )"
+          placeholder="Search ( ID , Name , Orgs , Sites , Projects )"
         />
         <Download />
         <AuthorizedComponent
           Component={
             <Button
-              style={{ width: "20%" }}
+              style={{ width: "19%" }}
               onClick={() =>
                 // navigate(`/${props.listOf.slice(0, props.listOf.length - 1)}`)
-                navigate(`/forms/sites/create`)
+                navigate(`/forms/tickets/create`)
               }
-              title={`New Site`}
+              title={`New Ticket`}
             />
           }
         />
       </div>
       <Table
         isAdmin={isAdmin(user.role.name)}
-        category="sites"
+        category="tickets"
+        isOld={isOld}
         onDelete={onDelete}
         onEdit={onEdit}
-        data={sites}
+        toggleDone={toggleDone}
+        toggleNotDone={toggleNotDone}
+        data={tickets}
         tableHeaders={tableHeaders}
         tableBodies={tableBodies}
       />
@@ -150,4 +201,4 @@ const SiteTable = () => {
   );
 };
 
-export default SiteTable;
+export default TicketTable;

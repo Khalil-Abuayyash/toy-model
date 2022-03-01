@@ -9,6 +9,9 @@ import EditOrganization from "../Forms/EditOrganization";
 import EditSite from "../Forms/EditSite";
 import EditTeam from "../Forms/EditTeam";
 import { Router } from "@reach/router";
+import Ticket from "../components/Ticket";
+import TicketDetails from "../components/TicketDetails";
+import TeamUser from "../components/TeamUser";
 
 const Home = () => <h1>HOME</h1>;
 
@@ -23,12 +26,17 @@ const FormsRoutes = () => {
         <Organization path="/organizations/create" />
         <Site path="/sites/create" />
         <Team path="/teams/create" />
+        <Ticket path="/tickets/create" />
 
         {/* Editing Forms */}
         <EditUser path="/users/edit/:id" />
         <EditOrganization path="/organizations/edit/:id" />
         <EditSite path="/sites/edit/:id" />
         <EditTeam path="/teams/edit/:id" />
+        <TeamUser path="/user_to_team/:id" />
+
+        {/* Views */}
+        <TicketDetails path="/tickets/:id" />
       </Router>
     </>
   );
