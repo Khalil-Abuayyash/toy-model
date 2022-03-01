@@ -102,7 +102,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ['id', 'name', 'site', 'site_id', 'teams']
+        fields = ['id', 'name', 'site', 'site_id', 'teams', 'capacity']
 
 # class TeamProjectSerializer(serializers.ModelSerializer):
 
@@ -210,11 +210,13 @@ class ChartSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'type', 'x_label', 'y_label', 'x_scale', 'y_scale', 'query', 'x_coordinate', 'y_coordinate' ,'project', 'project_id', ]
 
 class TicketSerializer(serializers.ModelSerializer):
+    site_id = serializers.IntegerField(required=False)
+    organization_id = serializers.IntegerField(required=False)
     project_id = serializers.IntegerField(required=False)
     user_id = serializers.IntegerField(required=False)
     class Meta:
         model = Ticket
-        fields = ["id", "title", "project", "project_id", "user", "user_id", 'description']
+        fields = ["id", "title", "done", "project", "project_id", "user", "user_id", 'description','site','site_id','organization','organization_id']
         depth = 3
 
 class LogSerializer(serializers.ModelSerializer):

@@ -1,3 +1,4 @@
+from tkinter import CASCADE
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -187,9 +188,13 @@ class Ticket(models.Model):
         db_table = "ticket"
     
     title = models.CharField(max_length=50)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    done = models.BooleanField(default=False)
+
 
 class Log(models.Model):
     class Meta:

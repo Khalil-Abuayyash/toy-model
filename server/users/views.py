@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import filters
 from django.db import IntegrityError
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 # models 
@@ -37,8 +38,9 @@ class UserViewSet(ModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
     pagination_class = PageNumberPagination
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields=['id','nickname','organizations__name','email']
+    filterset_fields = ['teams__id','organizations__id']
 
     def create(self, request, *args, **kwargs):
         data = request.data
@@ -62,6 +64,43 @@ class UserViewSet(ModelViewSet):
         serializer = UserSerializer(new_user)
         return Response(serializer.data)
 
+    def partial_update(self, request,pk=None, *args, **kwargs):
+        data = request.data
+        user = User.objects.get(id=pk)
+        user.nickname= data["nickname"]
+        user.telephone = data["telephone"]
+        user.email = data["email"]
+        user.role_id = data["role_id"]
+
+        # teams
+        for team in data["removedTeams"]:
+            try:
+                membership = TeamMembership.objects.get(team_id=team["id"], user_id=pk)
+                membership.delete()
+            except:
+                pass
+
+        for team in data["newTeams"]:
+            membership =  TeamMembership.objects.filter(team_id=team["id"], user_id=pk).first()
+            if not membership :
+                TeamMembership.objects.create(team_id=team["id"], user_id=pk)
+
+        # organizations
+        for org in data["removedOrganizations"]:
+            try:
+                membership = OrganizationMembership.objects.get(organization_id=org["id"], user_id=pk)
+                membership.delete()
+            except:
+                pass
+
+        for org in data["newOrganizations"]:
+            membership =  OrganizationMembership.objects.filter(organization_id=org["id"], user_id=pk).first()
+            if not membership :
+                OrganizationMembership.objects.create(organization_id=org["id"], user_id=pk, is_org_admin=False)
+        
+        serializer = UserSerializer(User.objects.filter(id=pk).first())
+        return Response(serializer.data) 
+
 class ProjectViewSet(ModelViewSet):
     serializer_class = ProjectSerializer
     queryset = Project.objects.all()
@@ -81,7 +120,7 @@ class TeamViewSet(ModelViewSet):
     queryset = Team.objects.all()
     pagination_class = PageNumberPagination
     filter_backends = [filters.SearchFilter]
-    search_fields=['id','name','organizations__name','sites__name']
+    search_fields=['id','name','organization__name','sites__name']
 
     def create(self, request, *args, **kwargs):
         data = request.data
@@ -100,6 +139,14 @@ class TeamViewSet(ModelViewSet):
 
         serializer = TeamSerializer(new_team)
         return Response(serializer.data)
+    
+    def partial_update(self, request, pk=None):
+        data = request.data
+        for user in data["users"]:
+            TeamMembership.objects.create(team_id=pk, user_id=user["id"])
+        serializer = TeamSerializer(Team.objects.filter(id=pk).first())
+        return Response(serializer.data)
+        # data["users"]
 
 class OrganizationViewSet(ModelViewSet):
     serializer_class = OrganizationSerializer
@@ -122,6 +169,35 @@ class OrganizationViewSet(ModelViewSet):
 
         serializer = OrganizationSerializer(new_org)
         return Response(serializer.data)
+    
+    def partial_update(self, request, pk=None ):
+        data = request.data
+        organization = Organization.objects.get(id=pk)
+        organization.name = data["name"]
+        organization.timezone = data["timezone"]
+        organization.note = data["note"]
+        organization.theme = data["theme"]
+        organization.disco = data["disco"]
+        organization.save()
+
+        for admin in data["removedAdmins"]:
+            try:
+                membership = OrganizationMembership.objects.get(user_id=admin["id"], organization_id=pk)
+                membership.is_org_admin = False
+                membership.save()
+            except:
+                pass
+
+        for admin in data["newAdmins"]:
+            try :
+                membership =  OrganizationMembership.objects.get(user_id=admin["id"], organization_id=pk)
+                membership.is_org_admin = True
+                membership.save()
+            except:
+                pass
+            
+        serializer = OrganizationSerializer(Organization.objects.filter(id=pk).first())
+        return Response(serializer.data)       
 
 class TeamSiteViewSet(ModelViewSet):
     serializer_class = TeamSiteSerializer
@@ -134,10 +210,16 @@ class TeamSiteViewSet(ModelViewSet):
 class TeamMembershipViewSet(ModelViewSet):
     serializer_class = TeamMembershipSerializer
     queryset = TeamMembership.objects.all()
+    pagination_class = PageNumberPagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['team__id','user__id']
 
 class OrganizationMembershipViewSet(ModelViewSet):
     serializer_class = OraganizationMembershipSerializer
     queryset = OrganizationMembership.objects.all()
+    pagination_class = PageNumberPagination
+    filter_backends = [ DjangoFilterBackend]
+    filterset_fields = ['organization_id','is_org_admin']
 
 class CookieView(APIView):
     def get(self, request):
@@ -149,6 +231,10 @@ class CookieView(APIView):
 class TicketViewSet(ModelViewSet):
     serializer_class = TicketSerializer
     queryset = Ticket.objects.all()
+    pagination_class = PageNumberPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields=['id','done','title','user__nickname','organization__name','site__name']
+    
 
 class LogViewSet(ModelViewSet):
     serializer_class = LogSerializer
@@ -174,4 +260,3 @@ class AuthenticatedView(APIView):
             return response
         response = Response(data={"user":"no such user"})
         return response
-        
