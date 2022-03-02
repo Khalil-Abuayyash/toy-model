@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import  Chart, Device, Report, Role, Thing, Ticket, User, Team, Organization, Site, Project, OrganizationMembership, TeamMembership, TeamSite, Log, Alert
+from .models import  Chart, Device, Report, Role, Session, Thing, Ticket, User, Team, Organization, Site, Project, OrganizationMembership, TeamMembership, TeamSite, Log, Alert
 
 class RoleSeriailzer(serializers.ModelSerializer):
 
@@ -248,6 +248,13 @@ class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model  = Report
         fields = ["id", "user", "user_id", "organization", "organization_id", "site", "site_id", "emails", "dashboard", "delivery_time", "period"]
+
+class SessionSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(required=False)
+    user = UserSerializer(required=False)
+    class Meta:
+        model = Session
+        fields = ["id", "user", "user_id", "os", "browser", "ip", "logged_on"]
 
 # query , var
 

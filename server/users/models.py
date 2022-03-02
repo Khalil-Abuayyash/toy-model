@@ -1,3 +1,4 @@
+from ipaddress import ip_address
 import site
 from tkinter import CASCADE
 from django.db import models
@@ -239,6 +240,15 @@ class Report(models.Model):
     delivery_time =  models.CharField(max_length=50, blank=True, null=True)
     period = models.CharField(max_length=10, blank=True, null=True)
 
+class Session(models.Model):
+    class Meta:
+        db_table = 'session'
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    browser = models.CharField(max_length=50, blank=True, null=True)
+    os = models.CharField(max_length=50, blank=True, null=True)
+    ip = models.CharField(max_length=23, blank=True, null=True)
+    logged_on = models.DateTimeField()
 
 class Variable(models.Model):
     class Meta:

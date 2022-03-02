@@ -9,13 +9,14 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework import filters
 from django.db import IntegrityError
 from django_filters.rest_framework import DjangoFilterBackend
+import datetime
 
 
 # models 
-from .models import Report, Role, Ticket, User, Organization, OrganizationMembership, Project, Site, TeamMembership, TeamSite, Team, Log, Alert
+from .models import Report, Role, Session, Ticket, User, Organization, OrganizationMembership, Project, Site, TeamMembership, TeamSite, Team, Log, Alert
 
 # serializers
-from .serializers import LogSerializer, OraganizationMembershipSerializer, OrganizationSerializer, ReportSerializer, RoleSeriailzer, SiteSerializer, TeamMembershipSerializer \
+from .serializers import LogSerializer, OraganizationMembershipSerializer, OrganizationSerializer, ReportSerializer, RoleSeriailzer, SessionSerializer, SiteSerializer, TeamMembershipSerializer \
     , TeamSerializer, TicketSerializer, UserSerializer, ProjectSerializer, TeamSiteSerializer, AuthSerializer, AlertSerializer
 
 # services
@@ -45,7 +46,7 @@ class UserViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         data = request.data
         try :
-            # new_user = User.objects.create(nickname=data["nickname"], email=data["email"], password=data["password"], telephone=data["telephone"], role_id=data["role_id"])
+            # new_user = User.objects.create(nickname=data["nickname"], email=data["email"], password=data["password"], telephone=data["telephone"], role_id=data["role_id"])      
             new_user = User(nickname=data["nickname"], email=data["email"], telephone=data["telephone"], role_id=data["role_id"])
             if data["password"] is not None:
                 new_user.set_password(data["password"])
@@ -66,11 +67,13 @@ class UserViewSet(ModelViewSet):
 
     def partial_update(self, request,pk=None, *args, **kwargs):
         data = request.data
+        print(data["telephone"])
         user = User.objects.get(id=pk)
         user.nickname= data["nickname"]
         user.telephone = data["telephone"]
         user.email = data["email"]
         user.role_id = data["role_id"]
+        user.save() 
 
         # teams
         for team in data["removedTeams"]:
@@ -253,6 +256,17 @@ class ReportViewSet(ModelViewSet):
     serializer_class = ReportSerializer
     queryset = Report.objects.all()
     pagination_class = PageNumberPagination
+
+class SesssionViewSet(ModelViewSet):
+    serializer_class = SessionSerializer
+    queryset = Session.objects.all()
+    pagination_class = PageNumberPagination
+
+    def create(self, request, *args, **kwargs):
+        # data = request.data
+        # data["logged_on"] = 
+        request.data["logged_on"] = datetime.datetime.fromtimestamp(request.data["logged_on"])
+        return super().create(request, *args, **kwargs)
 
 class AuthenticatedView(APIView):
     def get(self, request, user_id, *args, **kwargs):
