@@ -47,6 +47,7 @@
   color: #ea3c88;
   font-size: 18px;
   font-weight: 600;
+  opacity: 0.95;
 }
 
 @media only screen and (max-width: 1000px) {

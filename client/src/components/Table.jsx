@@ -5,6 +5,7 @@ import DeleteButton from "./Buttons/DeleteButton";
 import styles from "../styles/table.module.css";
 import ViewButton from "./Buttons/ViewButton";
 import EditButton from "./Buttons/EditButton";
+import { MdLogout } from "react-icons/md";
 // import AuthorizedComponent from "../HOCs/AuthorizedComponent";
 import AdminComponent from "../HOCs/AdminComponent";
 import IconButton from "../components/Buttons/IconButton";
@@ -89,6 +90,23 @@ const TeamUsersAction = (props) => {
   );
 };
 
+const SessionsActions = (props) => {
+  return (
+    <TableCell>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <IconButton Icon={MdLogout} style={{ cursor: "auto" }} />
+      </div>
+    </TableCell>
+  );
+};
+
 const Table = ({
   data,
   tableHeaders,
@@ -101,6 +119,7 @@ const Table = ({
   toggleDone,
   toggleNotDone,
   teamId,
+  actions = true,
 }) => {
   return (
     <div className={styles.table}>
@@ -132,6 +151,8 @@ const Table = ({
                 />
               ) : category === "teamUsers" ? (
                 <TeamUsersAction onDelete={() => onDelete(teamId, item.id)} />
+              ) : category === "sessions" ? (
+                <SessionsActions />
               ) : (
                 <Actions
                   onDelete={() => onDelete(item.id, category)}

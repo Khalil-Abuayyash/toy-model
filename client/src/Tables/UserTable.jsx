@@ -42,8 +42,6 @@ const UserTable = () => {
       url = `/user/users?page=${currentPage}`;
     }
     axiosInstance.get(url).then((res) => {
-      console.log(res.data);
-      console.log(url);
       setUsers(
         res.data.results.map((user) => ({
           ...user,

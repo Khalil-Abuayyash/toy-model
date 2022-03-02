@@ -40,6 +40,10 @@ const EditUser = (props) => {
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
+    console.log(telephone);
+  }, [telephone]);
+
+  useEffect(() => {
     const fetchData = async () => {
       let popultedUser = await axiosInstance.get(`/user/users/${id}`);
       popultedUser = popultedUser.data;

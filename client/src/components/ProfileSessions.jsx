@@ -3,19 +3,12 @@ import React, { useState, useEffect, useContext } from "react";
 import axiosInstance from "../axios";
 import Table from "../components/Table";
 import { AuthContext } from "../Context/AuthenticationContext";
-import AdminComponent from "../HOCs/AdminComponent";
 import { isAdmin } from "../HOCs/AdminComponent";
 import Pagination from "../components/Pagination";
-import Button from "../components/subComponents/Button";
-import Search from "../components/Search";
-import AuthorizedComponent from "../HOCs/AuthorizedComponent";
-import H4 from "../components/headers/H4";
-import Download from "../components/Download";
-import { BsClock } from "react-icons/bs";
 
 const ProfileSessions = ({ path, setCurrentIcon }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [reports, setReports] = useState([]);
+  const [sessions, setSessions] = useState([]);
   const [error, setError] = useState(false);
   const { isAuthenticated, user } = useContext(AuthContext);
   const [tableHeaders, setTableHeaders] = useState([]);
@@ -25,11 +18,11 @@ const ProfileSessions = ({ path, setCurrentIcon }) => {
   const [search, setSearch] = useState("");
 
   const onDelete = (id) => {
-    axiosInstance.delete(`/user/reports/${id}`);
+    axiosInstance.delete(`/user/sessions/${id}`);
   };
 
   const onEdit = (id) => {
-    navigate(`/forms/reports/edit/${id}`);
+    navigate(`/forms/sessions/edit/${id}`);
   };
 
   useEffect(() => {
@@ -39,16 +32,16 @@ const ProfileSessions = ({ path, setCurrentIcon }) => {
   useEffect(() => {
     let url;
     if (search !== "") {
-      url = `/user/reports?search=${search}&page=${currentPage}`;
+      url = `/user/sessions?search=${search}&page=${currentPage}`;
     } else {
-      url = `/user/reports?page=${currentPage}`;
+      url = `/user/sessions?page=${currentPage}`;
     }
     axiosInstance.get(url).then((res) => {
       console.log(res.data);
       console.log(url);
-      setReports(
-        res.data.results.map((ticket) => ({
-          ...ticket,
+      setSessions(
+        res.data.results.map((session) => ({
+          ...session,
         }))
       );
       setPageNumbers(
@@ -59,11 +52,11 @@ const ProfileSessions = ({ path, setCurrentIcon }) => {
 
   useEffect(() => {
     axiosInstance
-      .get(`/user/reports`)
+      .get(`/user/sessions`)
       .then((res) => {
-        setReports(
-          res.data.results.map((ticket) => ({
-            ...ticket,
+        setSessions(
+          res.data.results.map((session) => ({
+            ...session,
           }))
         );
         setPageNumbers(
@@ -74,7 +67,7 @@ const ProfileSessions = ({ path, setCurrentIcon }) => {
             "Browser & OS",
             "IP Address",
             "Logged on",
-            "Last Seen",
+            // "Last Seen",
             "",
           ]);
         } else {
@@ -82,16 +75,11 @@ const ProfileSessions = ({ path, setCurrentIcon }) => {
             "Browser & OS",
             "IP Address",
             "Logged on",
-            "Last Seen",
+            // "Last Seen",
             "",
           ]);
         }
-        setTableBodies([
-          "site.name",
-          "dashboard",
-          "organization.name",
-          "delivery_time",
-        ]);
+        setTableBodies(["browser", "ip", "logged_on"]);
         setIsLoaded(true);
       })
       .catch((err) => {
@@ -101,36 +89,14 @@ const ProfileSessions = ({ path, setCurrentIcon }) => {
 
   return (
     <div style={{ width: " 69vw" }}>
-      <div
-        // containing search , add button
-        style={{
-          display: "flex",
-          marginBottom: "20px",
-          justifyContent: "end",
-          alignItems: "center",
-          width: "100%",
-        }}
-      >
-        <AuthorizedComponent
-          Component={
-            <Button
-              style={{ width: "19%" }}
-              onClick={() =>
-                // navigate(`/${props.listOf.slice(0, props.listOf.length - 1)}`)
-                navigate(`/forms/reports/create`)
-              }
-              title={`Add Report`}
-            />
-          }
-        />
-      </div>
       <Table
         isAdmin={isAdmin(user.role.name)}
         onDelete={onDelete}
         onEdit={onEdit}
-        data={reports}
+        data={sessions}
         tableHeaders={tableHeaders}
         tableBodies={tableBodies}
+        category="sessions"
       />
       <Pagination
         pageNumbers={pageNumbers}

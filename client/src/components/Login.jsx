@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import axiosInstance from "../axios";
+import axios from "axios";
 import { navigate, Link } from "@reach/router";
 import H2 from "./headers/H2";
 import H3 from "./headers/H3";
@@ -8,6 +9,7 @@ import Input from "./subComponents/Input";
 import Button from "./subComponents/Button";
 import jwt_decode from "jwt-decode";
 import { AuthContext } from "../Context/AuthenticationContext";
+import { getOS, getBrowser } from "../utils/platform";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -32,32 +34,41 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axiosInstance
-      .post(`token/`, {
+    const login = async () => {
+      const res = await axiosInstance.post(`token/`, {
         email: email,
         password: password,
-      })
-      .then((res) => {
-        localStorage.setItem("access_token", res.data.access);
-        localStorage.setItem("refresh_token", res.data.refresh);
-        axiosInstance.defaults.headers["Authorization"] =
-          "JWT " + localStorage.getItem("access_token");
-        return res.data.access;
-      })
-      .then((access) => {
-        var decoded = jwt_decode(access);
-        axiosInstance
-          .get(`/user/authenticated/${decoded.user_id}`)
-          .then((res) => {
-            setUser(res.data);
-            setIsAuthenticated(true);
-            navigate("/tables/users");
-          })
-          .catch((err) => console.log(err));
-      })
-      .catch((err) => {
-        console.log(err);
       });
+      localStorage.setItem("access_token", res.data.access);
+      localStorage.setItem("refresh_token", res.data.refresh);
+      axiosInstance.defaults.headers["Authorization"] =
+        "JWT " + localStorage.getItem("access_token");
+      var decoded = jwt_decode(res.data.access);
+      const userRes = await axiosInstance.get(
+        `/user/authenticated/${decoded.user_id}`
+      );
+      const ipRes = await axios.get("https://geolocation-db.com/json/");
+      console.log(ipRes.data.IPv4);
+      const browser = getBrowser();
+      console.log(browser);
+      // const logged_on = moment(Date.now()).format("YYYY-MM-DD HH:mm");
+      const logged_on = Date.now() / 1000;
+      try {
+        const session = await axiosInstance.post(`/user/sessions/`, {
+          ip: ipRes.data.IPv4,
+          browser: browser,
+          os: "",
+          user_id: decoded.user_id,
+          logged_on: logged_on,
+        });
+      } catch (e) {
+        console.log(e.response.data);
+      }
+      setUser(userRes.data);
+      setIsAuthenticated(true);
+    };
+    login();
+    navigate("/tables/users");
   };
 
   return (
