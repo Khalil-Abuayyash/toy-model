@@ -13,7 +13,7 @@ import H4 from "../components/headers/H4";
 import Download from "../components/Download";
 import { BsClock } from "react-icons/bs";
 
-const MyReports = ({ path, setCurrentIcon }) => {
+const ProfileSessions = ({ path, setCurrentIcon }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [reports, setReports] = useState([]);
   const [error, setError] = useState(false);
@@ -70,11 +70,28 @@ const MyReports = ({ path, setCurrentIcon }) => {
           [...Array(Math.ceil(res.data.count / 10)).keys()].map((i) => i + 1)
         );
         if (isAdmin(user.role.name)) {
-          setTableHeaders(["Site", "Dashboard", "Time", "Actions"]);
+          setTableHeaders([
+            "Browser & OS",
+            "IP Address",
+            "Logged on",
+            "Last Seen",
+            "",
+          ]);
         } else {
-          setTableHeaders(["Site", "Dashboard", "Time"]);
+          setTableHeaders([
+            "Browser & OS",
+            "IP Address",
+            "Logged on",
+            "Last Seen",
+            "",
+          ]);
         }
-        setTableBodies(["site.name", "dashboard", "delivery_time"]);
+        setTableBodies([
+          "site.name",
+          "dashboard",
+          "organization.name",
+          "delivery_time",
+        ]);
         setIsLoaded(true);
       })
       .catch((err) => {
@@ -124,4 +141,4 @@ const MyReports = ({ path, setCurrentIcon }) => {
   );
 };
 
-export default MyReports;
+export default ProfileSessions;

@@ -24,7 +24,7 @@ const MSelect = (props) => {
       marginBottom: "10px",
       // marginRight: marginRight ? marginRight : "20px",
       marginRight: "1vw",
-      border: state.isFocused ? "2px solid #ea3c88" : " 2px solid #ea3c88",
+      border: state.isFocused ? "2px solid #e84088" : " 2px solid #e84088",
       borderRadius: "8px",
       boxShadow: "none",
       width: isWide ? "53vw" : isThird ? "17vw" : "26vw",
@@ -38,9 +38,11 @@ const MSelect = (props) => {
       // "&:hover": { border: state.isFocused ? "2px solid #ea3c88" : null },
       // border: state.isFocused ? "2px solid #ea3c88" : " 2px solid #b9b9b9",
       border: state.isFocused ? "none" : "none",
+      borderRadius: "8px",
       backgroundColor: "#ffffff",
       outlineColor: state.isFocused ? "#ea3c88" : null,
-      color: state.isFocused ? "#464545" : "#b9b9b9",
+      // color: state.isFocused ? "#464545" : "#b9b9b9",
+      color: "#e84088",
       boxShadow: "none",
       textTransform: "capitalize",
       //   paddingLeft: "10px",
@@ -49,8 +51,9 @@ const MSelect = (props) => {
     option: (provided, state) => ({
       ...provided,
       borderBottom: "1px dotted pink",
-      color: state.isSelected ? "red" : "blue",
+      color: state.isSelected ? "#e84088" : "#e84088",
       padding: 20,
+      backgroundColor: "#ffffff",
     }),
     valueContainer: (provided, state) => ({
       ...provided,
@@ -68,6 +71,11 @@ const MSelect = (props) => {
     indicatorsContainer: (provided, state) => ({
       ...provided,
       height: "64px",
+    }),
+    placeholder: (provided, state) => ({
+      ...provided,
+      color: "#e84088",
+      fontFamily: "Cairo",
     }),
   };
 

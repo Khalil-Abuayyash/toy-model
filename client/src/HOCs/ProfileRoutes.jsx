@@ -4,6 +4,7 @@ import AccountSettings from "../components/AccountSettings";
 import Header from "../components/Header";
 import MyAlerts from "../components/MyAlerts";
 import MyReports from "../components/MyReports";
+import ProfileSessions from "../components/ProfileSessions";
 import ProfileSideBar from "../components/ProfileSideBar";
 import styles from "../styles/profile.module.css";
 
@@ -23,6 +24,7 @@ const ProfileRoutes = () => {
             <AccountSettings path="settings" setCurrentIcon={setCurrentIcon} />
             <MyAlerts path="alerts" setCurrentIcon={setCurrentIcon} />
             <MyReports path="reports" setCurrentIcon={setCurrentIcon} />
+            <ProfileSessions path="sessions" setCurrentIcon={setCurrentIcon} />
           </Router>
         </div>
       </div>

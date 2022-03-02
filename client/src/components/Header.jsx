@@ -12,6 +12,7 @@ export const OutHeader = () => {
   return (
     <div
       style={{
+        // position:"fixed",
         display: "flex",
         flexDirection: "row",
         justifyContent: "start",
@@ -39,6 +40,7 @@ const TableHeader = ({ isOpen, setIsOpen, form }) => {
   return (
     <div
       style={{
+        // position:"fixed",
         width: "100vw",
         height: "99px",
         backgroundImage:

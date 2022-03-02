@@ -1,7 +1,9 @@
 import { navigate } from "@reach/router";
-import React from "react";
+import React, { useContext } from "react";
+import axiosInstance from "../axios";
 import styles from "../styles/profileSidebar.module.css";
 import IconButton from "./Buttons/IconButton";
+import { AuthContext } from "../Context/AuthenticationContext";
 
 // Icons
 import { VscSettingsGear } from "react-icons/vsc";
@@ -30,6 +32,27 @@ const SideBarButton = ({ Icon, label, isClicked, onClick }) => {
 };
 
 const ProfileSideBar = ({ currentIcon, setCurrentIcon }) => {
+  const { setUser, setIsAuthenticated } = useContext(AuthContext);
+
+  const logout = () => {
+    const response = axiosInstance.post("user/logout/blacklist/", {
+      refresh_token: localStorage.getItem("refresh_token"),
+    });
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    axiosInstance.defaults.headers["Authorization"] = null;
+    setIsAuthenticated(false);
+    setUser({
+      id: 0,
+      email: "",
+      nickname: "",
+      role: { name: "", id: 0 },
+      adminOrgs: [],
+      memOrgs: [],
+    });
+    navigate("/auth/login");
+  };
+
   return (
     <div className={styles.container}>
       {/* Picture & Name */}
@@ -84,14 +107,7 @@ const ProfileSideBar = ({ currentIcon, setCurrentIcon }) => {
           label="Profile Sessions"
           Icon={RiGlobalLine}
         />
-        <SideBarButton
-          onClick={() => {
-            // setCurrentIcon("sessions");
-            // navigate("/profile/sessions");
-          }}
-          label="Log Out"
-          Icon={CgLogOut}
-        />
+        <SideBarButton onClick={logout} label="Log Out" Icon={CgLogOut} />
       </div>
     </div>
   );
