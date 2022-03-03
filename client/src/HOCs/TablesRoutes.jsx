@@ -9,8 +9,9 @@ const TablesRoutes = ({ isOpen, setIsOpen }) => {
     <>
       <Header isOpen={isOpen} setIsOpen={setIsOpen} category="table" />
       <Router>
-        <TableScreen isOpen={isOpen} path="/:listOf" />
-        <TableScreen isOpen={isOpen} path="/:listOf/:id" />
+        {/* <TableScreen isOpen={isOpen} path="/:listOf" /> */}
+        <TableScreen isOpen={isOpen} path="/*" />
+        {/* <TableScreen isOpen={isOpen} path="/:listOf/:id" /> */}
       </Router>
     </>
   );

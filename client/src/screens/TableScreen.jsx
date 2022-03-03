@@ -1,4 +1,4 @@
-import { navigate } from "@reach/router";
+import { navigate, Router } from "@reach/router";
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../axios";
 import SideBar from "../components/SideBar";
@@ -18,6 +18,7 @@ import TeamUserTable from "../Tables/TeamUserTable";
 const TableScreen = (props) => {
   const { isOpen } = props;
   const [isLoaded, setIsLoaded] = useState(true);
+  const [currentIcon, setCurrentIcon] = useState("home");
 
   const onDelete = (id, category) => {
     axiosInstance.delete(`/user/${category}/${id}`);
@@ -33,39 +34,31 @@ const TableScreen = (props) => {
           justifyContent: "start",
         }}
       >
-        {isOpen ? <SideBar /> : null}
+        {isOpen ? (
+          <SideBar currentIcon={currentIcon} setCurrentIcon={setCurrentIcon} />
+        ) : null}
 
         <div // containing search and table and pagination
           style={{
             marginRight: "0px",
             marginLeft: "2.85vw",
             marginTop: "50px",
-            width: "79.9vw",
+            width: "79.9vw" /* should be 79.9vw */,
             // overflowX: "scroll",
           }}
         >
+          <Router>
+            <Home path="/home/*" />
+            <Playlist path="playlists" />
+            <UserTable path="/users" />
+            <OrganizationTable path="/organizations" />
+            <SiteTable path="/sites" />
+            <TeamTable path="teams" />
+            <TeamUserTable path="teams/:teamId" />
+            <TicketTable path="/tickets" />
+            <LogTable path="logs" />
+          </Router>
           {/* Table --containing search and table and pagination-- */}
-          {props.listOf === "organizations" ? (
-            <OrganizationTable />
-          ) : props.listOf === "users" ? (
-            <UserTable />
-          ) : props.listOf === "sites" ? (
-            <SiteTable />
-          ) : props.listOf === "teams" ? (
-            props.id ? (
-              <TeamUserTable teamId={props.id} />
-            ) : (
-              <TeamTable />
-            )
-          ) : props.listOf === "tickets" ? (
-            <TicketTable />
-          ) : props.listOf === "logs" ? (
-            <LogTable />
-          ) : props.listOf === "home" ? (
-            <Home />
-          ) : props.listOf === "playlists" ? (
-            <Playlist />
-          ) : null}
         </div>
       </div>
     )
