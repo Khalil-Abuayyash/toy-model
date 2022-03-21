@@ -9,14 +9,14 @@ import Input from "./subComponents/Input";
 import Button from "./subComponents/Button";
 import jwt_decode from "jwt-decode";
 import { AuthContext } from "../Context/AuthenticationContext";
-import { getOS, getBrowser } from "../utils/platform";
+import { getBrowser } from "../utils/platform";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError] = useState([false, ""]);
   const [passwordError, setPasswordError] = useState([false, ""]);
-  const { setUser, setIsAuthenticated, isAuthenticated } =
+  const { setUser, setIsAuthenticated, isAuthenticated, setOrganization } =
     useContext(AuthContext);
 
   useEffect(() => {
@@ -39,6 +39,7 @@ const Login = () => {
         email: email,
         password: password,
       });
+      console.log(res.data);
       localStorage.setItem("access_token", res.data.access);
       localStorage.setItem("refresh_token", res.data.refresh);
       axiosInstance.defaults.headers["Authorization"] =
@@ -64,6 +65,17 @@ const Login = () => {
       } catch (e) {
         console.log(e.response.data);
       }
+      let fetchedOrganization = null;
+      if (userRes.data.adminOrgs.length > 0) {
+        fetchedOrganization = await axiosInstance.get(
+          `/user/organizations/${userRes.data.adminOrgs[0].organization.id}`
+        );
+      } else if (userRes.data.memOrgs.length > 0) {
+        fetchedOrganization = await axiosInstance.get(
+          `/user/organizations/${userRes.data.memOrgs[0].organization.id}`
+        );
+      }
+      setOrganization(fetchedOrganization.data);
       setUser(userRes.data);
       setIsAuthenticated(true);
     };

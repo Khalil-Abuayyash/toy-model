@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 
 import {
   Chart as ChartJS,
@@ -10,6 +9,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  Filler,
 } from "chart.js";
 
 import { Line } from "react-chartjs-2";
@@ -18,30 +18,25 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   PointElement,
-  LineElement
-  // Tooltip
-  // Legend
+  LineElement,
+  Tooltip,
+  Legend,
+  Filler
 );
 
 const options = {
+  fill: true,
   responsive: true,
-  plugins: { legend: false },
-  tension: 0.4,
+  maintainAspectRatio: false,
+  plugins: { legend: true },
   scales: {
     x: {
-      ticks: {
-        display: false,
-        // callback: function (value, index, ticks) {
-        //   return value;
-        // },
-      },
       grid: {
         display: false,
       },
     },
     y: {
       ticks: {
-        display: false,
         grid: {
           drawBorder: false,
         },
@@ -51,9 +46,10 @@ const options = {
       },
     },
   },
+  // tension: 0.4,
 };
 
-const LineChart = () => {
+const CustomizedChart = ({ innerRef }) => {
   const [fetched, setFetched] = useState({
     labels: [],
     datasets: [
@@ -61,23 +57,12 @@ const LineChart = () => {
         label: "Dataset 1",
         data: [],
         borderColor: "rgb(255, 99, 132)",
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
-        pointRadius: 0,
+        backgroundColor: "#E84088",
+        pointRadius: 5,
+        fill: true,
       },
     ],
   });
-
-  // useEffect(() => {
-  //   axios.get("http://localhost:8000/").then((res) => {
-  //     setFetched({
-  //       ...fetched,
-  //       labels: res.data.map((row) => row["created_at"].slice(11, 16)),
-  //       datasets: [
-  //         { ...fetched.datasets[0], data: res.data.map((row) => row["power"]) },
-  //       ],
-  //     });
-  //   });
-  // }, []);
 
   useEffect(() => {
     setFetched({
@@ -99,12 +84,17 @@ const LineChart = () => {
         "",
         "",
         "",
+        "",
+        "",
+        "",
+        "",
       ],
       datasets: [
         {
           ...fetched.datasets[0],
           data: [
-            65, 59, 80, 81, 65, 59, 80, 81, 65, 59, 80, 81, 65, 59, 80, 81,
+            65, 59, 80, 81, 65, 59, 80, 81, 65, 59, 80, 81, 65, 59, 80, 81, 65,
+            59, 80, 81,
           ],
         },
       ],
@@ -112,7 +102,21 @@ const LineChart = () => {
   }, []);
 
   return (
-    <div>
+    <div
+      // ref={innerRef}
+      style={{
+        // resize: "both",
+        // overflow: "auto",
+        width: "100%",
+        height: "100%",
+        backgroundColor: "#ffffff",
+        boxShadow: "0px 10px 30px #D1D5DF80",
+        // padding: "20px 0px",
+        padding: "20px",
+        borderRadius: "20px",
+        boxSizing: "border-box",
+      }}
+    >
       <Line
         style={{ width: "100%", height: "100%" }}
         options={options}
@@ -122,4 +126,4 @@ const LineChart = () => {
   );
 };
 
-export default LineChart;
+export default CustomizedChart;

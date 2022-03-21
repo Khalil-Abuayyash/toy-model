@@ -142,24 +142,26 @@ const Table = ({
           )}
           <AdminComponent
             Component={
-              category === "tickets" ? (
-                <TicketActions
-                  isOld={isOld}
-                  toggleDone={toggleDone}
-                  toggleNotDone={toggleNotDone}
-                  id={item.id}
-                />
-              ) : category === "teamUsers" ? (
-                <TeamUsersAction onDelete={() => onDelete(teamId, item.id)} />
-              ) : category === "sessions" ? (
-                <SessionsActions />
-              ) : (
-                <Actions
-                  onDelete={() => onDelete(item.id, category)}
-                  onEdit={() => onEdit(item.id)}
-                  onView={() => onView(item.id)}
-                />
-              )
+              actions ? (
+                category === "tickets" ? (
+                  <TicketActions
+                    isOld={isOld}
+                    toggleDone={toggleDone}
+                    toggleNotDone={toggleNotDone}
+                    id={item.id}
+                  />
+                ) : category === "teamUsers" ? (
+                  <TeamUsersAction onDelete={() => onDelete(teamId, item.id)} />
+                ) : category === "sessions" ? (
+                  <SessionsActions />
+                ) : (
+                  <Actions
+                    onDelete={() => onDelete(item.id, category)}
+                    onEdit={() => onEdit(item.id)}
+                    onView={() => onView(item.id)}
+                  />
+                )
+              ) : null
             }
           />
         </TableRow>

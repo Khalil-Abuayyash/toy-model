@@ -88,7 +88,7 @@ const ProfileSessions = ({ path, setCurrentIcon }) => {
   }, []);
 
   return (
-    <div style={{ width: " 69vw" }}>
+    <div>
       <Table
         isAdmin={isAdmin(user.role.name)}
         onDelete={onDelete}

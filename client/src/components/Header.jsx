@@ -4,9 +4,9 @@ import IconButton from "./Buttons/IconButton";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { MdOutlineEngineering } from "react-icons/md";
 import { GiHamburgerMenu } from "react-icons/gi";
-import H4 from "./headers/H4";
 import ProfileMenu from "./ProfileMenu";
 import { AuthContext } from "../Context/AuthenticationContext";
+import OrganizationDialog from "./OrganizationDialog";
 
 export const OutHeader = () => {
   return (
@@ -99,6 +99,7 @@ const TableHeader = ({ isOpen, setIsOpen, form }) => {
             justifyContent: "center",
           }}
         >
+          <OrganizationDialog />
           <IconButton Icon={IoMdNotificationsOutline} />
           <IconButton Icon={MdOutlineEngineering} />
           <ProfileMenu />

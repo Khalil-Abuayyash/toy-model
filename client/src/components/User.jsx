@@ -160,177 +160,178 @@ const User = () => {
   return (
     <div className={styles.container}>
       <H2 style={{ fontWeight: "normal" }}>Add New User</H2>
-      <form onSubmit={handleSubmit}>
-        <FormRow>
-          <Input
-            id="name"
-            name="name"
-            placeholder="Name"
-            value={name}
-            onChange={handleName}
-            isLarge={false}
-            className={
-              nameError[0] ? "error" : name.length === 0 ? "input" : "success"
-            }
+      {/* <form onSubmit={handleSubmit}> */}
+      <FormRow>
+        <Input
+          id="name"
+          name="name"
+          placeholder="Name"
+          value={name}
+          onChange={handleName}
+          isLarge={false}
+          className={
+            nameError[0] ? "error" : name.length === 0 ? "input" : "success"
+          }
+        />
+        <Input
+          id="company"
+          name="company"
+          placeholder="Company"
+          value={company}
+          onChange={handleCompany}
+          isLarge={false}
+          className={
+            companyError[0]
+              ? "error"
+              : company.length === 0
+              ? "input"
+              : "success"
+          }
+        />
+      </FormRow>
+      <FormRow>
+        <Input
+          id="email"
+          name="email"
+          placeholder="Email"
+          value={email}
+          onChange={handleEmail}
+          isLarge={false}
+          className={
+            emailError[0] ? "error" : email.length === 0 ? "input" : "success"
+          }
+        />
+        <Input
+          id="telephone"
+          name="telephone"
+          placeholder="Phone Number"
+          value={telephone}
+          onChange={handleTelephone}
+          isLarge={false}
+          className={
+            telephoneError[0]
+              ? "error"
+              : telephone.length === 0
+              ? "input"
+              : "success"
+          }
+        />
+      </FormRow>
+      <FormRow>
+        <Input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Password"
+          value={password}
+          onChange={handlePassword}
+          isLarge={false}
+          className={
+            passwordError[0]
+              ? "error"
+              : password.length === 0
+              ? "input"
+              : "success"
+          }
+        />
+        <Input
+          type="password"
+          id="confirm"
+          name="confirm"
+          placeholder="Confirm Password"
+          value={confirmPass}
+          onChange={handleCofirm}
+          isLarge={false}
+          className={
+            confirmPassError[0]
+              ? "error"
+              : confirmPass.length === 0
+              ? "input"
+              : "success"
+          }
+        />
+      </FormRow>
+      <FormRow style={{ justifyContent: "start" }}>
+        <H4 style={{ flex: "1" }}>Is user Super Admin?</H4>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "start",
+            flex: "2",
+          }}
+        >
+          <RadioButton
+            onChange={handleRole}
+            checked={roleId === "3"}
+            value={3}
+            label="Yes"
+            name="admin"
           />
-          <Input
-            id="company"
-            name="company"
-            placeholder="Company"
-            value={company}
-            onChange={handleCompany}
-            isLarge={false}
-            className={
-              companyError[0]
-                ? "error"
-                : company.length === 0
-                ? "input"
-                : "success"
-            }
+          <RadioButton
+            onChange={handleRole}
+            checked={roleId === "1"}
+            value={1}
+            label="No"
+            name="admin"
           />
-        </FormRow>
-        <FormRow>
-          <Input
-            id="email"
-            name="email"
-            placeholder="Email"
-            value={email}
-            onChange={handleEmail}
-            isLarge={false}
-            className={
-              emailError[0] ? "error" : email.length === 0 ? "input" : "success"
-            }
-          />
-          <Input
-            id="telephone"
-            name="telephone"
-            placeholder="Phone Number"
-            value={telephone}
-            onChange={handleTelephone}
-            isLarge={false}
-            className={
-              telephoneError[0]
-                ? "error"
-                : telephone.length === 0
-                ? "input"
-                : "success"
-            }
-          />
-        </FormRow>
-        <FormRow>
-          <Input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Password"
-            value={password}
-            onChange={handlePassword}
-            isLarge={false}
-            className={
-              passwordError[0]
-                ? "error"
-                : password.length === 0
-                ? "input"
-                : "success"
-            }
-          />
-          <Input
-            type="password"
-            id="confirm"
-            name="confirm"
-            placeholder="Confirm Password"
-            value={confirmPass}
-            onChange={handleCofirm}
-            isLarge={false}
-            className={
-              confirmPassError[0]
-                ? "error"
-                : confirmPass.length === 0
-                ? "input"
-                : "success"
-            }
-          />
-        </FormRow>
-        <FormRow style={{ justifyContent: "start" }}>
-          <H4 style={{ flex: "1" }}>Is user Super Admin?</H4>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "start",
-              flex: "2",
-            }}
-          >
-            <RadioButton
-              onChange={handleRole}
-              checked={roleId === "3"}
-              value={3}
-              label="Yes"
-              name="admin"
-            />
-            <RadioButton
-              onChange={handleRole}
-              checked={roleId === "1"}
-              value={1}
-              label="No"
-              name="admin"
-            />
-          </div>
-        </FormRow>
-        <FormRow>
-          <MSelect
-            isMulti={true}
-            options={teams}
-            placeholder="Teams"
-            getOptionLabel={(option) => option.name}
-            selected={teams}
-            setSelected={handleTeams}
-          />
-          <MSelect
-            isMulti={true}
-            options={organizations}
-            placeholder="organizations"
-            getOptionLabel={(option) => option.name}
-            selected={organizations}
-            setSelected={handleOrganizations}
-          />
-        </FormRow>
-        <FormRow style={{ justifyContent: "space-evenly" }}>
-          <Button
-            isLeft={true}
-            className={`${styling.leftButton}`}
-            style={{
-              backgroundColor: "#f6f6f6",
-              color: "#ea3c88",
-              border: " 2px solid #EA3C88",
-            }}
-            title="Cancel"
-            isLarge={false}
-            onClick={() => navigate("/tables/users")}
-          />
-          <Button
-            className={`${styling.rightButton}`}
-            title="Save"
-            isRight={true}
-            isLarge={false}
-            disabled={
-              false &&
-              (nameError[0] ||
-                emailError[0] ||
-                telephoneError[0] ||
-                passwordError[0] ||
-                companyError[0] ||
-                confirmPassError[0] ||
-                name.length === 0 ||
-                email.length === 0 ||
-                telephone.length === 0 ||
-                company.length === 0 ||
-                password.length === 0 ||
-                confirmPass.length === 0)
-            }
-          />
-        </FormRow>
-      </form>
+        </div>
+      </FormRow>
+      <FormRow>
+        <MSelect
+          isMulti={true}
+          options={teams}
+          placeholder="Teams"
+          getOptionLabel={(option) => option.name}
+          selected={teams}
+          setSelected={handleTeams}
+        />
+        <MSelect
+          isMulti={true}
+          options={organizations}
+          placeholder="organizations"
+          getOptionLabel={(option) => option.name}
+          selected={organizations}
+          setSelected={handleOrganizations}
+        />
+      </FormRow>
+      <FormRow style={{ justifyContent: "space-evenly" }}>
+        <Button
+          isLeft={true}
+          className={`${styling.leftButton}`}
+          style={{
+            backgroundColor: "#f6f6f6",
+            color: "#ea3c88",
+            border: " 2px solid #EA3C88",
+          }}
+          title="Cancel"
+          isLarge={false}
+          onClick={() => navigate("/tables/users")}
+        />
+        <Button
+          className={`${styling.rightButton}`}
+          title="Save"
+          isRight={true}
+          isLarge={false}
+          onClick={handleSubmit}
+          disabled={
+            false &&
+            (nameError[0] ||
+              emailError[0] ||
+              telephoneError[0] ||
+              passwordError[0] ||
+              companyError[0] ||
+              confirmPassError[0] ||
+              name.length === 0 ||
+              email.length === 0 ||
+              telephone.length === 0 ||
+              company.length === 0 ||
+              password.length === 0 ||
+              confirmPass.length === 0)
+          }
+        />
+      </FormRow>
+      {/* </form> */}
     </div>
   );
 };

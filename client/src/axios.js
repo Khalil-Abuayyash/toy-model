@@ -72,7 +72,9 @@ axiosInstance.interceptors.response.use(
             });
         } else {
           console.log("Refresh token is expired", tokenParts.exp, now);
-          window.location.href = "/login/";
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("refresh_token");
+          window.location.href = "/auth/login/";
         }
       } else {
         console.log("Refresh token not available.");

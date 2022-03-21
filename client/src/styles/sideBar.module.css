@@ -7,7 +7,7 @@
   /* width: 194px; */
   width: 14.2vw; /* should be 14.2vw */
   min-height: calc(100vh - 99px);
-  height: fit-content;
+  /* height: fit-content; */
 }
 
 .sideButton {

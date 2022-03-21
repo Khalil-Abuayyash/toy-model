@@ -1,28 +1,26 @@
 import { navigate, Router } from "@reach/router";
 import React, { useState, useEffect } from "react";
-import axiosInstance from "../axios";
 import SideBar from "../components/SideBar";
-import Button from "../components/subComponents/Button";
-import Search from "../components/Search";
 import OrganizationTable from "../Tables/OrganizationTable";
 import UserTable from "../Tables/UserTable";
 import SiteTable from "../Tables/SiteTable";
 import TeamTable from "../Tables/TeamTable";
-import AuthorizedComponent from "../HOCs/AuthorizedComponent";
 import TicketTable from "../Tables/TicketTable";
 import LogTable from "../Tables/LogTable";
-import Home from "../components/Home";
 import Playlist from "../components/Playlist";
 import TeamUserTable from "../Tables/TeamUserTable";
+import HomeScreen from "./HomeScreen";
 
 const TableScreen = (props) => {
   const { isOpen } = props;
   const [isLoaded, setIsLoaded] = useState(true);
-  const [currentIcon, setCurrentIcon] = useState("home");
+  const [currentIcon, setCurrentIcon] = useState(
+    window.location.href.split("/").pop()
+  );
 
-  const onDelete = (id, category) => {
-    axiosInstance.delete(`/user/${category}/${id}`);
-  };
+  useEffect(() => {
+    console.log(window.location.href);
+  }, []);
 
   return (
     isLoaded && (
@@ -48,7 +46,7 @@ const TableScreen = (props) => {
           }}
         >
           <Router>
-            <Home path="/home/*" />
+            <HomeScreen path="/home/*" />
             <Playlist path="playlists" />
             <UserTable path="/users" />
             <OrganizationTable path="/organizations" />

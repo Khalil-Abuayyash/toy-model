@@ -2,9 +2,13 @@ import React from "react";
 import styles from "../../styles/table.module.css";
 
 const TableCell = (props) => {
-  const { text, isHead } = props;
+  const { text, isHead, onClick } = props;
   return (
-    <div className={`${styles.cell} ${isHead ? styles.head : styles.data}`}>
+    <div
+      style={{ cursor: "pointer" }}
+      onClick={onClick}
+      className={`${styles.cell} ${isHead ? styles.head : styles.data}`}
+    >
       {text !== undefined ? (
         <p
           style={{

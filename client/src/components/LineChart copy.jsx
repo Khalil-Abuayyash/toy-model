@@ -18,37 +18,21 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   PointElement,
-  LineElement
-  // Tooltip
-  // Legend
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
 );
 
 const options = {
   responsive: true,
-  plugins: { legend: false },
-  tension: 0.4,
-  scales: {
-    x: {
-      ticks: {
-        display: false,
-        // callback: function (value, index, ticks) {
-        //   return value;
-        // },
-      },
-      grid: {
-        display: false,
-      },
+  plugins: {
+    legend: {
+      position: "top",
     },
-    y: {
-      ticks: {
-        display: false,
-        grid: {
-          drawBorder: false,
-        },
-        // callback: function (value, index, ticks) {
-        //   return value;
-        // },
-      },
+    title: {
+      display: true,
+      text: "Chart.js Line Chart",
     },
   },
 };
@@ -62,7 +46,6 @@ const LineChart = () => {
         data: [],
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
-        pointRadius: 0,
       },
     ],
   });
@@ -82,42 +65,14 @@ const LineChart = () => {
   useEffect(() => {
     setFetched({
       ...fetched,
-      labels: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "April",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-      ],
-      datasets: [
-        {
-          ...fetched.datasets[0],
-          data: [
-            65, 59, 80, 81, 65, 59, 80, 81, 65, 59, 80, 81, 65, 59, 80, 81,
-          ],
-        },
-      ],
+      labels: ["Jan", "Feb", "Mar", "April"],
+      datasets: [{ ...fetched.datasets[0], data: [65, 59, 80, 81] }],
     });
   }, []);
 
   return (
     <div>
-      <Line
-        style={{ width: "100%", height: "100%" }}
-        options={options}
-        data={fetched}
-      />
+      <Line options={options} data={fetched} />
     </div>
   );
 };

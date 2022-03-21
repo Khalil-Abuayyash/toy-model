@@ -2,7 +2,6 @@ import React from "react";
 import { Router, Redirect } from "@reach/router";
 
 import LineChart from "./LineChart";
-import Dashboard from "../screens/Dashboard";
 
 import AuthRoutes from "../HOCs/AuthRoutes";
 import FormsRoutes from "../HOCs/FormsRoutes";
@@ -21,7 +20,6 @@ const Routes = ({ isOpen, setIsOpen }) => {
       {/* DashBoards */}
       <Home default />
       <LineChart path="/chart" />
-      <Dashboard path="dashboard" />
 
       {/* Authentication */}
       <AuthRoutes path="auth/*" />

@@ -15,6 +15,7 @@ const MSelect = (props) => {
     marginRight,
     isWide,
     isThird,
+    overTable,
   } = props;
 
   const customStyles = {
@@ -27,7 +28,7 @@ const MSelect = (props) => {
       border: state.isFocused ? "2px solid #e84088" : " 2px solid #e84088",
       borderRadius: "8px",
       boxShadow: "none",
-      width: isWide ? "53vw" : isThird ? "17vw" : "26vw",
+      width: isWide ? "53vw" : isThird ? "17vw" : overTable ? "13vw" : "26vw",
     }),
     control: (provided, state) => ({
       ...provided,

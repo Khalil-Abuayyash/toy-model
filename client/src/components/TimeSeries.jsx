@@ -18,30 +18,31 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   PointElement,
-  LineElement
-  // Tooltip
-  // Legend
+  LineElement,
+  Tooltip,
+  Legend
 );
 
 const options = {
   responsive: true,
-  plugins: { legend: false },
+  maintainAspectRatio: false,
+  //   plugins: { legend: false },
   tension: 0.4,
   scales: {
     x: {
-      ticks: {
-        display: false,
-        // callback: function (value, index, ticks) {
-        //   return value;
-        // },
-      },
+      //   ticks: {
+      //     display: false,
+      //     // callback: function (value, index, ticks) {
+      //     //   return value;
+      //     // },
+      //   },
       grid: {
         display: false,
       },
     },
     y: {
       ticks: {
-        display: false,
+        // display: false,
         grid: {
           drawBorder: false,
         },
@@ -53,7 +54,7 @@ const options = {
   },
 };
 
-const LineChart = () => {
+const TimeSeries = () => {
   const [fetched, setFetched] = useState({
     labels: [],
     datasets: [
@@ -62,6 +63,13 @@ const LineChart = () => {
         data: [],
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
+        pointRadius: 0,
+      },
+      {
+        label: "Dataset 2",
+        data: [],
+        borderColor: "#4D57A9",
+        backgroundColor: "#4D57A9",
         pointRadius: 0,
       },
     ],
@@ -107,12 +115,28 @@ const LineChart = () => {
             65, 59, 80, 81, 65, 59, 80, 81, 65, 59, 80, 81, 65, 59, 80, 81,
           ],
         },
+        {
+          ...fetched.datasets[1],
+          data: [
+            70, 71, 72, 85, 88, 90, 130, 135, 140, 80, 75, 70, 70, 69, 68, 67,
+          ],
+        },
       ],
     });
   }, []);
 
   return (
-    <div>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        backgroundColor: "#ffffff",
+        boxShadow: "0px 10px 30px #D1D5DF80",
+        padding: "20px",
+        borderRadius: "20px",
+        boxSizing: "border-box",
+      }}
+    >
       <Line
         style={{ width: "100%", height: "100%" }}
         options={options}
@@ -122,4 +146,4 @@ const LineChart = () => {
   );
 };
 
-export default LineChart;
+export default TimeSeries;

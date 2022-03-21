@@ -15,7 +15,7 @@ const styles = {
   fontFamily: "Cairo",
 };
 
-const Search = ({ search, handleSearch, placeholder }) => {
+const Search = ({ search, handleSearch, placeholder, style }) => {
   return (
     <input
       className={styling.search}
@@ -23,7 +23,7 @@ const Search = ({ search, handleSearch, placeholder }) => {
       onChange={handleSearch}
       placeholder={placeholder}
       type="text"
-      style={styles}
+      style={{ ...styles, ...style }}
     />
   );
 };

@@ -83,7 +83,7 @@ const MyReports = ({ path, setCurrentIcon }) => {
   }, []);
 
   return (
-    <div style={{ width: " 69vw" }}>
+    <div>
       <div
         // containing search , add button
         style={{
