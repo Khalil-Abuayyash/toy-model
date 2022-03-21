@@ -1,6 +1,4 @@
 from ipaddress import ip_address
-import site
-from tkinter import CASCADE
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -104,6 +102,48 @@ class Site(models.Model):
     lng = models.DecimalField(max_digits=4, decimal_places=2)
     lat = models.DecimalField(max_digits=4, decimal_places=2)
 
+class Dashboard(models.Model):
+    class Meta:
+        db_table = "dashboard"
+    
+    name = models.CharField(max_length=50, blank=True, null=True)
+    type = models.CharField(max_length=50, blank=True, null=True)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name='dashboards')
+    
+class Statistic(models.Model):
+    class Meta:
+        db_table = "statistic"
+    
+    name = models.CharField(max_length=50, blank=True, null=True)
+    type = models.CharField(max_length=50, blank=True, null=True)
+    # x_label = models.CharField(max_length=50, blank=True, null=True)
+    # y_label = models.CharField(max_length=50, blank=True, null=True)
+    # x_scale = models.DecimalField(max_digits=2, decimal_places=2)
+    # y_scale = models.DecimalField(max_digits=2, decimal_places=2)
+    x_coordinate = models.IntegerField()
+    y_coordinate = models.IntegerField()
+    width = models.IntegerField()
+    height = models.IntegerField()
+    query = models.TextField()
+    dashboard = models.ForeignKey(Dashboard, on_delete=models.CASCADE, related_name='statistics')
+
+class Parameter(models.Model):
+    class Meta:
+        db_table = "parameter"
+    
+    text = models.TextField()
+    dashboard = models.ForeignKey(Dashboard, on_delete=models.CASCADE, related_name="parameters")
+
+class Query(models.Model):
+    class Meta:
+        db_table = "query"
+    
+    statistic = models.ForeignKey(Statistic, on_delete=models.CASCADE, related_name="queries")
+    text = models.TextField()
+    column = models.CharField(max_length=50, blank=True, null=True)
+    interval = models.CharField(max_length=50, blank=True, null=True)
+    function = models.CharField(max_length=50, blank=True, null=True)
+
 class Project(models.Model):
     # teams:m2m, site:many2one
 
@@ -165,25 +205,13 @@ class Thing(models.Model):
     class Meta:
         db_table = "thing"
     
-    type = models.CharField(max_length=50)
-    device = models.ForeignKey(Device, on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-
-class Chart(models.Model):
-
-    class Meta:
-        db_table = "chart"
-
+    hardware_id =  models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=50, blank=True, null=True)
-    type = models.CharField(max_length=50, blank=True, null=True)
-    x_label = models.CharField(max_length=50, blank=True, null=True)
-    y_label = models.CharField(max_length=50, blank=True, null=True)
-    x_scale = models.DecimalField(max_digits=2, decimal_places=2)
-    y_scale = models.DecimalField(max_digits=2, decimal_places=2)
-    x_coordinate = models.DecimalField(max_digits=2, decimal_places=2)
-    y_coordinate = models.DecimalField(max_digits=2, decimal_places=2)
-    query = models.TextField()
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    status = models.BooleanField(default=True)
+    type = models.CharField(max_length=50)
+    site = models.ForeignKey(Site, related_name='things', on_delete=models.CASCADE)
+    # device = models.ForeignKey(Device, related_name='things', on_delete=models.CASCADE)
+    # project = models.ForeignKey(Project, related_name='things', on_delete=models.CASCADE)
 
 class Ticket(models.Model):
     class Meta:
@@ -196,7 +224,6 @@ class Ticket(models.Model):
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     done = models.BooleanField(default=False)
-
 
 class Log(models.Model):
     class Meta:
@@ -250,10 +277,5 @@ class Session(models.Model):
     ip = models.CharField(max_length=23, blank=True, null=True)
     logged_on = models.DateTimeField()
 
-class Variable(models.Model):
-    class Meta:
-        db_table = "variable"
 
-class Query(models.Model):
-    class Meta:
-        db_table = "query"
+

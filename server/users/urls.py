@@ -1,8 +1,14 @@
 from django.urls import path
-from .views import AlertViewSet, AuthenticatedView, CookieView, LogViewSet, OrganizationMembershipViewSet, OrganizationViewSet, ReportViewSet, RoleViewSet, SesssionViewSet, SiteViewSet, TeamMembershipViewSet, TeamViewSet, BlacklistTokenUpdateView \
-    , ProjectViewSet, TeamSiteViewSet, TicketViewSet, UserViewSet
 from rest_framework.routers import DefaultRouter
 from users.googleView import GoogleView
+
+from .views import \
+                 AlertViewSet, AuthenticatedView, CookieView, DashboardViewSet, LogViewSet, OrganizationMembershipViewSet \
+                , OrganizationViewSet, ParameterViewSet, QueryViewSet, ReportViewSet, RoleViewSet, SesssionViewSet \
+                , SiteViewSet, StatisticViewSet, TeamMembershipViewSet, TeamViewSet, BlacklistTokenUpdateView \
+                , ProjectViewSet, TeamSiteViewSet, ThingViewSet, TicketViewSet, UserViewSet
+
+app_name = 'users'
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
@@ -20,8 +26,11 @@ router.register(r'roles', RoleViewSet, basename='roles')
 router.register(r'alerts', AlertViewSet, basename='alerts')
 router.register(r'reports', ReportViewSet, basename='reports')
 router.register(r'sessions', SesssionViewSet, basename='sessions')
-
-app_name = 'users'
+router.register(r'dashboards', DashboardViewSet, basename='dashboards')
+router.register(r'statistics', StatisticViewSet, basename='statistics')
+router.register(r'things', ThingViewSet, basename='things')
+router.register(r'parameters', ParameterViewSet, basename='parameters')
+router.register(r'queries', QueryViewSet, basename='queries' )
 
 urlpatterns = [
     path('authenticated/<int:user_id>/', AuthenticatedView.as_view()),

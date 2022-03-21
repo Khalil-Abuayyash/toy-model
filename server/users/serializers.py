@@ -1,5 +1,8 @@
 from rest_framework import serializers
-from .models import  Chart, Device, Report, Role, Session, Thing, Ticket, User, Team, Organization, Site, Project, OrganizationMembership, TeamMembership, TeamSite, Log, Alert
+from .models import Dashboard, Device, Parameter, Query, Report, Role, Session, Statistic \
+    ,Thing, Ticket, User, Team, Organization, Site, Project \
+    , OrganizationMembership, TeamMembership, TeamSite, Log, Alert;
+
 
 class RoleSeriailzer(serializers.ModelSerializer):
 
@@ -65,7 +68,45 @@ class SiteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Site
-        fields= ['id','name', 'teams','disco', 'note', 'organization', 'organization_id', 'projects', 'lat', 'lng']
+        fields= ['id','name', 'teams','disco', 'note', 'organization', 'organization_id' \
+            , 'projects', 'lat', 'lng', 'dashboards', 'things']
+        depth = 2
+
+class DashboardSerializer(serializers.ModelSerializer):
+
+    site = SiteSerializer(required=False)
+    site_id = serializers.IntegerField(required=False)
+    # statistics = serializers.PrimaryKeyRelatedField(queryset=Statistic.objects.all(), many=True, required=False)
+
+    class Meta:
+        model = Dashboard
+        fields = ['id', 'name', 'type', 'site_id', 'site', 'statistics', 'parameters']
+        depth = 1
+
+class StatisticSerializer(serializers.ModelSerializer):
+
+    dashboard = DashboardSerializer(required=False)
+    dashboard_id = serializers.IntegerField(required=False)
+
+    class Meta:
+        model = Statistic
+        fields = ['id','name','type','x_coordinate','y_coordinate','width','height','query','dashboard_id', 'dashboard', 'queries']
+
+class ParameterSerializer(serializers.ModelSerializer):
+    dashboard = DashboardSerializer(required=False)
+    dashboard_id = serializers.IntegerField(required=False)
+
+    class Meta:
+        model = Parameter
+        fields = ['id', 'text', "dashboard", 'dashboard_id']
+
+class QuerySerializer(serializers.ModelSerializer):
+    statistic = StatisticSerializer(required=False)
+    statistic_id = serializers.IntegerField(required=False)
+
+    class Meta:
+        model = Query
+        fields = ['id', 'text', 'column','interval', 'function', 'statistic', 'statistic_id']
 
 class TeamSiteSerializer(serializers.ModelSerializer):
 
@@ -193,21 +234,12 @@ class DeviceSerializer(serializers.ModelSerializer):
 
 class ThingSerializer(serializers.ModelSerializer):
 
-    project = ProjectSerializer(required=False)
-    project_id = serializers.IntegerField(required=False)   
+    site = SiteSerializer(required=False)
+    site_id = serializers.IntegerField(required=False)   
 
     class Meta:
         model = Thing
-        fields = ['id', 'type', 'device', 'device_id', 'project', 'project_id']
-
-class ChartSerializer(serializers.ModelSerializer):
-
-    project = ProjectSerializer(required=False)
-    project_id = serializers.IntegerField(required=False)  
-
-    class Meta:
-        model = Chart
-        fields = ['id', 'name', 'type', 'x_label', 'y_label', 'x_scale', 'y_scale', 'query', 'x_coordinate', 'y_coordinate' ,'project', 'project_id', ]
+        fields = ['id','hardware_id', 'type', 'name', 'status', 'site', 'site_id']
 
 class TicketSerializer(serializers.ModelSerializer):
     site_id = serializers.IntegerField(required=False)
@@ -266,3 +298,4 @@ class AuthSerializer(serializers.Serializer):
     memOrgs = OraganizationMembershipSerializer(required=False, many=True)
     adminOrgs = OraganizationMembershipSerializer(required=False, many=True)
     teams = TeamSerializer(required=False, many=True)
+    organizations = OrganizationSerializer(required=False, many=True)

@@ -13,11 +13,13 @@ import datetime
 
 
 # models 
-from .models import Report, Role, Session, Ticket, User, Organization, OrganizationMembership, Project, Site, TeamMembership, TeamSite, Team, Log, Alert
+from .models import Dashboard, Parameter, Query, Report, Role, Session, Statistic, Thing, Ticket, User, Organization \
+        ,OrganizationMembership, Project, Site, TeamMembership, TeamSite, Team, Log, Alert
 
 # serializers
-from .serializers import LogSerializer, OraganizationMembershipSerializer, OrganizationSerializer, ReportSerializer, RoleSeriailzer, SessionSerializer, SiteSerializer, TeamMembershipSerializer \
-    , TeamSerializer, TicketSerializer, UserSerializer, ProjectSerializer, TeamSiteSerializer, AuthSerializer, AlertSerializer
+from .serializers import  LogSerializer, OraganizationMembershipSerializer, OrganizationSerializer, ParameterSerializer, QuerySerializer, ReportSerializer, RoleSeriailzer, SessionSerializer \
+                        ,SiteSerializer, StatisticSerializer, TeamMembershipSerializer , TeamSerializer, ThingSerializer , TicketSerializer \
+                        , UserSerializer, ProjectSerializer, TeamSiteSerializer, AuthSerializer, AlertSerializer ,DashboardSerializer
 
 # services
 from .services import send_verification_code
@@ -117,6 +119,35 @@ class SiteViewSet(ModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = [filters.SearchFilter]
     search_fields=['id','name','organization__name']
+
+class DashboardViewSet(ModelViewSet):
+    serializer_class = DashboardSerializer
+    queryset = Dashboard.objects.all()
+    pagination_class = PageNumberPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['site__id']
+
+class StatisticViewSet(ModelViewSet):
+    serializer_class = StatisticSerializer
+    queryset = Statistic.objects.all()
+    pagination_class = PageNumberPagination
+
+class ParameterViewSet(ModelViewSet):
+    serializer_class = ParameterSerializer
+    queryset = Parameter.objects.all()
+    pagination_class = PageNumberPagination
+
+class QueryViewSet(ModelViewSet):
+    serializer_class = QuerySerializer
+    queryset = Query.objects.all()
+    pagination_class = PageNumberPagination
+
+class ThingViewSet(ModelViewSet):
+    serializer_class = ThingSerializer
+    queryset = Thing.objects.all()
+    pagination_class = PageNumberPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['hardware_id', 'name']
 
 class TeamViewSet(ModelViewSet):
     serializer_class = TeamSerializer
@@ -276,7 +307,8 @@ class AuthenticatedView(APIView):
         if user:
             memOrgs =  OrganizationMembership.objects.filter(user_id=user.id, is_org_admin=False) or []
             adminOrgs = OrganizationMembership.objects.filter(user_id=user.id, is_org_admin=True) or []
-            auth = {"nickname":user.nickname, "id":user.id, "role_id":user.role_id, "role":user.role , "memOrgs":memOrgs, "adminOrgs":adminOrgs, "teams":user.teams}
+            auth = {"nickname":user.nickname, "id":user.id, "role_id":user.role_id, "role":user.role , "memOrgs":memOrgs \
+            , "adminOrgs":adminOrgs, "teams":user.teams, "organizations":user.organizations}
             serializer = AuthSerializer(auth)
             # serializer.is_valid(raise_exception=False)
             # print(serializer.errors)
