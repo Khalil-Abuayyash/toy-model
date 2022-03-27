@@ -46,7 +46,7 @@ const TableHeader = ({ isOpen, setIsOpen, form }) => {
         backgroundImage:
           "linear-gradient(90deg,#a7ba62 , #56b4da 35% , #e84088)",
         backgroundPosition: "100% 100%",
-        backgroundSize: form ? "" : isOpen ? "85.8% 12%" : "",
+        backgroundSize: form ? "" : isOpen ? "88% 12%" : "",
         backgroundRepeat: "no-repeat",
         backgroundColor: "white",
       }}

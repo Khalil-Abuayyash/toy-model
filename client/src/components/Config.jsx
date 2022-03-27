@@ -1,3 +1,4 @@
+import { navigate } from "@reach/router";
 import React from "react";
 
 import Button from "./subComponents/Button";
@@ -19,13 +20,16 @@ const Row = ({ buttonTitle }) => {
   );
 };
 
-const Config = () => {
+const Config = ({ id }) => {
   return (
     <div
       style={{ boxSizing: "border-box", paddingLeft: "45px", width: "100%" }}
     >
       <P text="Statistic" />
-      <Button title="Add Statistic" />
+      <Button
+        onClick={() => navigate(`/forms/statistics/create/${id}`)}
+        title="Add Statistic"
+      />
       <hr
         style={{
           // backgroundColor: "#EA3C88",

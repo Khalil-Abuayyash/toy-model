@@ -89,7 +89,7 @@ const SiteScreen = ({ id }) => {
           <DashboardScreen path="/meters" />
           <Analysis path="/analysis" />
           <HardwareList path="/hardware" id={id} />
-          <Config path="/config" />
+          <Config path="/config" id={id} />
         </Router>
       </div>
     )

@@ -16,10 +16,6 @@ const DashboardsMenu = ({ id }) => {
     setAnchorEl(null);
   };
 
-  useEffect(() => {
-    console.log(anchorEl);
-  }, []);
-
   return (
     <div>
       <Button

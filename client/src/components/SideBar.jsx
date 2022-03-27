@@ -55,7 +55,11 @@ const SideBarButton = ({ Icon, label, isClicked, onClick }) => {
       <IconButton isClicked={isClicked} Icon={Icon} />
       <span
         className={`${isClicked ? styles.clicked : styles.unclicked}`}
-        style={{ marginLeft: "8px", fontSize: "18px", fontWeight: 600 }}
+        style={{
+          marginLeft: "8px",
+          fontSize: "18px",
+          fontWeight: 600,
+        }}
       >
         {label}
       </span>
@@ -95,7 +99,7 @@ const SideBar = ({ currentIcon, setCurrentIcon }) => {
         }}
       />
       <SideBarButton
-        label="Organizations"
+        label="Orgs"
         Icon={RiBuildingLine}
         isClicked={currentIcon === "organizations" ? true : false}
         onClick={() => {

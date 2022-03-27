@@ -14,6 +14,7 @@ import Alert from "../components/Alert";
 import TicketDetails from "../components/TicketDetails";
 import TeamUser from "../components/TeamUser";
 import Report from "../components/Report";
+import StatisticForm from "../components/StatisticForm";
 
 const Home = () => <h1>HOME</h1>;
 
@@ -31,6 +32,7 @@ const FormsRoutes = () => {
         <Ticket path="/tickets/create" />
         <Alert path="/alerts/create" />
         <Report path="/reports/create" />
+        <StatisticForm path="/statistics/create/:siteId" />
 
         {/* Editing Forms */}
         <EditUser path="/users/edit/:id" />

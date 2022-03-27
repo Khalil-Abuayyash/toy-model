@@ -15,6 +15,7 @@ import BigIcon from "../components/arrows/BigIcon";
 import { BsMegaphone } from "react-icons/bs";
 import { BsClockHistory } from "react-icons/bs";
 import { CgNotes } from "react-icons/cg";
+import { FiSave } from "react-icons/fi";
 import TimeSeries from "../components/TimeSeries";
 import BarChart from "../components/BarChart";
 import DoughnutChart from "../components/DoughnutChart";
@@ -61,7 +62,6 @@ const DashboardScreen = ({ id }) => {
 
       setLayout(
         filteredDashboard.statistics.map((statistic) => {
-          console.log(typeof statistic.x_coordinate);
           return {
             x: statistic.x_coordinate,
             y: statistic.y_coordinate,
@@ -114,44 +114,25 @@ const DashboardScreen = ({ id }) => {
     }
   }, [window.location.href]);
 
-  const layouts = [
-    {
-      w: 4,
-      h: 11,
-      x: 0,
-      y: 15,
-      i: "10",
-      moved: false,
-      static: false,
-    },
-    {
-      w: 6,
-      h: 11,
-      x: 4,
-      y: 15,
-      i: "11",
-      moved: false,
-      static: false,
-    },
-    {
-      w: 5,
-      h: 11,
-      x: 0,
-      y: 26,
-      i: "12",
-      moved: false,
-      static: false,
-    },
-    {
-      w: 5,
-      h: 11,
-      x: 5,
-      y: 26,
-      i: "13",
-      moved: false,
-      static: false,
-    },
-  ];
+  const saveLayout = () => {
+    layout.forEach((element) => {
+      console.log("*********");
+      console.log(element.id);
+      axiosInstance
+        .patch(`/user/statistics/${+element.i}/`, {
+          x_coordinate: element.x,
+          y_coordinate: element.y,
+          width: element.w,
+          height: element.h,
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  };
 
   return (
     <div style={{ width: "100%", marginLeft: "25px" }}>
@@ -189,33 +170,39 @@ const DashboardScreen = ({ id }) => {
               <BigIcon Icon={BsMegaphone} isClicked={true} />
               <BigIcon Icon={CgNotes} isClicked={true} />
               <BigIcon Icon={BsClockHistory} isClicked={true} />
+              <BigIcon onClick={saveLayout} Icon={FiSave} isClicked={true} />
             </div>
           </div>
-          <Dashboard layout={[...layout, ...layouts]}>
+          <Dashboard layout={layout} setLayout={setLayout}>
             {isLoaded &&
               dashboard.statistics.map((statistic) => {
+                // console.log(statistic);
                 return statistic.type === "card" ? (
                   <div style={{ padding: "5px" }} key={statistic.id}>
-                    <Card />
+                    <Card queries={statistic.queries} />
                   </div>
                 ) : statistic.type === "line" ? (
                   <div style={{ padding: "5px" }} key={statistic.id}>
-                    <CustomizedChart />
+                    <CustomizedChart queries={statistic.queries} />
+                  </div>
+                ) : statistic.type === "time series" ? (
+                  <div style={{ padding: "5px" }} key={statistic.id}>
+                    <TimeSeries queries={statistic.queries} />
+                  </div>
+                ) : statistic.type === "gauge" ? (
+                  <div style={{ padding: "5px" }} key={statistic.id}>
+                    <GaugeChart queries={statistic.queries} />
+                  </div>
+                ) : statistic.type === "bar" ? (
+                  <div style={{ padding: "5px" }} key={statistic.id}>
+                    <BarChart queries={statistic.queries} />
+                  </div>
+                ) : statistic.type === "doughnut" ? (
+                  <div style={{ padding: "5px" }} key={statistic.id}>
+                    <DoughnutChart queries={statistic.queries} />
                   </div>
                 ) : null;
               })}
-            <div key="10">
-              <GaugeChart />
-            </div>
-            <div key="11">
-              <TimeSeries />
-            </div>
-            <div key="12">
-              <BarChart />
-            </div>
-            <div key="13">
-              <DoughnutChart />
-            </div>
           </Dashboard>
         </>
       ) : null}

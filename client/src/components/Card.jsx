@@ -1,6 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axiosInstance from "../axios";
 
-const Card = () => {
+const Card = ({ queries = [] }) => {
+  const [data, setData] = useState("187,500");
+  const [text, setText] = useState("Expected Power Of");
+
+  useEffect(() => {
+    // console.log(queries);
+    queries.map((query) => {
+      axiosInstance
+        .post(`/qudra`, { query: query.text })
+        .then((res) => {
+          console.log(res.data);
+          setData(res.data);
+        })
+        .catch((err) => {
+          console.log(err.response.data);
+        });
+    });
+  }, []);
+
   return (
     <div
       style={{
@@ -30,7 +49,7 @@ const Card = () => {
             fontFamily: "Roboto",
           }}
         >
-          Expected Power Of
+          {text}
         </text>
         <text
           x="10"
@@ -38,7 +57,7 @@ const Card = () => {
           fill="#E84088"
           style={{ fontSize: "230%", fontWeight: "bold", fontFamily: "Roboto" }}
         >
-          187,500
+          {data}
         </text>
       </svg>
       {/* 

@@ -29,6 +29,8 @@ const MSelect = (props) => {
       borderRadius: "8px",
       boxShadow: "none",
       width: isWide ? "53vw" : isThird ? "17vw" : overTable ? "13vw" : "26vw",
+      opacity: 1,
+      background: " #FFFFFF 0% 0%",
     }),
     control: (provided, state) => ({
       ...provided,

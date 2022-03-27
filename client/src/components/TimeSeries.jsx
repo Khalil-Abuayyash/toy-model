@@ -13,6 +13,7 @@ import {
 } from "chart.js";
 
 import { Line } from "react-chartjs-2";
+import axiosInstance from "../axios";
 
 ChartJS.register(
   CategoryScale,
@@ -54,7 +55,7 @@ const options = {
   },
 };
 
-const TimeSeries = () => {
+const TimeSeries = ({ queries = [] }) => {
   const [fetched, setFetched] = useState({
     labels: [],
     datasets: [
@@ -74,6 +75,55 @@ const TimeSeries = () => {
       },
     ],
   });
+
+  useEffect(() => {
+    const executeQueries = async () => {
+      // let q = [
+      //   "select * from statistic",
+      //   "select * from statistic",
+      //   "select * from statistic",
+      //   "select * from statistic",
+      // ];
+      let results = queries.map(async (query) => {
+        console.log(query);
+        let result = await axiosInstance.post(`/qudra`, {
+          query: query.text,
+        });
+        return result.data;
+      });
+      results = await Promise.all(results); // results of queries, array of arrays
+      console.log(results);
+
+      let xData = [];
+      if (results.length > 0) {
+        // x-axis, labels, instead of name it would be time
+        xData = results[0].map((row) => row["name"]);
+      }
+      let datasets = [];
+      results.map((result, idx) => {
+        // result is an array
+        let yData = result.map((row) => row["id"] * (idx + 1)); // y-axis, instead of id, it would be colName
+        datasets.push({
+          label: `Dataset ${idx}`, // variable
+          borderColor: `rgb(${idx * 60}, ${idx * 60}, 132)`, // variable
+          backgroundColor: `rgba(${idx * 60}, ${idx * 60}, 132, 0.5)`, // variable
+          pointRadius: 0,
+          data: yData,
+        });
+      });
+      console.log(xData);
+      console.log(datasets);
+
+      if (queries.length > 0) {
+        setFetched({
+          labels: xData,
+          datasets: datasets,
+        });
+      }
+    };
+
+    executeQueries();
+  }, []);
 
   // useEffect(() => {
   //   axios.get("http://localhost:8000/").then((res) => {

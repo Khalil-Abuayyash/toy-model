@@ -13,6 +13,7 @@ import {
 } from "chart.js";
 
 import { Line } from "react-chartjs-2";
+import axiosInstance from "../axios";
 
 ChartJS.register(
   CategoryScale,
@@ -49,13 +50,38 @@ const options = {
   // tension: 0.4,
 };
 
-const CustomizedChart = ({ innerRef }) => {
+const CustomizedChart = ({ innerRef, queries = [] }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
   const [fetched, setFetched] = useState({
-    labels: [],
+    labels: [
+      "Jan",
+      "Feb",
+      "Mar",
+      "April",
+      "May",
+      "June",
+      "July",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+      "Jan",
+      "Feb",
+      "Mar",
+      "April",
+      "May",
+      "June",
+      "July",
+      "Aug",
+    ],
     datasets: [
       {
         label: "Dataset 1",
-        data: [],
+        data: [
+          65, 59, 80, 81, 65, 59, 80, 81, 65, 59, 80, 81, 65, 59, 80, 81, 65,
+          59, 80, 81,
+        ],
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "#E84088",
         pointRadius: 5,
@@ -65,64 +91,56 @@ const CustomizedChart = ({ innerRef }) => {
   });
 
   useEffect(() => {
-    setFetched({
-      ...fetched,
-      labels: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "April",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-      ],
-      datasets: [
-        {
-          ...fetched.datasets[0],
-          data: [
-            65, 59, 80, 81, 65, 59, 80, 81, 65, 59, 80, 81, 65, 59, 80, 81, 65,
-            59, 80, 81,
+    const fetchData = async () => {
+      let results = queries.map(async (query) => {
+        let res = await axiosInstance.post(`/qudra`, { query: query.text });
+        res = res.data;
+        let xData = res.map((row) => row["name"]); // time, x-axis, labels
+        let yData = res.map((row) => row["id"]); // variable, y-axis
+        return { xData, yData };
+      });
+      results = await Promise.all(results);
+      if (results.length > 0) {
+        setFetched({
+          ...fetched,
+          labels: results[0].xData,
+          datasets: [
+            {
+              ...fetched.datasets[0],
+              data: results[0].yData,
+            },
           ],
-        },
-      ],
-    });
+        });
+      }
+      setIsLoaded(true);
+    };
+    fetchData();
   }, []);
 
   return (
-    <div
-      // ref={innerRef}
-      style={{
-        // resize: "both",
-        // overflow: "auto",
-        width: "100%",
-        height: "100%",
-        backgroundColor: "#ffffff",
-        boxShadow: "0px 10px 30px #D1D5DF80",
-        // padding: "20px 0px",
-        padding: "20px",
-        borderRadius: "20px",
-        boxSizing: "border-box",
-      }}
-    >
-      <Line
-        style={{ width: "100%", height: "100%" }}
-        options={options}
-        data={fetched}
-      />
-    </div>
+    isLoaded && (
+      <div
+        // ref={innerRef}
+        style={{
+          // resize: "both",
+          // overflow: "auto",
+          width: "100%",
+          height: "100%",
+          backgroundColor: "#ffffff",
+          boxShadow: "0px 10px 30px #D1D5DF80",
+          // padding: "20px 0px",
+          padding: "20px",
+          borderRadius: "20px",
+          boxSizing: "border-box",
+        }}
+      >
+        <Line
+          style={{ width: "100%", height: "100%" }}
+          options={options}
+          data={fetched}
+        />
+      </div>
+    )
   );
 };
 
