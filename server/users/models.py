@@ -67,7 +67,7 @@ class Organization(models.Model):
     # sites:one2many, teams:one2many, users:m2m
 
     class Meta:
-        db_table = "orgaznization"
+        db_table = "organization"
 
     name = models.CharField(max_length=50, unique=True, null=False)
     timezone = models.CharField(max_length=50)
@@ -109,22 +109,18 @@ class Dashboard(models.Model):
     name = models.CharField(max_length=50, blank=True, null=True)
     type = models.CharField(max_length=50, blank=True, null=True)
     site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name='dashboards')
-    
+    intervals = models.TextField()
+
 class Statistic(models.Model):
     class Meta:
         db_table = "statistic"
     
     name = models.CharField(max_length=50, blank=True, null=True)
     type = models.CharField(max_length=50, blank=True, null=True)
-    # x_label = models.CharField(max_length=50, blank=True, null=True)
-    # y_label = models.CharField(max_length=50, blank=True, null=True)
-    # x_scale = models.DecimalField(max_digits=2, decimal_places=2)
-    # y_scale = models.DecimalField(max_digits=2, decimal_places=2)
     x_coordinate = models.IntegerField()
     y_coordinate = models.IntegerField()
     width = models.IntegerField()
     height = models.IntegerField()
-    query = models.TextField()
     dashboard = models.ForeignKey(Dashboard, on_delete=models.CASCADE, related_name='statistics')
 
 class Parameter(models.Model):
@@ -233,12 +229,6 @@ class Log(models.Model):
     time = models.DateTimeField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-class Metric(TimescaleModel):
-   temperature = models.FloatField()
-
-   class Meta:
-       db_table = "metric"
-
 class Alert(models.Model):
     class Meta:
         db_table = "alert"
@@ -277,5 +267,9 @@ class Session(models.Model):
     ip = models.CharField(max_length=23, blank=True, null=True)
     logged_on = models.DateTimeField()
 
+class Metric(TimescaleModel):
+   temperature = models.FloatField()
 
+   class Meta:
+       db_table = "metric"
 

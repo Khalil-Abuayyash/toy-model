@@ -34,24 +34,13 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-class OrganizationSerializer(serializers.ModelSerializer):
-
-    users = UserSerializer(required=False, many=True)
-    # teams = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all(), many=True, required=False)
-    # sites = serializers.PrimaryKeyRelatedField(queryset=Site.objects.all(), many=True, required=False)
-
-
-    class Meta:
-        model = Organization
-        fields = ['name', 'id', 'teams', 'sites', 'users', 'note', 'timezone', 'disco', 'theme']
-        depth = 1
 
 class TeamSerializer(serializers.ModelSerializer):
 
     # projects = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), many=True, required=False)
     sites = serializers.PrimaryKeyRelatedField(queryset=Site.objects.all(), many=True, required=False)
     users = UserSerializer(required=False, many=True)
-    organization = OrganizationSerializer(required=False)
+    # organization = OrganizationSerializer(required=False)
     organization_id = serializers.IntegerField(required=False)
     
     class Meta:
@@ -59,12 +48,49 @@ class TeamSerializer(serializers.ModelSerializer):
         fields = ['name', 'id', 'users', 'sites', 'organization', 'organization_id', 'description']
         depth=1
 
+class QuerySerializer(serializers.ModelSerializer):
+    # statistic = StatisticSerializer(required=False)
+    statistic_id = serializers.IntegerField(required=False)
+
+    class Meta:
+        model = Query
+        fields = ['id', 'text', 'column','interval', 'function', 'statistic', 'statistic_id']
+        read_only_fields = ['statistic']
+
+class StatisticSerializer(serializers.ModelSerializer):
+
+    # dashboard = DashboardSerializer(required=False)
+    dashboard_id = serializers.IntegerField(required=False)
+    queries = QuerySerializer(many=True, required=False)
+
+    class Meta:
+        model = Statistic
+        fields = ['id','name','type','x_coordinate','y_coordinate','width','height', 
+                    'dashboard_id', 'dashboard', 'queries']
+        # read_only_fields = ['queries']
+        # write_only_fields = ('query_ids')
+        # extra_kwargs = {'query_ids': {'write_only': True}}
+        depth = 2
+
+class DashboardSerializer(serializers.ModelSerializer):
+
+    # site = SiteSerializer(required=False)
+    site_id = serializers.IntegerField(required=False)
+    statistics = StatisticSerializer(many=True, required=False)
+
+    class Meta:
+        model = Dashboard
+        fields = ['id', 'name', 'type', 'site_id', 'site', 'statistics', 'parameters', 'intervals']
+        depth = 4
+
+
 class SiteSerializer(serializers.ModelSerializer):
 
     projects = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), many=True, required=False)
     teams =  TeamSerializer(many=True, required=False)
-    organization = OrganizationSerializer(required=False)
+    # organization = OrganizationSerializer(required=False)
     organization_id = serializers.IntegerField(required=False)
+    dashboards = DashboardSerializer(many=True, required=False)
 
     class Meta:
         model = Site
@@ -72,25 +98,19 @@ class SiteSerializer(serializers.ModelSerializer):
             , 'projects', 'lat', 'lng', 'dashboards', 'things']
         depth = 2
 
-class DashboardSerializer(serializers.ModelSerializer):
+class OrganizationSerializer(serializers.ModelSerializer):
 
-    site = SiteSerializer(required=False)
-    site_id = serializers.IntegerField(required=False)
-    # statistics = serializers.PrimaryKeyRelatedField(queryset=Statistic.objects.all(), many=True, required=False)
-
-    class Meta:
-        model = Dashboard
-        fields = ['id', 'name', 'type', 'site_id', 'site', 'statistics', 'parameters']
-        depth = 1
-
-class StatisticSerializer(serializers.ModelSerializer):
-
-    dashboard = DashboardSerializer(required=False)
-    dashboard_id = serializers.IntegerField(required=False)
+    users = UserSerializer(required=False, many=True)
+    sites =  SiteSerializer(required=False, many=True)
+    # teams = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all(), many=True, required=False)
+    # sites = serializers.PrimaryKeyRelatedField(queryset=Site.objects.all(), many=True, required=False)
 
     class Meta:
-        model = Statistic
-        fields = ['id','name','type','x_coordinate','y_coordinate','width','height','query','dashboard_id', 'dashboard', 'queries']
+        model = Organization
+        fields = ['name', 'id', 'teams', 'sites', 'users', 'note', 'timezone', 'disco', 'theme']
+        depth = 3
+
+
 
 class ParameterSerializer(serializers.ModelSerializer):
     dashboard = DashboardSerializer(required=False)
@@ -99,14 +119,6 @@ class ParameterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Parameter
         fields = ['id', 'text', "dashboard", 'dashboard_id']
-
-class QuerySerializer(serializers.ModelSerializer):
-    statistic = StatisticSerializer(required=False)
-    statistic_id = serializers.IntegerField(required=False)
-
-    class Meta:
-        model = Query
-        fields = ['id', 'text', 'column','interval', 'function', 'statistic', 'statistic_id']
 
 class TeamSiteSerializer(serializers.ModelSerializer):
 
