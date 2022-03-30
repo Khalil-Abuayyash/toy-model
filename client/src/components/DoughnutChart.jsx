@@ -3,9 +3,17 @@ import React, { useState, useEffect } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import axiosInstance from "../axios";
+import pallets from "../utils/pallets";
 Chart.register(...registerables);
 
-const DoughnutChart = ({ queries = [] }) => {
+const DoughnutChart = ({
+  queries = [
+    { text: "select * from organization;" },
+    { text: "select * from statistic;" },
+  ],
+  pallet = "pallet1",
+  labels = "",
+}) => {
   const [isLoaded, setIsLoaded] = useState();
   const [fetched, setFetched] = useState({
     labels: ["Red", "Blue", "Yellow"],
@@ -37,7 +45,7 @@ const DoughnutChart = ({ queries = [] }) => {
       results = await Promise.all(results);
       if (results.length > 0) {
         setFetched({
-          labels: ["Red", "Blue", "Yellow"], // variable , colors: pallet ? depends of results length
+          labels: labels.split(","), // variable , colors: pallet ? depends of results length
           datasets: [
             {
               data: results,
@@ -55,6 +63,21 @@ const DoughnutChart = ({ queries = [] }) => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    setFetched({
+      ...fetched,
+      datasets: [
+        {
+          ...fetched.datasets[0],
+          backgroundColor: queries.map((query, idx) => {
+            return pallets[pallet][idx];
+          }),
+          borderColor: "white" || pallets[pallet][14],
+        },
+      ],
+    });
+  }, [pallet]);
 
   return (
     <div

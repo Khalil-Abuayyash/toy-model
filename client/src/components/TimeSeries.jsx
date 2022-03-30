@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import pallets from "../utils/pallets";
 
 import {
   Chart as ChartJS,
@@ -55,7 +56,7 @@ const options = {
   },
 };
 
-const TimeSeries = ({ queries = [] }) => {
+const TimeSeries = ({ queries = [], pallet = "pallet1", labels = "" }) => {
   const [fetched, setFetched] = useState({
     labels: [],
     datasets: [
@@ -78,6 +79,8 @@ const TimeSeries = ({ queries = [] }) => {
 
   useEffect(() => {
     const executeQueries = async () => {
+      let splitedLabels = labels.split(",");
+      console.log(splitedLabels);
       // let q = [
       //   "select * from statistic",
       //   "select * from statistic",
@@ -104,9 +107,12 @@ const TimeSeries = ({ queries = [] }) => {
         // result is an array
         let yData = result.map((row) => row["id"] * (idx + 1)); // y-axis, instead of id, it would be colName
         datasets.push({
-          label: `Dataset ${idx}`, // variable
-          borderColor: `rgb(${idx * 60}, ${idx * 60}, 132)`, // variable
-          backgroundColor: `rgba(${idx * 60}, ${idx * 60}, 132, 0.5)`, // variable
+          label:
+            idx < splitedLabels.length && splitedLabels[idx] != ""
+              ? `${splitedLabels[idx]}`
+              : `Dataset ${idx + 1}`,
+          borderColor: pallets[pallet][idx], // variable
+          backgroundColor: pallets[pallet][idx], // variable
           pointRadius: 0,
           data: yData,
         });
@@ -125,17 +131,19 @@ const TimeSeries = ({ queries = [] }) => {
     executeQueries();
   }, []);
 
-  // useEffect(() => {
-  //   axios.get("http://localhost:8000/").then((res) => {
-  //     setFetched({
-  //       ...fetched,
-  //       labels: res.data.map((row) => row["created_at"].slice(11, 16)),
-  //       datasets: [
-  //         { ...fetched.datasets[0], data: res.data.map((row) => row["power"]) },
-  //       ],
-  //     });
-  //   });
-  // }, []);
+  useEffect(() => {
+    const coloredDatasets = fetched.datasets.map((dataset, idx) => {
+      return {
+        ...dataset,
+        backgroundColor: pallets[pallet][idx],
+        borderColor: pallets[pallet][idx],
+      };
+    });
+    setFetched({
+      ...fetched,
+      datasets: coloredDatasets,
+    });
+  }, [pallet]);
 
   useEffect(() => {
     setFetched({
@@ -164,12 +172,16 @@ const TimeSeries = ({ queries = [] }) => {
           data: [
             65, 59, 80, 81, 65, 59, 80, 81, 65, 59, 80, 81, 65, 59, 80, 81,
           ],
+          backgroundColor: pallets[pallet][0],
+          borderColor: pallets[pallet][0],
         },
         {
           ...fetched.datasets[1],
           data: [
             70, 71, 72, 85, 88, 90, 130, 135, 140, 80, 75, 70, 70, 69, 68, 67,
           ],
+          backgroundColor: pallets[pallet][1],
+          borderColor: pallets[pallet][1],
         },
       ],
     });

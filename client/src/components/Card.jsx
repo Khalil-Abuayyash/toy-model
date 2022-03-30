@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../axios";
+import pallets from "../utils/pallets";
 
-const Card = ({ queries = [] }) => {
+const Card = ({ queries = [], pallet = "pallet1", labels = "" }) => {
   const [data, setData] = useState("187,500");
   const [text, setText] = useState("Expected Power Of");
 
@@ -42,19 +43,20 @@ const Card = ({ queries = [] }) => {
         <text
           x="10"
           y="20"
-          fill="#858997"
+          fill={pallets[pallet][0] || `#858997`}
           style={{
             fontSize: "100%",
             fontWeight: "normal",
             fontFamily: "Roboto",
           }}
         >
-          {text}
+          {/* {text} */}
+          {labels ? labels : text}
         </text>
         <text
           x="10"
           y="70"
-          fill="#E84088"
+          fill={pallets[pallet][5] || `#E84088`}
           style={{ fontSize: "230%", fontWeight: "bold", fontFamily: "Roboto" }}
         >
           {data}

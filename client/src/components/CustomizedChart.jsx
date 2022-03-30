@@ -14,6 +14,7 @@ import {
 
 import { Line } from "react-chartjs-2";
 import axiosInstance from "../axios";
+import pallets from "../utils/pallets";
 
 ChartJS.register(
   CategoryScale,
@@ -50,7 +51,12 @@ const options = {
   // tension: 0.4,
 };
 
-const CustomizedChart = ({ innerRef, queries = [] }) => {
+const CustomizedChart = ({
+  innerRef,
+  queries = [],
+  pallet = "pallet1",
+  labels = "",
+}) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [fetched, setFetched] = useState({
     labels: [
@@ -77,7 +83,7 @@ const CustomizedChart = ({ innerRef, queries = [] }) => {
     ],
     datasets: [
       {
-        label: "Dataset 1",
+        label: labels ? labels : "Dataset 1",
         data: [
           65, 59, 80, 81, 65, 59, 80, 81, 65, 59, 80, 81, 65, 59, 80, 81, 65,
           59, 80, 81,
@@ -108,6 +114,8 @@ const CustomizedChart = ({ innerRef, queries = [] }) => {
             {
               ...fetched.datasets[0],
               data: results[0].yData,
+              backgroundColor: pallets[pallet][0] || `#E84088`,
+              borderColor: pallets[pallet][1] || "rgb(255, 99, 132)",
             },
           ],
         });
@@ -116,6 +124,19 @@ const CustomizedChart = ({ innerRef, queries = [] }) => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    setFetched({
+      ...fetched,
+      datasets: [
+        {
+          ...fetched.datasets[0],
+          backgroundColor: pallets[pallet][0] || `#E84088`,
+          borderColor: pallets[pallet][1] || "rgb(255, 99, 132)",
+        },
+      ],
+    });
+  }, [pallet]);
 
   return (
     isLoaded && (

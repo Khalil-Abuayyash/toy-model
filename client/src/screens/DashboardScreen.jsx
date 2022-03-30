@@ -2,9 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axiosInstance from "../axios";
 
 // dashboards
-import CustomizedChart from "../components/CustomizedChart";
 import Dashboard from "../components/Dashboard";
-import Card from "../components/Card";
 
 // inputs
 import MSelect from "../components/subComponents/MSelect";
@@ -16,10 +14,17 @@ import { BsMegaphone } from "react-icons/bs";
 import { BsClockHistory } from "react-icons/bs";
 import { CgNotes } from "react-icons/cg";
 import { FiSave } from "react-icons/fi";
+
+// charts
+import Card from "../components/Card";
+import CustomizedChart from "../components/CustomizedChart";
 import TimeSeries from "../components/TimeSeries";
 import BarChart from "../components/BarChart";
 import DoughnutChart from "../components/DoughnutChart";
 import GaugeChart from "../components/GaugeChart";
+
+// threeDots (menu)
+import StatisticEditingMenu from "../components/StatisticEditingMenu";
 
 // const RefDiv = React.forwardRef((props, ref) => (
 //   <Div innerRef={ref} {...props} />
@@ -134,6 +139,20 @@ const DashboardScreen = ({ id }) => {
     });
   };
 
+  const onDelete = (id) => {
+    axiosInstance
+      .delete(`/user/statistics/${id}/`)
+      .then((res) => {
+        setDasboard({
+          ...dashboard,
+          statistics: dashboard.statistics.filter((statistic) => {
+            return statistic.id != id;
+          }),
+        });
+      })
+      .catch((err) => {});
+  };
+
   return (
     <div style={{ width: "100%", marginLeft: "25px" }}>
       {(isLoaded && dashType === "summary") ||
@@ -179,27 +198,76 @@ const DashboardScreen = ({ id }) => {
                 // console.log(statistic);
                 return statistic.type === "card" ? (
                   <div style={{ padding: "5px" }} key={statistic.id}>
-                    <Card queries={statistic.queries} />
+                    <StatisticEditingMenu
+                      onDelete={() => onDelete(statistic.id)}
+                      id={statistic.id}
+                    />
+                    <Card
+                      queries={statistic.queries}
+                      pallet={statistic.pallet.toLowerCase()}
+                      labels={statistic.labels}
+                    />
                   </div>
                 ) : statistic.type === "line" ? (
                   <div style={{ padding: "5px" }} key={statistic.id}>
-                    <CustomizedChart queries={statistic.queries} />
+                    <StatisticEditingMenu
+                      onDelete={() => onDelete(statistic.id)}
+                      id={statistic.id}
+                    />
+                    <CustomizedChart
+                      queries={statistic.queries}
+                      pallet={statistic.pallet.toLowerCase()}
+                      // labels={statistic.labels}
+                      labels={statistic.labels}
+                    />
                   </div>
                 ) : statistic.type === "time series" ? (
                   <div style={{ padding: "5px" }} key={statistic.id}>
-                    <TimeSeries queries={statistic.queries} />
+                    <StatisticEditingMenu
+                      onDelete={() => onDelete(statistic.id)}
+                      id={statistic.id}
+                    />
+                    <TimeSeries
+                      queries={statistic.queries}
+                      pallet={statistic.pallet.toLowerCase()}
+                      labels={statistic.labels}
+                    />
                   </div>
                 ) : statistic.type === "gauge" ? (
                   <div style={{ padding: "5px" }} key={statistic.id}>
-                    <GaugeChart queries={statistic.queries} />
+                    <StatisticEditingMenu
+                      onDelete={() => onDelete(statistic.id)}
+                      id={statistic.id}
+                    />
+                    <GaugeChart
+                      queries={statistic.queries}
+                      pallet={statistic.pallet.toLowerCase()}
+                      labels={statistic.labels}
+                    />
                   </div>
                 ) : statistic.type === "bar" ? (
                   <div style={{ padding: "5px" }} key={statistic.id}>
-                    <BarChart queries={statistic.queries} />
+                    <StatisticEditingMenu
+                      onDelete={() => onDelete(statistic.id)}
+                      id={statistic.id}
+                    />
+                    <BarChart
+                      queries={statistic.queries}
+                      pallet={statistic.pallet.toLowerCase()}
+                      labels={statistic.labels}
+                    />
                   </div>
                 ) : statistic.type === "doughnut" ? (
                   <div style={{ padding: "5px" }} key={statistic.id}>
-                    <DoughnutChart queries={statistic.queries} />
+                    <StatisticEditingMenu
+                      onDelete={() => onDelete(statistic.id)}
+                      id={statistic.id}
+                    />
+                    <DoughnutChart
+                      queries={statistic.queries}
+                      pallet={statistic.pallet.toLowerCase()}
+                      labels={statistic.labels}
+                    />
                   </div>
                 ) : null;
               })}

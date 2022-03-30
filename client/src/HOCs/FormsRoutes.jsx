@@ -15,6 +15,7 @@ import TicketDetails from "../components/TicketDetails";
 import TeamUser from "../components/TeamUser";
 import Report from "../components/Report";
 import StatisticForm from "../components/StatisticForm";
+import EditStatistic from "../components/EditStatistic";
 
 const Home = () => <h1>HOME</h1>;
 
@@ -40,6 +41,7 @@ const FormsRoutes = () => {
         <EditSite path="/sites/edit/:id" />
         <EditTeam path="/teams/edit/:id" />
         <TeamUser path="/user_to_team/:id" />
+        <EditStatistic path="/statistics/edit/:id" />
 
         {/* Views */}
         <TicketDetails path="/tickets/:id" />

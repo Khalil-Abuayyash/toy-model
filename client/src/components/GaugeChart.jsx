@@ -8,17 +8,17 @@ Chart.register(...registerables);
 const GaugeChart = ({ queries = [] }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [fetched, setFetched] = useState({
-    labels: ["Red", "Blue", "Yellow"],
+    labels: ["Low", "Medium", "High"],
     datasets: [
       {
         label: "My First Dataset",
-        data: [300, 50, 100], // values of type gauge
-        needleValue: 0, // query result
+        data: [200, 100, 50], // values field
+        needleValue: 2, // query result
         backgroundColor: [
           // colors of type gauge
-          "rgb(255, 99, 132)",
           "rgb(54, 162, 235)",
           "rgb(255, 205, 86)",
+          "rgb(255, 99, 132)",
         ],
         hoverOffset: 4,
       },
@@ -37,7 +37,7 @@ const GaugeChart = ({ queries = [] }) => {
         return res[0];
       });
       results = await Promise.all(results);
-      console.log(results[0]);
+
       if (results.length > 0) {
         setFetched({
           labels: ["Red", "Blue", "Yellow"], // variable , colors: pallet ? depends of results length

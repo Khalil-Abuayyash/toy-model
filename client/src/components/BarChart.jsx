@@ -3,9 +3,11 @@ import { Bar } from "react-chartjs-2";
 
 import { Chart, registerables } from "chart.js";
 import axiosInstance from "../axios";
+import pallets from "../utils/pallets";
+
 Chart.register(...registerables);
 
-const BarChart = ({ queries = [] }) => {
+const BarChart = ({ queries = [], pallet = "pallet1", labels = "" }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [fetched, setFetched] = useState({
     labels: ["January", "February", "March", "April", "May"],
@@ -22,6 +24,7 @@ const BarChart = ({ queries = [] }) => {
 
   useEffect(() => {
     const executeQueries = async () => {
+      let splitedLabels = labels.split(",");
       let q = [
         "select * from statistic",
         "select * from statistic",
@@ -47,7 +50,10 @@ const BarChart = ({ queries = [] }) => {
         // result is an array
         let yData = result.map((row) => row["id"] * (idx + 1)); // y-axis, instead of id, it would be colName
         datasets.push({
-          label: `Dataset ${idx}`, // variable
+          label:
+            idx < splitedLabels.length && splitedLabels[idx] != ""
+              ? `${splitedLabels[idx]}`
+              : `Dataset ${idx + 1}`,
           borderColor: `rgb(${idx * 60}, ${idx * 60}, 132)`, // variable
           backgroundColor: `rgba(${idx * 60}, ${idx * 60}, 132, 0.5)`, // variable
           pointRadius: 0,
@@ -67,32 +73,18 @@ const BarChart = ({ queries = [] }) => {
     executeQueries();
   }, []);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     let results = queries.map(async (query) => {
-  //       let res = await axiosInstance.post(`/qudra`, { query: query.text });
-  //       res = res.data;
-  //       let xData = res.map((row) => row["name"]); // time, x-axis, labels
-  //       let yData = res.map((row) => row["id"]); // variable, y-axis
-  //       return { xData, yData };
-  //     });
-  //     results = await Promise.all(results);
-  //     if (results.length > 0) {
-  //       setFetched({
-  //         ...fetched,
-  //         labels: results[0].xData,
-  //         datasets: [
-  //           {
-  //             ...fetched.datasets[0],
-  //             data: results[0].yData,
-  //           },
-  //         ],
-  //       });
-  //     }
-  //     setIsLoaded(true);
-  //   };
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    setFetched({
+      ...fetched,
+      datasets: [
+        {
+          ...fetched.datasets[0],
+          backgroundColor: pallets[pallet][0] || `#E84088`,
+          borderColor: pallets[pallet][1] || "rgb(255, 99, 132)",
+        },
+      ],
+    });
+  }, [pallet]);
 
   return (
     isLoaded && (

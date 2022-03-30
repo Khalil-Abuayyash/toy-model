@@ -23,36 +23,24 @@ import GaugeChart from "./GaugeChart";
 import { BsPlusCircleDotted } from "react-icons/bs";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 
-const StatisticForm = ({ siteId }) => {
+const EditStatistic = ({ id }) => {
   //Query Section States
-  const [queries, setQueries] = useState([
+  const [query, setQuery] = useState("");
+  //Query Section States
+  const [oldQueries, setOldQueries] = useState([
     {
       id: -1,
-      text: "New Query",
+      text: "An Old Query",
     },
   ]);
-  const [currentQuery, setCurrentQuery] = useState({
+  const [currentOldQuery, setCurrentOldQuery] = useState({
     id: -1,
-    text: "New Query",
+    text: "An Old Query",
   });
-  const [currentId, setCurrentId] = useState(-2);
 
-  const [colName, setColName] = useState("");
-  const [cols, setCols] = useState([]);
-
-  const [fn, setFn] = useState("");
-  const [functions] = useState(
-    ["max", "avg", "min"].map((name) => ({
-      value: name,
-      label: name,
-    }))
-  );
-
-  const [interval, setInterval] = useState("");
-  const [intervals, setIntervals] = useState([]);
-
-  const [dashboard, setDashboard] = useState("");
-  const [dashboards, setDashboards] = useState([]);
+  const [queries, setQueries] = useState([]);
+  const [currentQuery, setCurrentQuery] = useState({});
+  const [currentId, setCurrentId] = useState(-1);
 
   // Design Section States
   const [color, setColor] = useState("pallet1");
@@ -85,73 +73,10 @@ const StatisticForm = ({ siteId }) => {
   //Context
   const { user } = useContext(AuthContext);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const fetchedDashboards = await axiosInstance.get(
-        `/user/dashboards?search=${siteId}`
-      );
-      setDashboards(fetchedDashboards.data.results);
-
-      const filteredDashboards = fetchedDashboards.data.results.filter(
-        (dashboard) => {
-          return dashboard.name === "summary";
-        }
-      );
-      let filteredDashboard = {
-        intervals: "qw,qe,rt",
-        parameters: [
-          { label: "P", value: "p" },
-          { label: "V", value: "v" },
-        ],
-        name: "No Dashboards",
-        id: 0,
-      };
-      if (filteredDashboards.length === 1) {
-        filteredDashboard = filteredDashboards[0];
-      }
-
-      setDashboard(filteredDashboard);
-    };
-    fetchData();
-  }, []);
-
-  // useEffect(() => {
-  //   if (!isAdmin(user.role.name)) {
-  //     navigate("/users");
-  //   }
-  // }, [user]);
-
-  // Handlers
-  const handleDashboard = (e) => {
-    let ints = e.intervals.split(",").map((interval) => {
-      return { label: interval, value: interval };
-    });
-
-    setDashboard(e);
-    setIntervals(ints);
-    setCols(e.parameters);
-  };
-
-  const handleCol = (e) => {
-    setColName(e.value);
-  };
-  const handleInterval = (e) => {
-    setInterval(e.value);
-  };
-  const handleFunction = (e) => {
-    setFn(e.value);
-  };
-
-  const handleQueries = (e) => {
-    setQueries(
-      queries.map((query) => {
-        if (query.id == currentQuery.id) {
-          return { id: query.id, text: e.target.value };
-        }
-        return { id: query.id, text: query.text };
-      })
-    );
-    setCurrentQuery({ text: e.target.value, id: currentQuery.id });
+  // handlers
+  const handleQuery = (e) => {
+    console.log(e.target.value);
+    setQuery(e.target.value);
   };
 
   const handleType = (e) => {
@@ -170,38 +95,76 @@ const StatisticForm = ({ siteId }) => {
     setLabels(e.target.value);
   };
 
+  const handleQueries = (e) => {
+    setQueries(
+      queries.map((query) => {
+        if (query.id == currentQuery.id) {
+          return { id: query.id, text: e.target.value };
+        }
+        return { id: query.id, text: query.text };
+      })
+    );
+    setCurrentQuery({ text: e.target.value, id: currentQuery.id });
+  };
+
+  const handleOldQueries = (e) => {
+    setOldQueries(
+      oldQueries.map((query) => {
+        if (query.id == currentOldQuery.id) {
+          return { id: query.id, text: e.target.value };
+        }
+        return { id: query.id, text: query.text };
+      })
+    );
+    setCurrentOldQuery({ text: e.target.value, id: currentOldQuery.id });
+  };
+
   // Submit
   const handleSubmit = (e) => {
     e.preventDefault();
     axiosInstance
-      .post(`/user/statistics/`, {
-        name: "chart",
+      .patch(`/user/statistics/${id}/`, {
         type,
-        x_coordinate: 0,
-        y_coordinate: -1,
-        height: size == "small" ? 8 : 13,
-        width: size == "large" ? 12 : size == "medium" ? 6 : 3,
         pallet: color,
         labels: labels,
-        dashboard_id: dashboard.id,
       })
       .then((res) => {
+        oldQueries.map((query) => {
+          axiosInstance.patch(`/user/queries/${query.id}/`, {
+            text: query.text,
+            statistic_id: res.data.id,
+          });
+        });
         queries.map((query) => {
           axiosInstance.post(`/user/queries/`, {
             column: "p",
-            interval,
+            interval: "1m",
             text: query.text,
             statistic_id: res.data.id,
-            fucntion: fn,
+            fucntion: "max",
           });
         });
-
-        navigate(`/tables/home/sites/${siteId}/${dashboard.name}`);
+        navigate(-1);
       })
       .catch((err) => {
         console.log(err.response.data);
       });
   };
+
+  // UseEffect, populating form
+  useEffect(() => {
+    axiosInstance
+      .get(`/user/statistics/${id}`)
+      .then((res) => {
+        const statistic = res.data;
+        setColor(statistic.pallet);
+        setType(statistic.type);
+        setLabels(statistic.labels);
+        setOldQueries(statistic.queries);
+        setCurrentOldQuery(statistic.queries[0]);
+      })
+      .catch((err) => {});
+  }, []);
 
   // Rendering Chart depending on Type, Size and Colors
   const renderSwitch = (typ, siz, pallet) => {
@@ -261,15 +224,35 @@ const StatisticForm = ({ siteId }) => {
     );
   };
 
+  const OldNumber = ({ number, query }) => {
+    return (
+      <div
+        onClick={() => setCurrentOldQuery({ id: query.id, text: query.text })}
+        style={{
+          width: "2.85vw",
+          height: "2.85vw",
+          backgroundColor:
+            currentOldQuery.id == query.id ? "#ea3c88" : "#ffffff",
+          color: currentOldQuery.id == query.id ? "#ffffff" : "#000000",
+          borderRadius: "0.63vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+        }}
+      >
+        {number}
+      </div>
+    );
+  };
+
+  // Adding New Queries
   const AddQuery = () => {
     return (
       <div
         onClick={() => {
           if (queries.length < 10) {
-            setQueries([
-              ...queries,
-              { text: "Another New Query", id: currentId },
-            ]);
+            setQueries([...queries, { text: "A New Query", id: currentId }]);
             setCurrentQuery({ text: "Another New Query", id: currentId });
             setCurrentId(currentId - 1);
           }
@@ -291,7 +274,12 @@ const StatisticForm = ({ siteId }) => {
     );
   };
 
-  const deleteQuery = (id) => {
+  // Deleting Queries
+  const deleteQuery = () => {
+    if (queries.length == 1) {
+      setQueries([]);
+      setCurrentQuery({});
+    }
     if (queries.length > 1) {
       const nextQueries = queries.filter((query) => {
         return query.id != currentQuery.id;
@@ -301,58 +289,68 @@ const StatisticForm = ({ siteId }) => {
     }
   };
 
+  const deleteOldQuery = () => {
+    if (oldQueries.length > 1) {
+      axiosInstance
+        .delete(`/user/queries/${currentOldQuery.id}/`)
+        .then((res) => {
+          const nextOldQueries = oldQueries.filter((query) => {
+            return query.id != currentOldQuery.id;
+          });
+          setOldQueries(nextOldQueries);
+          setCurrentOldQuery(nextOldQueries[nextOldQueries.length - 1]);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   // Rendering
   return (
     <div className={styles.container}>
-      <H2 style={{ fontWeight: "600", marginTop: "0px" }}>Add Statistic</H2>
+      <H2 style={{ fontWeight: "600", marginTop: "0px" }}>Edit Statistic</H2>
 
       {/* Start Query Section */}
-      <H3 style={{ fontWeight: "600" }}>Query</H3>
-      {/* <form onSubmit={handleSubmit}> */}
-      <FormRow>
-        <MSelect
-          isMulti={false}
-          options={dashboards}
-          placeholder="Dashboard"
-          getOptionLabel={(option) => option.name}
-          getOptionValue={(option) => option.id}
-          selected={dashboard}
-          setSelected={handleDashboard}
-          isWide={true}
+
+      {/* Editing Old Queries */}
+      <H3 style={{ fontWeight: "600" }}>Editing Old Queries</H3>
+      <FormRow style={{ position: "relative" }}>
+        <div style={{ position: "absolute", top: "16px", right: "2.9%" }}>
+          <IoIosCloseCircleOutline
+            style={{ width: "25px", height: "25px", cursor: "pointer" }}
+            onClick={deleteOldQuery}
+          />
+        </div>
+        <textarea
+          className={`${textareaStyles.default} ${textareaStyles.input} ${textareaStyles.wide}`}
+          placeholder="Query"
+          style={{ height: "25.4vh", resize: "none" }}
+          onChange={handleOldQueries}
+          value={currentOldQuery.text}
         />
       </FormRow>
+      {/* Choosing Query */}
       <FormRow>
-        <MSelect
-          isMulti={false}
-          options={cols}
-          placeholder="Col Name"
-          getOptionLabel={(option) => option.label}
-          getOptionValue={(option) => option.value}
-          selected={colName}
-          setSelected={handleCol}
-          isThird={true}
-        />
-        <MSelect
-          isMulti={false}
-          options={intervals}
-          placeholder="Interval"
-          getOptionLabel={(option) => option.label}
-          getOptionValue={(option) => option.value}
-          selected={interval}
-          setSelected={handleInterval}
-          isThird={true}
-        />
-        <MSelect
-          isMulti={false}
-          options={functions}
-          placeholder="Function"
-          getOptionLabel={(option) => option.label}
-          getOptionValue={(option) => option.value}
-          selected={fn}
-          setSelected={handleFunction}
-          isThird={true}
-        />
+        <div
+          style={{
+            background: "white",
+            width: "98%",
+            height: "80px",
+            borderRadius: "8px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {oldQueries.map((query, idx) => {
+            return <OldNumber key={idx} number={idx + 1} query={query} />;
+          })}
+        </div>
       </FormRow>
+
+      {/* Adding New Queries */}
+      <H3 style={{ fontWeight: "600" }}>Adding New Queries</H3>
       <FormRow style={{ position: "relative" }}>
         <div style={{ position: "absolute", top: "16px", right: "2.9%" }}>
           <IoIosCloseCircleOutline
@@ -365,7 +363,8 @@ const StatisticForm = ({ siteId }) => {
           placeholder="Query"
           style={{ height: "25.4vh", resize: "none" }}
           onChange={handleQueries}
-          value={currentQuery.text}
+          value={currentQuery.text !== undefined ? currentQuery.text : ""}
+          disabled={currentQuery.text !== undefined ? false : true}
         />
       </FormRow>
       {/* Choosing Query, Adding Query */}
@@ -459,7 +458,7 @@ const StatisticForm = ({ siteId }) => {
           }}
           title="Cancel"
           isWide={true}
-          onClick={() => navigate(`/tables/home/sites/${siteId}/config`)}
+          onClick={() => navigate(-1)}
         />
       </FormRow>
       <FormRow>
@@ -479,4 +478,4 @@ const StatisticForm = ({ siteId }) => {
   );
 };
 
-export default StatisticForm;
+export default EditStatistic;
