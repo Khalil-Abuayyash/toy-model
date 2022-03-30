@@ -1,3 +1,4 @@
+from enum import unique
 from rest_framework import serializers
 from .models import Dashboard, Device, Parameter, Query, Report, Role, Session, Statistic \
     ,Thing, Ticket, User, Team, Organization, Site, Project \
@@ -13,7 +14,6 @@ class RoleSeriailzer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
 
     role = RoleSeriailzer(required=False)
-    email = serializers.EmailField(required=True)
     password = serializers.CharField(min_length=8, write_only=True)
     role_id = serializers.IntegerField(required=False)
     # organizations = serializers.PrimaryKeyRelatedField(queryset=Organization.objects.all(), many=True, required=False)
@@ -66,7 +66,7 @@ class StatisticSerializer(serializers.ModelSerializer):
     class Meta:
         model = Statistic
         fields = ['id','name','type','x_coordinate','y_coordinate','width','height', 
-                    'dashboard_id', 'dashboard', 'queries']
+                    'dashboard_id', 'dashboard', 'queries', 'pallet', 'labels']
         # read_only_fields = ['queries']
         # write_only_fields = ('query_ids')
         # extra_kwargs = {'query_ids': {'write_only': True}}
@@ -82,7 +82,6 @@ class DashboardSerializer(serializers.ModelSerializer):
         model = Dashboard
         fields = ['id', 'name', 'type', 'site_id', 'site', 'statistics', 'parameters', 'intervals']
         depth = 4
-
 
 class SiteSerializer(serializers.ModelSerializer):
 

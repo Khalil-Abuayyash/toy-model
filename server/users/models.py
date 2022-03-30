@@ -1,3 +1,4 @@
+from cProfile import label
 from ipaddress import ip_address
 from django.db import models
 from django.utils import timezone
@@ -112,6 +113,17 @@ class Dashboard(models.Model):
     intervals = models.TextField()
 
 class Statistic(models.Model):
+    pallet1 = 'pallet1'
+    pallet2 = 'pallet2'
+    pallet3 = 'pallet3'
+    pallet4 = 'pallet4'
+    PALLETS_CHOICES = [
+        (pallet1, 'Pallet1'),
+        (pallet2, 'Pallet1'),
+        (pallet3, 'Pallet1'),
+        (pallet4, 'Pallet1'),
+    ]
+
     class Meta:
         db_table = "statistic"
     
@@ -121,6 +133,11 @@ class Statistic(models.Model):
     y_coordinate = models.IntegerField()
     width = models.IntegerField()
     height = models.IntegerField()
+    pallet = models.TextField(
+        max_length=7,
+        choices=PALLETS_CHOICES,
+        default=pallet1,)
+    labels = models.TextField()
     dashboard = models.ForeignKey(Dashboard, on_delete=models.CASCADE, related_name='statistics')
 
 class Parameter(models.Model):

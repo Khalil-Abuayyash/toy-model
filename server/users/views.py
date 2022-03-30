@@ -44,6 +44,7 @@ class UserViewSet(ModelViewSet):
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields=['id','nickname','organizations__name','email']
     filterset_fields = ['teams__id','organizations__id']
+        
 
     def create(self, request, *args, **kwargs):
         data = request.data
@@ -54,7 +55,7 @@ class UserViewSet(ModelViewSet):
                 new_user.set_password(data["password"])
             new_user.save()
         except IntegrityError as e:
-            return HttpResponseBadRequest(e.__cause__)
+            return super().create(request, *args, **kwargs)
 
         for organization in data["organizations"]:
             organization_object = Organization.objects.get(name=organization["name"])
@@ -120,6 +121,26 @@ class SiteViewSet(ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields=['id','name','organization__name']
 
+    def create(self, request, *args, **kwargs):
+        data = request.data
+
+        try :      
+            new_site = Site(organization_id=data['organization_id'], name=data['name'],disco=data['disco'], note=data['note'] 
+                        , lat=data['lat'], lng=data['lng'])
+            new_site.save()
+        except IntegrityError as e:
+            return super().create(request, *args, **kwargs)
+        
+        names = ['summary', 'pv', 'weather', 'meters']
+        dashboards = []
+        for name in names:
+            dashboard = Dashboard.objects.create(name=name, site_id=new_site.id)
+            dashboards.append(dashboards)
+
+        # new_site.dashboards = dashboards
+        serializer = SiteSerializer(new_site)
+        return Response(serializer.data)
+
 class DashboardViewSet(ModelViewSet):
     serializer_class = DashboardSerializer
     queryset = Dashboard.objects.all()
@@ -162,7 +183,7 @@ class TeamViewSet(ModelViewSet):
             new_team = Team.objects.create(name=data["name"], description=data["description"], organization_id=data["organization_id"])
             new_team.save()
         except IntegrityError as e:
-            return HttpResponseBadRequest(e.__cause__)
+            return super().create(request, *args, **kwargs)
 
         for user in data["users"]:
             # user_object = User.objects.get(id=user["id"])
@@ -195,7 +216,7 @@ class OrganizationViewSet(ModelViewSet):
             new_org = Organization.objects.create(name=data["name"], note=data["note"], timezone=data["timezone"], disco=data["disco"], theme=data["theme"])
             new_org.save()
         except IntegrityError as e:
-            return HttpResponseBadRequest(e.__cause__)
+            return super().create(request, *args, **kwargs)
 
         for user in data["admins"]:
             # user_object = User.objects.get(id=user["id"])
