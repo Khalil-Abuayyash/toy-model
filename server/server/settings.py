@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -126,6 +127,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SAMESITE = 'Lax'
@@ -154,13 +156,15 @@ REST_FRAMEWORK = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000", "http://192.168.1.7:3000",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000", "http://192.168.1.7:3000",
+# ]
 
-CORS_ORIGIN_WHITELIST = [
-     'http://localhost:3000', 'http://192.168.1.7:3000',
-]
+# CORS_ORIGIN_WHITELIST = [
+#      'http://localhost:3000', 'http://192.168.1.7:3000',
+# ]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOW_CREDENTIALS = True
 
