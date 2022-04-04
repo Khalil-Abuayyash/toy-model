@@ -12,7 +12,7 @@ import CustomizedChart from "./CustomizedChart";
 const ReactGridLayout = WidthProvider(RGL);
 
 const Dashboard = ({ children, items = 20, layout, setLayout }) => {
-  // const isInitialMount = useRef(true);
+  const [num, setNum] = useState(0);
 
   return (
     <div style={{ width: "100%", marginBottom: "100px" }}>

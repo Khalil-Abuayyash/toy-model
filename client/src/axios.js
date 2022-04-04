@@ -35,7 +35,7 @@ axiosInstance.interceptors.response.use(
       error.response.status === 401 &&
       originalRequest.url === baseURL + "token/refresh/"
     ) {
-      window.location.href = "/login/";
+      window.location.href = "/auth/login/";
       return Promise.reject(error);
     }
 
@@ -78,14 +78,16 @@ axiosInstance.interceptors.response.use(
         }
       } else {
         console.log("Refresh token not available.");
-        window.location.href = "/login/";
+        window.location.href = "/auth/login/";
       }
     }
     if (
       error.response.status === 401 &&
       error.response.statusText === "Unauthorized"
     ) {
-      window.location.href = "/auth/login/";
+      if (originalRequest.url !== "token/") {
+        window.location.href = "/auth/login/";
+      }
     }
     // specific error handling done elsewhere
     return Promise.reject(error);

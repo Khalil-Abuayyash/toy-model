@@ -53,28 +53,31 @@ const OrganizationSummaryTable = ({
         ))}
       </TableRow>
       {/* </TableHead> */}
-
-      <TableRow key={0}>
-        <TableCell
-          onClick={() => navigate(`/tables/home/sites/1/summary`)}
-          key={1}
-          text="Qudra Site"
-        />
-        <TableCell key={2}>
-          <LineChart />
-        </TableCell>
-        <TableCell key={3} text="0.7 KW" />
-        <TableCell key={4}>
-          <WeatherIcon />
-        </TableCell>
-        <TableCell key={5} text="0.7 KW" />
-        <TableCell key={6}>
-          <Path />
-        </TableCell>
-        <TableCell key={7} text="56,048 KW" />
-        <TableCell key={8} text="5000 KW" />
-        <TableCell key={9} text="1 minute ago" />
-      </TableRow>
+      {data.map((item) => {
+        return (
+          <TableRow key={item.id}>
+            <TableCell
+              onClick={() => navigate(`/tables/home/sites/${item.id}/summary`)}
+              key={1}
+              text={item.name}
+            />
+            <TableCell key="chart">
+              <LineChart />
+            </TableCell>
+            <TableCell key="now" text="0.7 KW" />
+            <TableCell key="weather">
+              <WeatherIcon />
+            </TableCell>
+            <TableCell key="expected" text="0.7 KW" />
+            <TableCell key="path">
+              <Path />
+            </TableCell>
+            <TableCell key="month" text="56,048 KW" />
+            <TableCell key="size" text="5000 KW" />
+            <TableCell key="last" text="1 minute ago" />
+          </TableRow>
+        );
+      })}
 
       {/* <TableBody> */}
       {/* {data.map((item, idx) => (

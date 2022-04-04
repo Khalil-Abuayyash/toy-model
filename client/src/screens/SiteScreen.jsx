@@ -23,8 +23,19 @@ import axiosInstance from "../axios";
 const SiteScreen = ({ id }) => {
   const [site, setSite] = useState({});
   const [isLoaded, setIsLoaded] = useState(false);
+  const [dashType, setDashType] = useState("");
 
   useEffect(() => {
+    const dash = window.location.href.split("/").pop();
+    if (dash == "pv") {
+      setDashType("pv system");
+    } else if (dash == "weather") {
+      setDashType("weather station");
+    } else if (dash == "meters") {
+      setDashType("energy meters");
+    } else if (dash == "summary") {
+      setDashType("summary");
+    }
     axiosInstance
       .get(`/user/sites/${id}`)
       .then((res) => {
@@ -60,7 +71,11 @@ const SiteScreen = ({ id }) => {
               alignItems: "center",
             }}
           >
-            <DashboardsMenu id={id} />
+            <DashboardsMenu
+              id={id}
+              dashType={dashType}
+              setDashType={setDashType}
+            />
             <H4
               style={{ cursor: "pointer" }}
               onClick={() => navigate("analysis")}
@@ -83,10 +98,10 @@ const SiteScreen = ({ id }) => {
         </div>
 
         <Router>
-          <DashboardScreen path="/summary" />
-          <DashboardScreen path="/pv" />
-          <DashboardScreen path="/weather" />
-          <DashboardScreen path="/meters" />
+          <DashboardScreen site={site} dashType={dashType} path="/summary" />
+          <DashboardScreen site={site} dashType={dashType} path="/pv" />
+          <DashboardScreen site={site} dashType={dashType} path="/weather" />
+          <DashboardScreen site={site} dashType={dashType} path="/meters" />
           <Analysis path="/analysis" />
           <HardwareList path="/hardware" id={id} />
           <Config path="/config" id={id} />

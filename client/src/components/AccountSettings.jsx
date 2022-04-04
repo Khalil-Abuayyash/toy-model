@@ -17,7 +17,6 @@ import H4 from "./headers/H4";
 
 const AccountSettings = (props) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [roleId, setRoleId] = useState("1");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [company, setCompany] = useState("");
@@ -111,7 +110,6 @@ const AccountSettings = (props) => {
         email: email,
         nickname: name,
         telephone: telephone,
-        role_id: parseInt(roleId),
         removedTeams: [],
         removedOrganizations: [],
         newTeams: [],

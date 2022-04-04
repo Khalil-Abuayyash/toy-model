@@ -16,12 +16,13 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [emailError] = useState([false, ""]);
   const [passwordError, setPasswordError] = useState([false, ""]);
+  const [credError, setCredError] = useState("");
   const { setUser, setIsAuthenticated, isAuthenticated, setOrganization } =
     useContext(AuthContext);
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/tables/users");
+      navigate("/tables/home");
     }
   }, []);
 
@@ -35,11 +36,16 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const login = async () => {
-      const res = await axiosInstance.post(`token/`, {
-        email: email,
-        password: password,
-      });
-      console.log(res.data);
+      let res;
+      try {
+        res = await axiosInstance.post(`token/`, {
+          email: email,
+          password: password,
+        });
+      } catch (e) {
+        setCredError("No Account Found With The Given Credentials");
+        return;
+      }
       localStorage.setItem("access_token", res.data.access);
       localStorage.setItem("refresh_token", res.data.refresh);
       axiosInstance.defaults.headers["Authorization"] =
@@ -65,7 +71,7 @@ const Login = () => {
       } catch (e) {
         console.log(e.response.data);
       }
-      let fetchedOrganization = null;
+      let fetchedOrganization = { data: { sites: [] } };
       if (userRes.data.adminOrgs.length > 0) {
         fetchedOrganization = await axiosInstance.get(
           `/user/organizations/${userRes.data.adminOrgs[0].organization.id}`
@@ -78,9 +84,9 @@ const Login = () => {
       setOrganization(fetchedOrganization.data);
       setUser(userRes.data);
       setIsAuthenticated(true);
+      navigate("/tables/home");
     };
     login();
-    navigate("/tables/users");
   };
 
   return (
@@ -119,10 +125,24 @@ const Login = () => {
             emailError[0] ? "error" : email.length === 0 ? "input" : "success"
           }
           id="password"
+          type="password"
           value={password}
           onChange={handlePass}
           isLarge={true}
         />
+        {credError.length > 0 ? (
+          <H4
+            style={{
+              // maxWitdth: "100%",
+              color: "#E84088",
+              fontWeight: "bold",
+              wordWrap: "breakWord",
+              textAlign: "center",
+            }}
+          >
+            {credError}
+          </H4>
+        ) : null}
         <Button title="Login" isLarge={true} />
       </form>
       <div

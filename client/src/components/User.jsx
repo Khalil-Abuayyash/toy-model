@@ -59,11 +59,7 @@ const User = () => {
         navigate("/tables/users");
       })
       .catch((err) => {
-        if (err.response.data.includes("email")) {
-          setEmailError([true, "Email already exists."]);
-        } else if (err.response.data.includes("name")) {
-          setNameError([true, "Name already exsits."]);
-        }
+        console.log(err.response.data);
       });
   };
 

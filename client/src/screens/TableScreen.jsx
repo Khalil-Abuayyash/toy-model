@@ -18,10 +18,6 @@ const TableScreen = (props) => {
     window.location.href.split("/").pop()
   );
 
-  useEffect(() => {
-    console.log(window.location.href);
-  }, []);
-
   return (
     isLoaded && (
       <div // sidebar + table(serach,create,rows,pagination)

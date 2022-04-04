@@ -12,7 +12,7 @@ const Dots = () => {
   return (
     <IconContext.Provider value={{ color: "#e84088" }}>
       <div>
-        <BsThreeDotsVertical style={{ width: "24px", height: "24px" }} />
+        <BsThreeDotsVertical style={{ width: "22px", height: "22px" }} />
       </div>
     </IconContext.Provider>
   );
@@ -32,8 +32,8 @@ const StatisticEditingMenu = ({ onDelete, id }) => {
     <div
       style={{
         position: "absolute",
-        top: "16px",
-        right: "13px",
+        top: "14px",
+        right: "-5px",
       }}
     >
       <Button

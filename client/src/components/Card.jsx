@@ -13,7 +13,11 @@ const Card = ({ queries = [], pallet = "pallet1", labels = "" }) => {
         .post(`/qudra`, { query: query.text })
         .then((res) => {
           console.log(res.data);
-          setData(res.data);
+          if (typeof res.data == "object" || typeof res.data == "array") {
+            setData("Wrong Query:");
+          } else {
+            setData(res.data);
+          }
         })
         .catch((err) => {
           console.log(err.response.data);

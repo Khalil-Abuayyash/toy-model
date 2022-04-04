@@ -4,7 +4,6 @@ import BigIcon from "./arrows/BigIcon";
 import { ImMap2 } from "react-icons/im";
 import { BsTable } from "react-icons/bs";
 import { isAdmin } from "../HOCs/AdminComponent";
-import Table from "../components/Table";
 import { AuthContext } from "../Context/AuthenticationContext";
 import Pagination from "../components/Pagination";
 import GoogleMap from "../components/GoogleMap";

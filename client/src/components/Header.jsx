@@ -7,6 +7,7 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import ProfileMenu from "./ProfileMenu";
 import { AuthContext } from "../Context/AuthenticationContext";
 import OrganizationDialog from "./OrganizationDialog";
+import { navigate } from "@reach/router";
 
 export const OutHeader = () => {
   return (
@@ -26,11 +27,14 @@ export const OutHeader = () => {
       }}
     >
       <img
+        onClick={() => {
+          navigate(`/tables/home`);
+        }}
         src={require("../images/logo.png")}
         width="114px"
         height="49px"
         alt="Logo"
-        style={{ marginLeft: "15%" }}
+        style={{ marginLeft: "15%", cursor: "pointer" }}
       />
     </div>
   );
@@ -83,10 +87,14 @@ const TableHeader = ({ isOpen, setIsOpen, form }) => {
           )}
 
           <img
+            onClick={() => {
+              navigate(`/tables/home`);
+            }}
             src={require("../images/clogo.png")}
             width="114px"
             height="49px"
             alt="Logo"
+            style={{ cursor: "pointer" }}
           />
         </div>
 

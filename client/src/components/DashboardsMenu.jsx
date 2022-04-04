@@ -6,7 +6,7 @@ import H4 from "./headers/H4";
 import H2 from "../components/headers/H2";
 import { navigate } from "@reach/router";
 
-const DashboardsMenu = ({ id }) => {
+const DashboardsMenu = ({ id, dashType, setDashType }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -32,7 +32,7 @@ const DashboardsMenu = ({ id }) => {
             alignItems: "center",
           }}
         >
-          <H4 style={{ paddingRight: "6px" }}>Dashboards</H4>
+          <H4 style={{ paddingRight: "6px" }}>{dashType}</H4>
           <svg
             style={{ marginTop: "5px" }}
             width="12"
@@ -88,70 +88,85 @@ const DashboardsMenu = ({ id }) => {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem
-          style={{ height: "60px", width: "11vw" }}
-          onClick={() => {
-            handleClose();
-            navigate(`/tables/home/sites/${id}/summary`);
-          }}
-        >
-          <H4
-            style={{
-              fontSize: "1.31vw",
-              fontWeight: "600",
+        {dashType != "summary" ? (
+          <MenuItem
+            style={{ height: "60px", width: "11vw" }}
+            onClick={() => {
+              handleClose();
+              setDashType("summary");
+              navigate(`/tables/home/sites/${id}/summary`);
             }}
           >
-            Summary
-          </H4>
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleClose();
-            navigate(`/tables/home/sites/${id}/pv`);
-          }}
-          style={{ height: "60px", width: "11vw" }}
-        >
-          <H4
-            style={{
-              fontWeight: "600",
-              fontSize: "1.31vw",
+            <H4
+              style={{
+                fontSize: "1.31vw",
+                fontWeight: "600",
+              }}
+            >
+              Summary
+            </H4>
+          </MenuItem>
+        ) : null}
+
+        {dashType != "pv system" ? (
+          <MenuItem
+            onClick={() => {
+              handleClose();
+              setDashType("pv system");
+              navigate(`/tables/home/sites/${id}/pv`);
             }}
+            style={{ height: "60px", width: "11vw" }}
           >
-            Pv System
-          </H4>
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleClose();
-            navigate(`/tables/home/sites/${id}/weather`);
-          }}
-          style={{ height: "60px", width: "11vw" }}
-        >
-          <H4
-            style={{
-              fontSize: "1.31vw",
-              fontWeight: "600",
+            <H4
+              style={{
+                fontWeight: "600",
+                fontSize: "1.31vw",
+              }}
+            >
+              Pv System
+            </H4>
+          </MenuItem>
+        ) : null}
+
+        {dashType != "weather station" ? (
+          <MenuItem
+            onClick={() => {
+              handleClose();
+              setDashType("weather station");
+              navigate(`/tables/home/sites/${id}/weather`);
             }}
+            style={{ height: "60px", width: "11vw" }}
           >
-            Weather Station
-          </H4>
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleClose();
-            navigate(`/tables/home/sites/${id}/meters`);
-          }}
-          style={{ height: "60px", width: "11vw" }}
-        >
-          <H4
-            style={{
-              fontSize: "1.31vw",
-              fontWeight: "600",
+            <H4
+              style={{
+                fontSize: "1.31vw",
+                fontWeight: "600",
+              }}
+            >
+              Weather Station
+            </H4>
+          </MenuItem>
+        ) : null}
+
+        {dashType != "energy meters" ? (
+          <MenuItem
+            onClick={() => {
+              handleClose();
+              setDashType("energy meters");
+              navigate(`/tables/home/sites/${id}/meters`);
             }}
+            style={{ height: "60px", width: "11vw" }}
           >
-            Energy Meters
-          </H4>
-        </MenuItem>
+            <H4
+              style={{
+                fontSize: "1.31vw",
+                fontWeight: "600",
+              }}
+            >
+              Energy Meters
+            </H4>
+          </MenuItem>
+        ) : null}
       </Menu>
     </div>
   );

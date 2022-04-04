@@ -36,6 +36,7 @@ export default ({ children }) => {
             `/user/organizations/${fetchedUser.data.memOrgs[0].organization.id}`
           );
         }
+        console.log(fetchedOrganization.data);
         setOrganization(fetchedOrganization.data);
         console.log(fetchedUser.data);
         setUser(fetchedUser.data);

@@ -80,7 +80,6 @@ const TimeSeries = ({ queries = [], pallet = "pallet1", labels = "" }) => {
   useEffect(() => {
     const executeQueries = async () => {
       let splitedLabels = labels.split(",");
-      console.log(splitedLabels);
       // let q = [
       //   "select * from statistic",
       //   "select * from statistic",
@@ -88,14 +87,12 @@ const TimeSeries = ({ queries = [], pallet = "pallet1", labels = "" }) => {
       //   "select * from statistic",
       // ];
       let results = queries.map(async (query) => {
-        console.log(query);
         let result = await axiosInstance.post(`/qudra`, {
           query: query.text,
         });
         return result.data;
       });
       results = await Promise.all(results); // results of queries, array of arrays
-      console.log(results);
 
       let xData = [];
       if (results.length > 0) {
@@ -117,8 +114,6 @@ const TimeSeries = ({ queries = [], pallet = "pallet1", labels = "" }) => {
           data: yData,
         });
       });
-      console.log(xData);
-      console.log(datasets);
 
       if (queries.length > 0) {
         setFetched({
