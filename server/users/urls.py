@@ -6,13 +6,12 @@ from .views import \
                  AlertViewSet, AuthenticatedView, CookieView, DashboardViewSet, LogViewSet, OrganizationMembershipViewSet \
                 , OrganizationViewSet, ParameterViewSet, QueryViewSet, ReportViewSet, RoleViewSet, SesssionViewSet \
                 , SiteViewSet, StatisticViewSet, TeamMembershipViewSet, TeamViewSet, BlacklistTokenUpdateView \
-                , ProjectViewSet, TeamSiteViewSet, ThingViewSet, TicketViewSet, UserViewSet
+                , TeamSiteViewSet, ThingViewSet, TicketViewSet, UserViewSet
 
 app_name = 'users'
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
-router.register(r'projects', ProjectViewSet, basename='project')
 router.register(r'teams', TeamViewSet, basename='team')
 router.register(r'sites', SiteViewSet, basename='site')
 router.register(r'organizations', OrganizationViewSet, basename='organization')

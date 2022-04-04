@@ -48,8 +48,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         db_table = "user"
 
-    email = models.EmailField(_('email address'), unique=True)
-    nickname = models.CharField(max_length=150, unique=True)
+    email = models.EmailField(_('email address'), unique=True, blank=False, null=False)
+    nickname = models.CharField(max_length=150, unique=True, blank=False, null=False)
     # first_name = models.CharField(max_length=150, blank=True)
     # last_name = models.CharField(max_length=150, blank=True)
     telephone = models.CharField(max_length=15, blank=True, unique=False)
@@ -70,44 +70,44 @@ class Organization(models.Model):
     class Meta:
         db_table = "organization"
 
-    name = models.CharField(max_length=50, unique=True, null=False)
+    name = models.CharField(max_length=50, unique=True, null=False, blank=False)
     timezone = models.CharField(max_length=50)
     theme = models.CharField(max_length=50)
     disco = models.CharField(max_length=50)
-    note = models.TextField()
+    note = models.TextField(blank=False, null=False)
     users = models.ManyToManyField(User, through='OrganizationMembership', related_name='organizations')
 
 class Team(models.Model):
-    # projects:m2m , sites:m2m, organization:many2one, users:m2m
+    # sites:m2m, organization:many2one, users:m2m
 
     class Meta:
         db_table = "team"
 
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=50, unique=True, blank=False, null=False)
     users = models.ManyToManyField(User, through='TeamMembership', related_name='teams')
     organization = models.ForeignKey(Organization, related_name='teams', on_delete=models.CASCADE)
-    description = models.TextField()
+    description = models.TextField(blank=False, null=False)
 
 class Site(models.Model):
-    # teams:m2m, organizations:many2one, projects:one2many
+    # teams:m2m, organizations:many2one
 
     class Meta:
         db_table = "site"
 
     teams = models.ManyToManyField(Team, through='TeamSite' ,related_name='sites')
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=50, unique=True, blank=False, null=False)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='sites')
-    note = models.TextField()
+    note = models.TextField(blank=False, null=False)
     disco = models.CharField(max_length=50)
     # capacity = models.IntegerField()
-    lng = models.DecimalField(max_digits=4, decimal_places=2)
-    lat = models.DecimalField(max_digits=4, decimal_places=2)
+    lng = models.DecimalField(max_digits=4, decimal_places=2, blank=False, null=False)
+    lat = models.DecimalField(max_digits=4, decimal_places=2, blank=False, null=False)
 
 class Dashboard(models.Model):
     class Meta:
         db_table = "dashboard"
     
-    name = models.CharField(max_length=50, blank=True, null=True)
+    name = models.CharField(max_length=50, blank=False, null=True)
     type = models.CharField(max_length=50, blank=True, null=True)
     site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name='dashboards')
     intervals = models.TextField()
@@ -137,7 +137,7 @@ class Statistic(models.Model):
         max_length=7,
         choices=PALLETS_CHOICES,
         default=pallet1,)
-    labels = models.TextField()
+    labels = models.TextField(blank=False, null=False)
     dashboard = models.ForeignKey(Dashboard, on_delete=models.CASCADE, related_name='statistics')
 
 class Parameter(models.Model):
@@ -152,25 +152,10 @@ class Query(models.Model):
         db_table = "query"
     
     statistic = models.ForeignKey(Statistic, on_delete=models.CASCADE, related_name="queries")
-    text = models.TextField()
+    text = models.TextField(blank=False, null=False)
     column = models.CharField(max_length=50, blank=True, null=True)
     interval = models.CharField(max_length=50, blank=True, null=True)
     function = models.CharField(max_length=50, blank=True, null=True)
-
-class Project(models.Model):
-    # teams:m2m, site:many2one
-
-    class Meta:
-        db_table = "project"
-    
-    # teams = models.ManyToManyField(Team, related_name='projects')
-    name = models.CharField(max_length=50, unique=True)
-    site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="projects")
-    voltage_level = models.CharField(max_length=50) # enum
-    type = models.CharField(max_length=50) # enum
-    capacity = models.IntegerField()
-    brand = models.CharField(max_length=50)
-    note = models.CharField(max_length=50)
 
 class TeamMembership(models.Model):
     #  a pivot table (team,user)
@@ -198,13 +183,6 @@ class TeamSite(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
 
-# class TeamProject(models.Model):
-#     #  a pivot table (team,project)
-#     class Meta:
-#         db_table = "team_project"
-#     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-#     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-
 class Device(models.Model):
 
     class Meta:
@@ -218,31 +196,29 @@ class Thing(models.Model):
     class Meta:
         db_table = "thing"
     
-    hardware_id =  models.CharField(max_length=50, unique=True)
+    hardware_id =  models.CharField(max_length=50, unique=True, blank=False, null=False)
     name = models.CharField(max_length=50, blank=True, null=True)
     status = models.BooleanField(default=True)
     type = models.CharField(max_length=50)
     site = models.ForeignKey(Site, related_name='things', on_delete=models.CASCADE)
     # device = models.ForeignKey(Device, related_name='things', on_delete=models.CASCADE)
-    # project = models.ForeignKey(Project, related_name='things', on_delete=models.CASCADE)
 
 class Ticket(models.Model):
     class Meta:
         db_table = "ticket"
     
-    title = models.CharField(max_length=50)
-    description = models.TextField()
+    title = models.CharField(max_length=50, blank=False, null=False)
+    description = models.TextField(blank=False, null=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     done = models.BooleanField(default=False)
 
 class Log(models.Model):
     class Meta:
         db_table = "log"
     
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=50, blank=False, null=False)
     time = models.DateTimeField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 

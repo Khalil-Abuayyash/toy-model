@@ -1,7 +1,7 @@
 from enum import unique
 from rest_framework import serializers
 from .models import Dashboard, Device, Parameter, Query, Report, Role, Session, Statistic \
-    ,Thing, Ticket, User, Team, Organization, Site, Project \
+    ,Thing, Ticket, User, Team, Organization, Site \
     , OrganizationMembership, TeamMembership, TeamSite, Log, Alert;
 
 
@@ -37,7 +37,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 class TeamSerializer(serializers.ModelSerializer):
 
-    # projects = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), many=True, required=False)
     sites = serializers.PrimaryKeyRelatedField(queryset=Site.objects.all(), many=True, required=False)
     users = UserSerializer(required=False, many=True)
     # organization = OrganizationSerializer(required=False)
@@ -85,7 +84,6 @@ class DashboardSerializer(serializers.ModelSerializer):
 
 class SiteSerializer(serializers.ModelSerializer):
 
-    projects = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), many=True, required=False)
     teams =  TeamSerializer(many=True, required=False)
     # organization = OrganizationSerializer(required=False)
     organization_id = serializers.IntegerField(required=False)
@@ -94,7 +92,7 @@ class SiteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Site
         fields= ['id','name', 'teams','disco', 'note', 'organization', 'organization_id' \
-            , 'projects', 'lat', 'lng', 'dashboards', 'things']
+                , 'lat', 'lng', 'dashboards', 'things']
         depth = 2
 
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -145,41 +143,6 @@ class TeamSiteSerializer(serializers.ModelSerializer):
     #     except:
     #         new = TeamSite.objects.create(team=team, site=site)
     #         return new
-        
-class ProjectSerializer(serializers.ModelSerializer):
-
-    teams = TeamSerializer(many=True, required=False)
-    site = SiteSerializer(required=False)
-    site_id = serializers.IntegerField(required=False)
-
-    class Meta:
-        model = Project
-        fields = ['id', 'name', 'site', 'site_id', 'teams', 'capacity']
-
-# class TeamProjectSerializer(serializers.ModelSerializer):
-
-#     team = TeamSerializer(required=False)
-#     project = ProjectSerializer(required=False)
-#     team_id = serializers.IntegerField(required=False)
-#     project_id = serializers.IntegerField(required=False)
-
-#     class Meta:
-#         model = TeamProject
-#         fields = ['id', 'team', 'project', 'team_id', 'project_id']
-
-    # def create(self, validated_data):
-    #     team_id = validated_data['team_id']
-    #     project_id = validated_data['project_id']
-    #     team = Team.objects.get(id=team_id) // try
-    #     project = Project.objects.get(id=project_id) // try
-
-    #     try:
-    #         old = TeamProject.objects.get(team=team, project=project)
-    #         return old
-    #     except:
-    #         new = TeamProject.objects.create(team=team, project=project)
-    #         return new
-
 
 class TeamMembershipSerializer(serializers.ModelSerializer):
 
@@ -255,11 +218,10 @@ class ThingSerializer(serializers.ModelSerializer):
 class TicketSerializer(serializers.ModelSerializer):
     site_id = serializers.IntegerField(required=False)
     organization_id = serializers.IntegerField(required=False)
-    project_id = serializers.IntegerField(required=False)
     user_id = serializers.IntegerField(required=False)
     class Meta:
         model = Ticket
-        fields = ["id", "title", "done", "project", "project_id", "user", "user_id", 'description','site','site_id','organization','organization_id']
+        fields = ["id", "title", "done", "user", "user_id", 'description','site','site_id','organization','organization_id']
         depth = 3
 
 class LogSerializer(serializers.ModelSerializer):

@@ -14,12 +14,12 @@ import datetime
 
 # models 
 from .models import Dashboard, Parameter, Query, Report, Role, Session, Statistic, Thing, Ticket, User, Organization \
-        ,OrganizationMembership, Project, Site, TeamMembership, TeamSite, Team, Log, Alert
+        ,OrganizationMembership, Site, TeamMembership, TeamSite, Team, Log, Alert
 
 # serializers
 from .serializers import  LogSerializer, OraganizationMembershipSerializer, OrganizationSerializer, ParameterSerializer, QuerySerializer, ReportSerializer, RoleSeriailzer, SessionSerializer \
                         ,SiteSerializer, StatisticSerializer, TeamMembershipSerializer , TeamSerializer, ThingSerializer , TicketSerializer \
-                        , UserSerializer, ProjectSerializer, TeamSiteSerializer, AuthSerializer, AlertSerializer ,DashboardSerializer
+                        , UserSerializer, TeamSiteSerializer, AuthSerializer, AlertSerializer ,DashboardSerializer
 
 # services
 from .services import send_verification_code
@@ -106,13 +106,6 @@ class UserViewSet(ModelViewSet):
         
         serializer = UserSerializer(User.objects.filter(id=pk).first())
         return Response(serializer.data) 
-
-class ProjectViewSet(ModelViewSet):
-    serializer_class = ProjectSerializer
-    queryset = Project.objects.all()
-    pagination_class = PageNumberPagination
-    # filter_backends = [filters.SearchFilter]
-    # search_fields=['id','nickname','organizations__name','email']
 
 class SiteViewSet(ModelViewSet):
     serializer_class = SiteSerializer
@@ -257,10 +250,6 @@ class OrganizationViewSet(ModelViewSet):
 class TeamSiteViewSet(ModelViewSet):
     serializer_class = TeamSiteSerializer
     queryset = TeamSite.objects.all()
-
-# class TeamProjectViewSet(ModelViewSet):
-#     serializer_class = TeamProjectSerializer
-#     queryset = TeamProject.objects.all()
 
 class TeamMembershipViewSet(ModelViewSet):
     serializer_class = TeamMembershipSerializer
