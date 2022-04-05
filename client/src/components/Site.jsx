@@ -16,11 +16,11 @@ const Site = () => {
   const [nameError, setNameError] = useState([false, ""]);
   const [note, setNote] = useState("");
   const [noteError, setNoteError] = useState("");
-  const [organization, setOrganization] = useState([]);
+  const [organization, setOrganization] = useState({ id: "" });
   const [organizationsOptions, setOrganizationsOptions] = useState([]);
   const [disco, setDisco] = useState("");
-  const [lng, setLng] = useState();
-  const [lat, setLat] = useState();
+  const [lng, setLng] = useState(0);
+  const [lat, setLat] = useState(0);
   const { user } = useContext(AuthContext);
 
   useEffect(() => {

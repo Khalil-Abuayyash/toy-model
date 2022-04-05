@@ -164,7 +164,7 @@ const TicketTable = () => {
         <Search
           search={search}
           handleSearch={handleSearch}
-          placeholder="Search ( ID , Name , Orgs , Sites , Projects )"
+          placeholder="Search ( ID , Name , Orgs , Sites )"
         />
         <Download />
         <AuthorizedComponent

@@ -46,7 +46,6 @@ const SiteTable = () => {
         res.data.results.map((site) => ({
           ...site,
           teamsNames: site.teams.map((team) => team.name).join(","),
-          projectsNames: site.projects.map((project) => project.name).join(","),
         }))
       );
       setPageNumbers(
@@ -63,9 +62,6 @@ const SiteTable = () => {
           res.data.results.map((site) => ({
             ...site,
             teamsNames: site.teams.map((team) => team.name).join(","),
-            projectsNames: site.projects
-              .map((project) => project.name)
-              .join(","),
           }))
         );
         setPageNumbers(
@@ -76,26 +72,13 @@ const SiteTable = () => {
             "Site ID",
             "Site Name",
             "Organization",
-            "Projects",
             "Teams",
             "Actions",
           ]);
         } else {
-          setTableHeaders([
-            "Site ID",
-            "Site Name",
-            "Organization",
-            "Projects",
-            "Teams",
-          ]);
+          setTableHeaders(["Site ID", "Site Name", "Organization", "Teams"]);
         }
-        setTableBodies([
-          "id",
-          "name",
-          "organization.name",
-          "projectsNames",
-          "teamsNames",
-        ]);
+        setTableBodies(["id", "name", "organization.name", "teamsNames"]);
         setIsLoaded(true);
       })
       .catch((err) => console.log(err));
