@@ -265,4 +265,3 @@ class Metric(TimescaleModel):
 
    class Meta:
        db_table = "metric"
-
